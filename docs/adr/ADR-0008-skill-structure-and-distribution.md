@@ -1,0 +1,62 @@
+# ADR-0008: Skill structure, quality bar, and skill-led distribution (modelled on x0x)
+
+- **Status:** Proposed
+- **Date:** 2026-06-17
+- **Decision owners:** Jim Collinson
+- **Reviewers:** TBD
+- **Supersedes:** none
+- **Superseded by:** none
+- **Related:** ADR-0002 (single holistic skill), ADR-0003 (operator scope & interface), ADR-0006 (source-binding); the x0x skill (`saorsa-labs/x0x`)
+
+## Context
+
+ADR-0002 fixes the skill's *shape* (one modular skill, progressively disclosed) and ADR-0003 its *scope* (operate via existing surfaces). What is not yet committed is the skill's concrete *structure*, *quality bar*, and *distribution model*. x0x proves a pattern in the wild that we want to follow: its `SKILL.md` is a self-sufficient entry that installs the tools (the `x0x` CLI and `x0xd` daemon), orients the agent, and discloses depth through linked references. It is not a developer tutorial, yet from it an agent can find and do everything — an excellent jumping-off point. The principle we draw from x0x's distribution is **skill-led distribution**: all an agent needs is the skill, and the skill brings the tools and the knowledge with it.
+
+## Decision Drivers
+
+- All an agent needs is the skill — a single, self-sufficient entry point.
+- Skill-led distribution (the x0x pattern): the skill installs/configures the existing tools, not a separate setup.
+- Progressive disclosure as the quality bar: lean entry → modules on demand → outward to deeper topics.
+- The housekeeping of a high-quality, installable skill: accurate metadata, an install manifest, a version self-check, a sound security posture.
+- Adopt a proven model (x0x) rather than invent one.
+
+## Considered Options
+
+1. **A bare instructions document** (no manifest, metadata, or self-check). Rejected: not a self-sufficient, installable, high-quality skill; would fail the quality bar and the security scan.
+2. **A skill plus separate manual setup of the tools.** Rejected: an agent should need nothing but the skill; separate setup is friction and a source of drift.
+3. **An x0x-modelled skill**: self-sufficient entry, skill-led distribution of the existing CLI + daemon, progressive disclosure, and full metadata/housekeeping. Chosen.
+
+## Decision
+
+The skill is structured and quality-gated on the x0x model. Invariants:
+
+- **Self-sufficiency / skill-led distribution:** installing the skill is all an agent needs. The skill bootstraps the agent's access to the **existing upstream tools** — it installs/configures the `ant` CLI and the node-management daemon (per ADR-0003: existing tools, none new) — and the knowledge to use them. It is the single jumping-off point from which the agent can go as deep as it needs.
+- **Progressive-disclosure layering:** a lean entry (opener + task routing) → bundled modules loaded on demand → outward routing to live docs and other skills for depth (data storage, the upstream repos, security, developer-level detail), per ADR-0002 and ADR-0003.
+- **High-quality housekeeping:** accurate frontmatter/metadata (name, a triggering-tuned description, version, license, keywords); clear provenance/attribution (the team behind it, the upstream repos it draws on, links); an install manifest following x0x's `metadata.openclaw.install` pattern, referencing upstream release binaries with signature verification; and an in-skill version self-check (per ADR-0006).
+- **Verified, secure delivery and clean removal:** checksums and signatures for both the skill and the binaries it installs, confirmed before use and reported back to the agent; the security checks agents and distribution channels expect (declared behaviour matches actual, reviewed install script); and a documented, clean **uninstall** path (stop processes, remove binaries and state) — agents trust a skill more when they can cleanly reverse it.
+- **Quality bar:** structure, security posture (signed binaries, reviewed install script, passes the security scan), and clarity on par with x0x.
+
+The detailed structure — exact sections, module files, manifest schema — is specified in DESIGN, not fixed here.
+
+## Consequences
+
+### Positive
+
+- An agent needs only the skill; it is self-sufficient and a clean jumping-off point.
+- Built on a proven, high-quality, installable model rather than an invented one.
+
+### Negative / Trade-offs
+
+- More housekeeping to build and keep current (metadata, manifest, self-check) — mitigated by the source-binding of ADR-0006.
+
+### Neutral / Operational
+
+- The concrete structure is DESIGN's job; this ADR sets the distribution model and the quality bar.
+
+## Validation
+
+A clean-context agent, given only the installed skill, can obtain the tools and operate from the skill alone (the iteration-1 live-network test). The skill passes the security scan, and its structure and metadata are on par with x0x.
+
+## Notes for AI-assisted work
+
+AI tools may help draft this ADR, but **must not mark it Accepted without human review**. Accepted ADRs are immutable: create a new superseding ADR rather than editing an Accepted ADR.
