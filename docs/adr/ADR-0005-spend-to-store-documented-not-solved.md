@@ -10,7 +10,7 @@
 
 ## Context
 
-David's brief flags that agents cannot easily acquire ETH for gas. ANT is an ERC-20, and spending it for storage requires native Arbitrum gas; the wallet tracks ANT and gas balances separately, and the token docs state plainly that a small amount of Arbitrum ETH is needed for fees. A source audit found **no** gasless mechanism upstream — no paymaster, account abstraction, meta-transaction, or permit anywhere in the org (with a code comment confirming permits are not yet implemented). So the "earn ANT → store your own data" loop does **not** close gaslessly today: an agent holding only earned ANT still needs gas to spend it.
+David's brief flags that agents cannot easily acquire ETH for gas. ANT is an ERC-20, and spending it for storage requires native Arbitrum gas; the wallet tracks ANT and gas balances separately, and the token docs state plainly that a small amount of Arbitrum ETH is needed for fees. A source audit found **no** gasless payment path upstream — no wired paymaster, account-abstraction, or meta-transaction route, and ERC-20 `permit` is not implemented as a usable payment route. So the "earn ANT → store your own data" loop does **not** close gaslessly today: an agent holding only earned ANT still needs gas to spend it.
 
 ## Decision Drivers
 

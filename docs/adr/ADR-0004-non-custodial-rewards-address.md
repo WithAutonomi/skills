@@ -6,14 +6,14 @@
 - **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0005 (gas — a separate decision); ADR-0009 (remit-gated operation); ADR-0006 (source-binding); DESIGN §7 and ROADMAP (capability ladder). Current-state source: `WithAutonomi/ant-node` (`--rewards-address`, `src/payment/wallet.rs`); `WithAutonomi/ant-client` (`ant-cli/src/main.rs` `require_secret_key`, `ant-cli/src/commands/data/wallet.rs`); `WithAutonomi/ant-sdk` (`antd/src/rest/wallet.rs`, `AUTONOMI_WALLET_KEY`).
+- **Related:** ADR-0005 (gas — a separate decision); ADR-0009 (remit-gated operation); ADR-0006 (source-binding); DESIGN §7 and ROADMAP (capability ladder). Current-state source: `WithAutonomi/ant-node` (`--rewards-address`, `src/payment/wallet.rs`); `WithAutonomi/ant-client` (`ant-cli/src/main.rs` `require_secret_key`, `ant-cli/src/commands/data/wallet.rs`); `WithAutonomi/ant-sdk` (`antd/src/rest/wallet.rs` `AUTONOMI_WALLET_KEY`; `antd/src/rest/upload.rs` external-signer `prepare_upload`/`finalize_upload`; `docs/external-signer-flow.md`).
 
 ## Context
 
 A running node earns real ANT, and the operator is often an autonomous agent — sometimes with no human in the loop. Two source-verified facts shape the decision:
 
 1. **The node never holds a key.** `ant-node` takes only a public `--rewards-address` and verifies that inbound on-chain payments name it. So **node operation is non-custodial by construction** — receiving rewards needs no private key at all.
-2. **Spending currently needs a raw key in a process environment.** `ant` has no wallet creation, no keystore, and no signing boundary; the CLI reads a raw private key from the `SECRET_KEY` env var (`require_secret_key`), and `antd` likewise needs `AUTONOMI_WALLET_KEY`. The `wallet` subcommands are only `address` and `balance`. There is no encrypted keystore, OS-keychain integration, or signer anywhere in the stack; the GUI offloads to WalletConnect, which a headless agent cannot use.
+2. **Direct spend currently lacks custody tooling.** The `ant` CLI reads a raw private key from the `SECRET_KEY` env var (`require_secret_key`); its `wallet` subcommands are only `address` and `balance`. `antd` can either load an internal wallet from `AUTONOMI_WALLET_KEY` **or** run in an **external-signer** mode (no wallet key) — it returns payment details via `prepare_upload`/`finalize_upload`, an external caller signs and submits the EVM payment, and the daemon finalises with the tx hashes. None of these paths provides wallet creation, an encrypted keystore, recovery, or a built-in signing policy; the external-signer flow is an *integration seam*, not custody (the key still lives with whoever signs). The GUI uses WalletConnect, but the headless story is still "bring your own signer / custody substrate."
 
 David's steer is that forcing ordinary users to supply or understand a crypto wallet is the *scary* path, so for autonomous use an agent owning its own small-value wallet should be a first-class option — provided the private key never reaches the agent's reasoning context. The catch this ADR is honest about: the tooling that would keep a key safe (generation, encrypted storage, recovery, bounded signing) **does not exist upstream today** and must be designed/built or supplied by the host. "Agent-created" must therefore never mean "LLM-created."
 
@@ -56,7 +56,7 @@ If those properties cannot be met, the wallet must be treated as **disposable/lo
 
 **Receive is autonomous; spend is under authority.** Running nodes and receiving rewards is fully autonomous regardless of sourcing. Spending or withdrawing ANT is gated by the **remit the operator granted** (envelopes), per ADR-0009 — not per-action human approval. Escalation is **risk-based, not literacy-based**: escalate on no safe custody substrate, a balance crossing a remit threshold, backup/verification failure, a spend beyond the granted envelope, or an explicit self-custody opt-in — never merely because no human supplied an address or "understands crypto."
 
-**Honest current-state boundary.** Because `ant` provides no wallet creation, keystore, or signing boundary today, **agent-owned spend authority is not yet enabled by existing tooling**. Operate-and-earn runs now on a public reward address (key-free). Agent-owned custody and autonomous spend are **first-class target capabilities** that require either a reviewed custody wrapper or upstream wallet support before they can be presented as safe or complete. Even then a residual remains: at spend time the key must materialise in the `ant` process environment — it can be kept out of the agent's context, not out of all process memory.
+**Honest current-state boundary.** No existing path provides wallet creation, an encrypted keystore, recovery, or a signing policy, so **agent-owned spend authority is not yet enabled by existing tooling**. Operate-and-earn runs now on a public reward address (key-free). `antd`'s external-signer mode is a useful headless *seam* a custody substrate could plug into, but it is not custody — the substrate still has to exist somewhere else (a reviewed wrapper or upstream wallet support). Agent-owned custody and autonomous spend are **first-class target capabilities** gated on that. A residual remains regardless: at spend time the key must materialise in some signing process's environment — it can be kept out of the agent's context, not out of all process memory.
 
 **Where the custody substrate lives is an open team decision** — assumed host platform / signposted external tooling / a reviewed skill-provided wrapper / upstream `ant` wallet support / a staged combination. This ADR commits the invariants and required properties above; the substrate's home is escalated to the team and recorded later by amendment or a follow-on ADR. **Gas funding is a separate decision (ADR-0005):** a paymaster solves "no ETH for gas," not "who controls the key."
 
@@ -84,7 +84,7 @@ Invariants:
 ### Negative / Trade-offs
 
 - Agent-owned spend is not available from existing tooling; it depends on a custody substrate that must be chosen/built (open team decision), or on upstream wallet support.
-- Even with a wrapper, the key materialises in the `ant` process environment at spend — out of the agent context, not out of all process memory.
+- Even with a wrapper, the key materialises in a signing process's environment at spend — out of the agent context, not out of all process memory.
 - More to specify and review (substrate properties, recovery, audit) before agent-owned spend ships.
 
 ### Neutral / Operational

@@ -92,7 +92,7 @@
 
 What the skill *does*, per release tier — the conceptual scope map from DESIGN §12. Phase 02 authors these in order; the **sequencing and definition of done live here, not in the ADRs** (ADR-0004/0005 nod to the ladder but do not fix it). A closed earn→store loop is **not** required for value — useful node operation lands first.
 
-- [ ] **Tier 1 — Operate and earn.** Install/detect `ant`; accept or provision a public reward address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / recovery. The skill neither creates nor holds a key at this tier. *(Unblocked now.)*
+- [ ] **Tier 1 — Operate and earn.** Install/detect `ant`; accept or provision a public reward address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / node-state recovery. The skill neither creates nor holds a key at this tier. *(Unblocked now.)*
 - [ ] **Tier 2 — Secure and reason about ANT.** Wallet policy; the agent-managed (secrets-out-of-context) custody path and the user/provisioned path; balance and gas visibility; "what can I do next?" guidance. *(Gated on the custody-substrate decision — ADR-0004.)*
 - [ ] **Tier 3 — Spend / store loop.** A chosen gas strategy; upload/retrieve with ANT + gas (or a funding/paymaster route); the full autonomous earn→store workflow. *(Gated on the gas-strategy decision — ADR-0005 — and the custody decision — ADR-0004.)*
 
@@ -109,7 +109,8 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 - **Question:** where do key generation, encrypted storage, recovery, and signing live for an agent-owned wallet? `ant` provides none of this today — spend takes a raw `SECRET_KEY` env var; no keygen, keystore, or signer.
 - **Required of any choice (ADR-0004):** key generated outside the agent context; encrypted at rest; never printed/logged/returned to the agent; a declared recovery path at creation; scoped spend policy; auditable; signing confined to the substrate boundary (agent sees only public address / balance / tx hash / status).
 - **Options:** assume the host platform provides it (secret manager / OS keychain); signpost external tooling only; a reviewed skill-provided wrapper (interim shim over `ant`'s env-var signing); upstream `ant` grows wallet create/import/export + keystore + signing boundary (the long-term home); or a staged combination.
-- **Residual to accept:** even with a wrapper, the key materialises in the `ant` process environment at spend — out of the agent context, not out of all process memory.
+- **Existing seam:** `antd` already exposes a headless **external-signer** mode (`prepare_upload`/`finalize_upload`; the key never enters the daemon) that a custody substrate could plug into — but the seam is not itself custody; the substrate still has to live somewhere (wrapper / platform / upstream).
+- **Residual to accept:** even with a wrapper, the key materialises in a signing process's environment at spend — out of the agent context, not out of all process memory.
 
 **Decision 2 — Gas strategy** · *gates Tier 3* · ADR-0005
 
