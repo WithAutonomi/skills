@@ -2,7 +2,7 @@
 
 Source and formal project truth for the **Autonomi operator skill** — an auto-updating, agent-facing skill that teaches an AI agent to operate the Autonomi network: run and manage nodes, receive rewards to a non-custodial public address, and route onward to wallet and data guidance for securing or spending the ANT they earn.
 
-This repository holds the formal artifacts: ADRs, design, the roadmap, and — once authored — the skill package itself. Loose thinking, research, and planning notes live in the paired Obsidian vault project `Projects/Autonomi Skill`.
+This repository holds the formal artifacts: the vision, design, decisions (ADRs), feature priorities, the roadmap, and — once authored — the skill package itself. Loose thinking, research, and planning notes live in the paired Obsidian vault project `Projects/Autonomi Skill`.
 
 ## Status
 
@@ -13,13 +13,18 @@ This repository holds the formal artifacts: ADRs, design, the roadmap, and — o
 
 ## Start here (reading order)
 
-1. `docs/DESIGN.md` — what we're building and how it works, realigned to the ADRs.
-2. `docs/adr/` — the architectural decisions and their rationale (start at `docs/adr/README.md`; ADR-0001…0009).
-3. `planning/ROADMAP.md` — build phases, the delivery scope ladder (capability tiers), and the **Open team decisions** that gate later tiers.
+1. `docs/VISION.md` — why we're building it, for whom, and the principles.
+2. `docs/DESIGN.md` — what we're building and how it works, realigned to the ADRs.
+3. `docs/adr/` — the architectural decisions and their rationale (start at `docs/adr/README.md`; ADR-0001…0009).
+4. `planning/ROADMAP.md` — build phases, the delivery scope ladder (capability tiers), and the **Open team decisions** that gate later tiers.
+
+(`docs/FEATURES.md` carries the MoSCoW feature priorities.)
 
 ## Layout
 
+- `docs/VISION.md` — purpose, goals, non-goals, principles, audience.
 - `docs/DESIGN.md` — the design, realigned to the ADRs. _(Forthcoming: a source-binding manifest and the skill package.)_
+- `docs/FEATURES.md` — MoSCoW feature priorities.
 - `docs/adr/` — Architecture Decision Records (team-standard governance; see `docs/adr/README.md`).
 - `planning/ROADMAP.md` — phases, capability ladder, and open team decisions (the vault holds only a pointer).
 - `scripts/adr-governance.py` — ADR validation gate; CI workflow in `.github/workflows/`.
