@@ -4,7 +4,7 @@
 
 ## 1. Purpose and shape
 
-An **operator skill**: it teaches an AI agent to operate and *use* the Autonomi network, starting with running nodes and expanding toward whole-network use. It is **one holistic, internally-modular skill, progressively disclosed by task routing** (ADR-0002), modelled on x0x (ADR-0008). It teaches the **existing** CLI + daemon surfaces and builds no new tooling (ADR-0003); at the build frontier it points onward to the Developer skill. It lives in its own repository because it is a synthesis across many upstream repos with no natural home in any one (ADR-0007).
+An **operator skill**: it teaches an AI agent to operate and *use* the Autonomi network, starting with running nodes and expanding toward whole-network use. It is **one holistic, internally-modular skill, progressively disclosed by task routing** (ADR-0002), with x0x as a precedent (ADR-0008). It teaches the **existing** CLI + daemon surfaces and builds no new tooling (ADR-0003); at the build frontier it points onward to the Developer skill. It lives in its own repository because it is a synthesis across many upstream repos with no natural home in any one (ADR-0007).
 
 The pieces are **interrelated task journeys** — run a node; receive & secure ANT; use ANT to store data; acquire ANT — entered by task and routed via the SKILL.md, overlapping and feeding each other. *Not* a single linear loop.
 
@@ -39,7 +39,7 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 
 The skill is self-sufficient: installing it is all an agent needs. It detects what is already present and installs the **existing** tools only when missing — the `ant` CLI (the node daemon is the same `ant` binary in daemon mode; `ant-node` is fetched per node) — mutating an existing setup only for a compatibility/security reason and within the agent's granted remit (per ADR-0009).
 
-- **Install paths, with fallbacks (x0x model):** install script (`install.sh` / `install.ps1`, which `ant-client` already ships) → direct release artifacts → build-from-source; plus a fallback source (e.g. raw GitHub) if the primary URL is unreachable.
+- **Install paths, with fallbacks (x0x pattern):** install script (`install.sh` / `install.ps1`, which `ant-client` already ships) → direct release artifacts → build-from-source; plus a fallback source (e.g. raw GitHub) if the primary URL is unreachable.
 - **Verification:** confirm checksums and signatures *before use* and report the result to the agent — `ant-node` releases ship `SHA256SUMS` and ML-DSA-65 (FIPS-204) signatures. Plus the checks agents and distribution channels expect: declared behaviour matches actual, and a reviewed install script (ClawHub security scan).
 - **Uninstall:** a documented, clean removal path — stop nodes and the daemon, then remove binaries and state (data dirs, registry, caches). Agents trust a skill they can cleanly reverse.
 - All install URLs/versions are **source-bound** (ADR-0006) so the paths and fallbacks don't go brittle or stale.
@@ -47,6 +47,8 @@ The skill is self-sufficient: installing it is all an agent needs. It detects wh
 ## 7. Rewards and custody (ADR-0004)
 
 Non-custodial by default: the node is given a **public wallet address** only and never holds spend-capable key material, and the skill never needs or handles the private key to run a node. Address sourcing is a **menu**, not a ranked ladder: **supplied** by the human/principal, **provisioned** at setup, or **agent-created** — where self-generation is gated (only where the agent can create, secure, and manage the key so no funds are lost) and never a default. If none is safely available, the agent stops/escalates rather than earning into an unspendable address. The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there) so the holder can view and use the earned ANT.
+
+_(Note: ADR-0004 is being revised per the team review — agent-created wallet becomes a first-class autonomous path with private keys kept out of the agent context; §3 and §7 will be re-synced when that lands.)_
 
 ## 8. Spend and acquire (ADR-0005; neutral-menu principle)
 
@@ -58,17 +60,25 @@ Three buckets the skill keeps distinct: **what the network enforces** (facts the
 
 ## 10. Staying current (ADR-0006)
 
-Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. An in-skill **version self-check** fetches a manifest from an Autonomi-controlled URL and warns if stale, continues if offline. The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
+Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. An in-skill **version self-check** fetches a manifest from an Autonomi-controlled URL and warns if stale, continues if offline. Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
 
 ## 11. Metadata, licensing, provenance (ADR-0008)
 
 Frontmatter: name, a triggering-tuned description, version, license, keywords. An install manifest on x0x's `metadata.openclaw.install` pattern. Licensing to match upstream (likely MIT OR Apache-2.0 — TBC). Clear **provenance / "about"**: the team behind it, the upstream repos it synthesises, and links — so agents and distribution channels can see what's behind it.
 
-## 12. Iteration-1 scope and verification
+## 12. Progressive delivery — scope ladder and iteration-1
 
-**Scope (complete operate-and-earn, nothing required left out):** opener → resource preflight → install (CLI + daemon, fallbacks, verification) → run one and several nodes (count/ports/distribution within diversity limits) → monitor health (status + events) → non-custodial rewards address → the wallet/ANT needed to earn and secure → onward pointers for spend/data/acquire → clean uninstall. No new tooling; spend/data acquisition are mental-model + pointers.
+Delivery is **progressive** (per ADR-0002's expandable shape and ADR-0005's spend-is-a-frontier stance). The closed earn→store loop is *not* required for value — useful node operation ships first:
 
-**Definition of done:** a clean-context agent, given only the installed skill, runs and monitors a healthy node (one and several) on the **live network**, with a non-custodial rewards address, knows how to check and secure earnings, and can cleanly uninstall — without inventing commands.
+- **v1 — operate and earn:** install/detect `ant`; create, accept, or provision a reward address under safe policy; run, manage, and monitor one or more nodes; track rewards and balances; clean uninstall / recovery guidance.
+- **v1.5 — secure and reason about ANT:** wallet policy; the agent-managed (secrets-out-of-context) wallet path; the user/provisioned wallet path; balance and gas visibility; "what can I do next?" guidance.
+- **v2 — spend/store loop:** a chosen gas strategy; upload/retrieve with ANT + gas (or a paymaster/funding route); the full autonomous earn→store workflow. Gated on the gas-strategy decision — ADR-0005, a known frontier requiring a team call.
+
+The skill is honest about the boundary: *it can operate nodes and help an agent earn; autonomous storage-spending depends on the gas/payment path (v2).*
+
+**Iteration-1 (= v1) scope:** opener → resource preflight → install (CLI + daemon, fallbacks, verification) → run one and several nodes (count/ports/distribution within diversity limits) → monitor health (status + events) → reward address (the menu of sourcing options) → track rewards/balances → clean uninstall → onward pointers for the later ladder (securing/spending ANT, data). No new tooling.
+
+**Definition of done:** a clean-context agent, given only the installed skill, runs and monitors a healthy node (one and several) on the **live network**, configures a reward address, can check balances, and cleanly uninstalls — without inventing commands.
 
 ## 13. Open questions (carried; mostly David/maintainer)
 
@@ -80,3 +90,4 @@ Frontmatter: name, a triggering-tuned description, version, license, keywords. A
 ## Design History
 
 - **2026-Jun-17:** Rewritten and realigned to ADR-0001…0009, superseding the original pre-decision scaffold; removed the "loop" abstraction and all gas-abstraction framing; added install/secure-delivery, uninstall, licensing, and provenance; aligned to the address-sourcing menu (gated self-generation, no "fallback"/"node host" framing) and the remit-gated, non-mutating install.
+- **2026-Jun-18:** Refinement round from team review — added the v1/v1.5/v2 scope ladder (ADR-0005 as a v2 frontier, not a v1 blocker); x0x reframed as precedent not dependency; cross-repo freshness contract noted (ADR-0006).

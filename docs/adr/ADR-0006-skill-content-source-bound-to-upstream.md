@@ -40,6 +40,7 @@ Invariants:
 - The mechanical-vs-judgement split is explicit in the structure.
 - Nothing is hand-asserted that cannot be traced to upstream.
 - Source bindings are **documentation provenance, not runtime pins** (see ADR-0009): the manifest separates `source_evidence` (proves a claim) from `tested_with` / `requires_min` / `known_incompatible` (which express tool compatibility). A source-evidence commit is never a runtime version requirement.
+- **Cross-repo freshness contract:** upstream repos that change operator-facing surfaces (commands, flags, daemon endpoints, config, install paths, APIs, or reward/payment behaviour) should open an issue/PR against the skill repo, or emit a release-note marker the skill's freshness check consumes — so the skill is kept current from both ends, not only by its own sweep (relates to ADR-0007 and ADR-0009).
 - The automation pipeline is out of scope here; the regeneration-ready structure is mandatory.
 
 ## Consequences
