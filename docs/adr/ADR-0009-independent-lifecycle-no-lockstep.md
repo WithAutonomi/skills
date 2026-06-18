@@ -16,7 +16,7 @@ ADR-0007 makes the skill a standalone repo that synthesises several upstream rep
 
 - A skill-only change must never force a release or upgrade of `ant` or `ant-node`.
 - Source-evidence (provenance for a claim) ≠ runtime version requirement.
-- Installing/updating the skill must not mutate a working `ant` / `ant-node` setup without an explicit compatibility/security reason and operator approval.
+- Installing/updating the skill must not mutate a working `ant` / `ant-node` setup without an explicit compatibility/security reason, and any such change stays within the agent's granted remit (escalating otherwise).
 - Don't rehost or bundle upstream binaries; call official installers/releases.
 
 ## Considered Options
@@ -27,7 +27,7 @@ ADR-0007 makes the skill a standalone repo that synthesises several upstream rep
 
 ## Decision
 
-**No lockstep lifecycle.** The operator skill, the `ant` CLI / node-management daemon, and `ant-node` are independently versioned artefacts. Skill-only changes must not require releases or upgrades of `ant` or `ant-node`. The skill may declare minimum-compatible, tested, and known-incompatible versions, but it must **not** pin source-evidence commits as runtime requirements. Installing or updating the skill must not mutate an existing working `ant` / `ant-node` setup unless a required compatibility or security boundary is crossed and the operator explicitly approves.
+**No lockstep lifecycle.** The operator skill, the `ant` CLI / node-management daemon, and `ant-node` are independently versioned artefacts. Skill-only changes must not require releases or upgrades of `ant` or `ant-node`. The skill may declare minimum-compatible, tested, and known-incompatible versions, but it must **not** pin source-evidence commits as runtime requirements. Installing or updating the skill must not mutate an existing working `ant` / `ant-node` setup unless a required compatibility or security boundary is crossed — and then only within the autonomy and remit the operator has granted the agent, escalating rather than mutating when the change falls outside that remit.
 
 Guardrails (invariants):
 - **Three independent version streams:** skill version, `ant` / `ant-core` version, `ant-node` version.
@@ -55,7 +55,7 @@ Guardrails (invariants):
 
 ## Validation
 
-A skill-only change ships with no `ant` / `ant-node` release. Installing or updating the skill on a machine with a working `ant` / `ant-node` leaves their versions, registry, binary paths, and upgrade channel untouched unless the operator approves a needed change. The source-binding manifest carries distinct `source_evidence` vs `tested_with` / `requires_min` / `known_incompatible` fields, and review confirms no source-evidence commit is used as a runtime pin.
+A skill-only change ships with no `ant` / `ant-node` release. Installing or updating the skill on a machine with a working `ant` / `ant-node` leaves their versions, registry, binary paths, and upgrade channel untouched unless a needed change falls within the agent's granted remit (or the operator approves it). The source-binding manifest carries distinct `source_evidence` vs `tested_with` / `requires_min` / `known_incompatible` fields, and review confirms no source-evidence commit is used as a runtime pin.
 
 ## Notes for AI-assisted work
 
