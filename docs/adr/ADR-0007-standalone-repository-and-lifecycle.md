@@ -3,7 +3,7 @@
 - **Status:** Proposed
 - **Date:** 2026-06-17
 - **Decision owners:** Jim Collinson
-- **Reviewers:** TBD
+- **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
 - **Related:** ADR-0002 (single holistic skill), ADR-0006 (source-binding); the Autonomi Developer skill (`WithAutonomi/autonomi-developer-docs`); vault `spec/DECISIONS.md`

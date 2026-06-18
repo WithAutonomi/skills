@@ -3,7 +3,7 @@
 - **Status:** Proposed
 - **Date:** 2026-06-17
 - **Decision owners:** Jim Collinson
-- **Reviewers:** TBD
+- **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
 - **Related:** Autonomi/Saorsa portfolio ADR standard (`WithAutonomi/autonomi-developer-docs`, PR #56); paired vault project `Projects/Autonomi Skill`

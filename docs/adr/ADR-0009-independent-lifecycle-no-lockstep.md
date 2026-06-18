@@ -3,7 +3,7 @@
 - **Status:** Proposed
 - **Date:** 2026-06-17
 - **Decision owners:** Jim Collinson
-- **Reviewers:** TBD
+- **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
 - **Related:** ADR-0006 (source-binding), ADR-0007 (standalone repo), ADR-0008 (skill-led distribution / install)

@@ -3,7 +3,7 @@
 - **Status:** Proposed
 - **Date:** 2026-06-17
 - **Decision owners:** Jim Collinson
-- **Reviewers:** TBD
+- **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
 - **Related:** ADR-0003 (operator scope & boundary), ADR-0004 (non-custodial rewards), ADR-0006 (source-binding), ADR-0007 (standalone repo); vault `spec/VISION.md`, `spec/DESIGN.md`; the x0x skill (`saorsa-labs/x0x`)
