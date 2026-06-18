@@ -1,70 +1,102 @@
-# ADR-0004: Non-custodial rewards address by default
+# ADR-0004: Non-custodial node operation; agent wallet custody out of context
 
 - **Status:** Proposed
-- **Date:** 2026-06-17
+- **Date:** 2026-06-17 (reframed 2026-06-18)
 - **Decision owners:** Jim Collinson
 - **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0005 (spend documented, not solved); `WithAutonomi/ant-node` (`src/payment/wallet.rs`, `src/bin/ant-node/cli.rs`)
+- **Related:** ADR-0005 (gas — a separate decision); ADR-0009 (remit-gated operation); ADR-0006 (source-binding); DESIGN §7 and ROADMAP (capability ladder). Current-state source: `WithAutonomi/ant-node` (`--rewards-address`, `src/payment/wallet.rs`); `WithAutonomi/ant-client` (`ant-cli/src/main.rs` `require_secret_key`, `ant-cli/src/commands/data/wallet.rs`); `WithAutonomi/ant-sdk` (`antd/src/rest/wallet.rs`, `AUTONOMI_WALLET_KEY`).
 
 ## Context
 
-A running node earns real ANT, and the operator is often an autonomous agent, sometimes with no human in the loop. The current `ant-node` code shows the safe shape is the only shape the software offers: a node is configured with a **public wallet address** for rewards (the `--rewards-address 0x…` flag) and holds **no** signer or private key — it merely verifies that inbound on-chain payments name that address. The node docs say it plainly: provide only a public address, never a private key. So the skill can speak precisely to what *it* and the *node* require and handle; what it cannot and must not claim is where a human's key is physically kept. What the decision must still answer is *where the public wallet address comes from* — especially when no human is in the loop.
+A running node earns real ANT, and the operator is often an autonomous agent — sometimes with no human in the loop. Two source-verified facts shape the decision:
+
+1. **The node never holds a key.** `ant-node` takes only a public `--rewards-address` and verifies that inbound on-chain payments name it. So **node operation is non-custodial by construction** — receiving rewards needs no private key at all.
+2. **Spending currently needs a raw key in a process environment.** `ant` has no wallet creation, no keystore, and no signing boundary; the CLI reads a raw private key from the `SECRET_KEY` env var (`require_secret_key`), and `antd` likewise needs `AUTONOMI_WALLET_KEY`. The `wallet` subcommands are only `address` and `balance`. There is no encrypted keystore, OS-keychain integration, or signer anywhere in the stack; the GUI offloads to WalletConnect, which a headless agent cannot use.
+
+David's steer is that forcing ordinary users to supply or understand a crypto wallet is the *scary* path, so for autonomous use an agent owning its own small-value wallet should be a first-class option — provided the private key never reaches the agent's reasoning context. The catch this ADR is honest about: the tooling that would keep a key safe (generation, encrypted storage, recovery, bounded signing) **does not exist upstream today** and must be designed/built or supplied by the host. "Agent-created" must therefore never mean "LLM-created."
 
 ## Decision Drivers
 
 - Safety of funds under autonomous operation.
-- Least privilege: operating a node should grant no spending authority.
-- Claim only what we control — what the node and skill require and handle — not where a human's key lives.
-- Do not present self-custody as a default, or as a reflex for when other options are unavailable.
-- Align with the network's actual design (the node cannot spend).
+- Least privilege: operating a node grants no spending authority.
+- Preserve autonomy: a no-human agent should operate end-to-end within its remit, not be blocked by a missing human.
+- Keep the agent's reasoning context free of spend-capable secrets.
+- Be honest about current tooling: never imply a custody substrate that does not exist.
+- Claim only what the node and skill control, not where a human's key lives.
 
 ## Considered Options
 
-1. **The skill creates or handles a private key to run the node.** Rejected: the node software neither needs nor accepts a private key, so handling one for node operation adds risk for no benefit.
-2. **Point the node at a public wallet address; the skill never needs or handles the private key to operate.** Chosen.
-3. **Require a human to supply an address for every action.** Rejected: needlessly blocks autonomous operation, which is safe when the skill handles no spending key.
+1. **Handle a raw private key in the agent context to create/own the wallet.** Rejected: the node needs no key, and a raw key in an agent's context is the core risk we are eliminating.
+2. **Require a human-supplied address for every autonomous agent.** Rejected: needlessly blocks autonomous operation and (per David) pushes ordinary users onto the most confusing path.
+3. **Agent-owned wallets via an out-of-context custody substrate that meets defined properties, with the substrate's home left as an explicit team decision.** Chosen — it commits autonomy and safety as invariants while being honest that the substrate must still be chosen or built.
 
 ## Decision
 
-The default operator path configures the node with a **public wallet address** — the address that rewards are paid to. The **node requires only that public address** and holds no key, and **the skill never needs or handles the private key to run a node.** Operating a node therefore carries no spending authority and no custody burden. Acquiring or handling a spend-capable key is a separate, explicit, gated step (the money line) — never a node-setup convenience.
+**Node operation is non-custodial by construction.** The node is given only a public reward address and holds no key; the skill never needs, handles, or instructs placing a private key to run a node.
 
-**Where the public wallet address comes from.** Three options — not a ranked ladder, and self-generation is never a default nor a reflex for when the others aren't available:
+**Reward-wallet sourcing is a neutral menu — not a ranked ladder and not a hard default.** The agent chooses from its remit, the user, and the available safe tooling:
 
-- **Supplied** — a human or principal provides an existing public wallet address (pasted in, or a designated wallet/provider address). Non-custodial.
-- **Provisioned** — for an autonomously-running agent, the address is provided at setup by whoever set the agent running. Non-custodial.
-- **Agent-created** — the agent generates its own reward wallet. This is custody, and it is **gated**: undertake it only where the conditions exist for the agent to create, secure (encrypted backup), and manage the key so that no funds are lost. The agent must **not** create a wallet merely because no supplied or provisioned address is available.
+- **Supplied** — a human/principal provides an existing public address (external custody).
+- **Provisioned** — whoever set the agent running provides the address at setup (external custody).
+- **Agent-created** — the agent provisions and manages its own reward wallet. This is a **first-class path for autonomous operation**, not an exceptional fallback. It is permitted only where it runs through a custody substrate that keeps key material out of the agent's context (properties below). "Agent-created" means substrate-created on the agent's behalf — **never LLM-created**.
 
-If none is safely available — no supplied or provisioned address, and the agent cannot properly custody a self-created wallet — the agent does **not** earn into an unsafe or unspendable address: it stops and escalates (or asks the human) rather than proceeding. In every case the node is given only the public address; what differs is who holds the key, and whether it can be held safely at all. The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there), so the holder can view and use the earned ANT.
+**Secrets out of the agent context is necessary but not sufficient.** Keeping the private key out of the LLM, prompts, and logs is required, but on its own it does not make custody safe. An agent-created wallet is permitted only where the substrate also provides:
+
+- key generation outside the agent context;
+- encryption at rest;
+- the key never printed, logged, committed, or returned to the agent;
+- a **declared recovery path at creation time** (human, designated custodian, encrypted backup + passphrase, recovery phrase shown once to a human, or platform-keychain backup);
+- a scoped spend/resource policy;
+- auditable spend requests;
+- signing confined to the substrate/wrapper/process boundary, with agent-facing output limited to public address, balance, transaction hash, and status.
+
+If those properties cannot be met, the wallet must be treated as **disposable/low-value** and is unsuitable for accumulating meaningful rewards — otherwise the agent stops and escalates.
+
+**Receive is autonomous; spend is under authority.** Running nodes and receiving rewards is fully autonomous regardless of sourcing. Spending or withdrawing ANT is gated by the **remit the operator granted** (envelopes), per ADR-0009 — not per-action human approval. Escalation is **risk-based, not literacy-based**: escalate on no safe custody substrate, a balance crossing a remit threshold, backup/verification failure, a spend beyond the granted envelope, or an explicit self-custody opt-in — never merely because no human supplied an address or "understands crypto."
+
+**Honest current-state boundary.** Because `ant` provides no wallet creation, keystore, or signing boundary today, **agent-owned spend authority is not yet enabled by existing tooling**. Operate-and-earn runs now on a public reward address (key-free). Agent-owned custody and autonomous spend are **first-class target capabilities** that require either a reviewed custody wrapper or upstream wallet support before they can be presented as safe or complete. Even then a residual remains: at spend time the key must materialise in the `ant` process environment — it can be kept out of the agent's context, not out of all process memory.
+
+**Where the custody substrate lives is an open team decision** — assumed host platform / signposted external tooling / a reviewed skill-provided wrapper / upstream `ant` wallet support / a staged combination. This ADR commits the invariants and required properties above; the substrate's home is escalated to the team and recorded later by amendment or a follow-on ADR. **Gas funding is a separate decision (ADR-0005):** a paymaster solves "no ETH for gas," not "who controls the key."
+
+The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there). Delivery sequencing across the capability ladder is owned by the roadmap, not this ADR.
 
 Invariants:
-- Node operation is non-custodial by default: the skill never needs or handles a private key to run a node, and never instructs putting one into node configuration.
-- The node is given only a public wallet address; receiving rewards never requires a private key.
-- "Operate autonomously, spend under authority": running and optimising nodes can be fully autonomous; spending earned ANT requires the key-holder.
-- Agent self-generation of the reward wallet is never the default, and never a reflex when a supplied/provisioned address is unavailable; it is permitted only where the agent can create, secure, and manage the key so funds are not lost — a hard gate, not a recommendation.
-- If no address can be sourced safely, the agent stops or escalates rather than earning into an unsafe or unspendable address.
-- For a human's pre-existing key, the skill offers best-practice securing guidance only and makes no claim about where it is stored.
+
+- **Node non-custodial (hard):** the skill never needs, handles, or instructs placing a private key for node operation; the node gets only a public address.
+- **Secrets out of context (hard):** no private key, seed, decrypted keystore, or signing token ever enters the agent's context, prompts, logs, or memory; the agent sees only public address / balance / tx hash / status.
+- **Necessary but not sufficient:** out-of-context handling does not by itself authorise agent-created custody; the substrate must also meet the required properties, including a declared recovery path at creation.
+- **Menu, not default:** supplied, provisioned, and agent-created are all valid; agent-created is first-class for an autonomous remit, never second-class or emergency-only — but no single path is a hard-coded universal default.
+- **Receive ≠ spend:** receiving is fully autonomous; spending/withdrawing is remit-gated (ADR-0009) with risk-based escalation.
+- **Honest tooling:** the skill never implies a custody substrate, keystore, or signing boundary that upstream does not provide.
+- For a human's pre-existing key, the skill offers best-practice guidance only and makes no claim about where it is stored.
 
 ## Consequences
 
 ### Positive
 
-- Autonomous node operation is safe; it matches the upstream design (the node has no signer), and the skill's claims stay within what it can actually control.
-- It prevents two failure modes: rewards earned into an inaccessible address, and an agent nudged into custody it cannot safely handle.
+- Preserves autonomy: a no-human agent can operate end-to-end within its remit, and own a wallet where a safe substrate exists.
+- Eliminates the worst failure mode (a raw key in the agent's reasoning context) as a hard invariant.
+- Prevents inaccessible rewards via the recovery-at-creation gate.
+- Honest about the gap, so the skill won't claim safety it can't deliver.
 
 ### Negative / Trade-offs
 
-- Spending earned ANT requires bringing in the key-holder — by design (the safety gate, not a defect).
+- Agent-owned spend is not available from existing tooling; it depends on a custody substrate that must be chosen/built (open team decision), or on upstream wallet support.
+- Even with a wrapper, the key materialises in the `ant` process environment at spend — out of the agent context, not out of all process memory.
+- More to specify and review (substrate properties, recovery, audit) before agent-owned spend ships.
 
 ### Neutral / Operational
 
-- Custody and key-securing guidance live in the money/wallet module for the cases where a spend-capable key is genuinely required.
+- The custody-substrate location is escalated as a team agenda item and tracked as an open decision (related to, but separate from, ADR-0005/gas).
+- Custody and key-securing guidance live in the wallet module for the cases that need it.
+- Sequencing of these capabilities is owned by the roadmap (capability ladder), not this ADR.
 
 ## Validation
 
-A clean-context agent runs a node configured with only a public wallet address and handles no private key; the live-network test uses a public wallet address for rewards. Review confirms: the skill never needs, handles, or instructs placing a private key for node operation; a self-generated reward wallet is configured only where key creation, securing, and management are in place; and when no address can be sourced safely the agent halts or escalates rather than configuring an unsafe or unspendable address.
+A clean-context agent runs a node configured with only a public address and handles no private key. For any agent-created wallet, review confirms: no key/seed/keystore/signing token ever appears in the agent's context, prompts, logs, or memory (only public address, balance, tx hash, status); a recovery path is declared at creation, else the wallet is marked disposable/low-value; spend happens only within a granted envelope, through the substrate boundary; and the agent escalates on the defined risk triggers, never on the absence of a human. The skill makes no claim of a keystore or signing boundary that upstream lacks. The live-network test uses a reward address sourced by each available path.
 
 ## Notes for AI-assisted work
 
-AI tools may help draft this ADR, but **must not mark it Accepted without human review**. Accepted ADRs are immutable: create a new superseding ADR rather than editing an Accepted ADR.
+AI tools may help draft this ADR, but **must not mark it Accepted without human review**. Accepted ADRs are immutable: create a new superseding ADR rather than editing an Accepted ADR. The custody-substrate location remains an open team decision, to be recorded by amendment or a follow-on ADR.
