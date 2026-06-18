@@ -1,6 +1,6 @@
 # autonomi-skill
 
-Source and formal project truth for the **Autonomi operator skill** — an auto-updating, agent-facing skill that teaches an AI agent to operate the Autonomi network: run and manage nodes, securely receive and custody the ANT they earn, and (routed onward) use that ANT to store data.
+Source and formal project truth for the **Autonomi operator skill** — an auto-updating, agent-facing skill that teaches an AI agent to operate the Autonomi network: run and manage nodes, receive rewards to a non-custodial public address, and route onward to wallet and data guidance for securing or spending the ANT they earn.
 
 This repository holds the formal artifacts: ADRs, design, specs, and — once authored — the skill package itself. Loose thinking, research, and planning live in the paired Obsidian vault project `Projects/Autonomi Skill`.
 
@@ -12,7 +12,7 @@ Phase 01 — design & de-risk. The skill itself is not yet authored. See `docs/a
 
 - `docs/adr/` — Architecture Decision Records (team-standard governance; see `docs/adr/README.md`).
 - `scripts/adr-governance.py` — ADR validation gate; CI workflow in `.github/workflows/`.
-- _(forthcoming)_ `docs/DESIGN.md`, a source-binding manifest, and the skill package.
+- `docs/DESIGN.md` — the design, realigned to the ADRs. _(Forthcoming: a source-binding manifest and the skill package.)_
 
 ## Governance
 

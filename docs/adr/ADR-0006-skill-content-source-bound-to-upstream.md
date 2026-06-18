@@ -39,6 +39,7 @@ Invariants:
 - Volatile facts are single-sourced and demarcated.
 - The mechanical-vs-judgement split is explicit in the structure.
 - Nothing is hand-asserted that cannot be traced to upstream.
+- Source bindings are **documentation provenance, not runtime pins** (see ADR-0009): the manifest separates `source_evidence` (proves a claim) from `tested_with` / `requires_min` / `known_incompatible` (which express tool compatibility). A source-evidence commit is never a runtime version requirement.
 - The automation pipeline is out of scope here; the regeneration-ready structure is mandatory.
 
 ## Consequences

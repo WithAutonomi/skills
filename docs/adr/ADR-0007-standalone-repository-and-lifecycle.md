@@ -47,7 +47,7 @@ Invariants:
 - The docs site is a pointer, not the source.
 - PR / merge / publish against any shared or upstream repo is a maintainer-approval gate.
 
-Open (not decided here): the GitHub organisation/home and the clean install URL — a David/maintainer decision. The repo starts local.
+Open (not decided here): the GitHub organisation/home and the clean install URL — a maintainer decision. The repo should be **org-owned before any public or official use**; it starts local/interim under a personal account for visibility. The lifecycle-coupling boundary that a separate repo must respect is specified in ADR-0009.
 
 ## Consequences
 
