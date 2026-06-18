@@ -100,6 +100,30 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 
 ---
 
+## Open team decisions
+
+> These gate later capability tiers and need a team call (not @pm/agent calls). The relevant ADR stays **Proposed** until its decision is made and recorded. This is the reference point for those discussions; the tier gates above point here.
+
+**Decision 1 — Agent wallet custody substrate** · *gates Tier 2 and Tier 3* · ADR-0004
+
+- **Question:** where do key generation, encrypted storage, recovery, and signing live for an agent-owned wallet? `ant` provides none of this today — spend takes a raw `SECRET_KEY` env var; no keygen, keystore, or signer.
+- **Required of any choice (ADR-0004):** key generated outside the agent context; encrypted at rest; never printed/logged/returned to the agent; a declared recovery path at creation; scoped spend policy; auditable; signing confined to the substrate boundary (agent sees only public address / balance / tx hash / status).
+- **Options:** assume the host platform provides it (secret manager / OS keychain); signpost external tooling only; a reviewed skill-provided wrapper (interim shim over `ant`'s env-var signing); upstream `ant` grows wallet create/import/export + keystore + signing boundary (the long-term home); or a staged combination.
+- **Residual to accept:** even with a wrapper, the key materialises in the `ant` process environment at spend — out of the agent context, not out of all process memory.
+
+**Decision 2 — Gas strategy** · *gates Tier 3* · ADR-0005
+
+- **Question:** how does an agent holding only earned ANT pay the native Arbitrum gas needed to spend it? No gasless path exists upstream.
+- **Options:** a small agent-controlled ETH float; a user/provider pre-funded gas envelope; an Autonomi faucet / onboarding grant; a paymaster / ERC-4337 path; an ANT-funded bundler/service; or defer storage-spend autonomy.
+- **Note:** separate from custody — a paymaster solves "no ETH for gas," not "who controls the key." Tier 3 needs both decisions.
+
+**Decision 3 — Autonomous ANT acquisition / currency access** · *future; relates to ADR-0005*
+
+- **Question:** beyond earning, how should an autonomous agent obtain more ANT (and the currency for it) when earnings fall short?
+- **Status:** backlog direction, not yet an owned decision — currently pointers only (see Future Phases). Surfaces once the spend/store tier is solid.
+
+---
+
 ## Future Phases (Backlog)
 
 <!-- Not yet planned in detail; carried as direction, not commitment. Each is a Phase-02 module/routing addition (ADR-0002), never a new install. -->
