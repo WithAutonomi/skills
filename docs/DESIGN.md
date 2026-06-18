@@ -1,6 +1,6 @@
 # Autonomi Operator Skill — Design
 
-> Canonical design, realigned to ADR-0001…0008. This supersedes the original pre-decision scaffold (which framed the work as a single "loop" and assumed a gas-abstraction path — both removed). Loose thinking lives in the vault (`Projects/Autonomi Skill`); this is the formal design. Volatile specifics (flags, constants, addresses, URLs) are **source-bound** to upstream per ADR-0006, not hardcoded here.
+> Canonical design, realigned to ADR-0001…0009. This supersedes the original pre-decision scaffold (which framed the work as a single "loop" and assumed a gas-abstraction path — both removed). Loose thinking lives in the vault (`Projects/Autonomi Skill`); this is the formal design. Volatile specifics (flags, constants, addresses, URLs) are **source-bound** to upstream per ADR-0006, not hardcoded here.
 
 ## 1. Purpose and shape
 
@@ -19,7 +19,7 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 ## 3. Modules (`references/`, loaded on demand)
 
 - `node-operation.md` — install, run one/many, configure, monitor, upgrade/stop. **(iteration-1 core)**
-- `wallet-and-ant.md` — the rewards address (non-custodial default + sourcing hierarchy, ADR-0004), EVM address on Arbitrum One (ANT is an ERC-20), checking balance, and securing a key *if one is held* (the fallback custody path). **(iteration-1)**
+- `wallet-and-ant.md` — the public wallet address for rewards (non-custodial default + the **menu** of sourcing options — supplied / provisioned / gated self-generation, ADR-0004), EVM address on Arbitrum One (ANT is an ERC-20), checking balance, and securing a key *only where the agent generates one* (the gated custody path). **(iteration-1)**
 - `using-ant-and-data.md` — how earned ANT is used to store/retrieve data on the real ANT + Arbitrum-gas path (ADR-0005); onward pointers; acquisition deferred (pointers only in v1). **(mental-model + pointers in v1)**
 - `operating-procedures.md` — good-citizen heuristics and the recommends / network-enforces / agent-judges boundary model.
 - `agent-autonomy-policy.md` — "operate autonomously, spend under authority": resource and spend envelopes, what needs human sign-off.
@@ -37,7 +37,7 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 
 ## 6. Install and secure delivery (skill-led distribution; ADR-0008)
 
-The skill is self-sufficient: installing it is all an agent needs. It installs the **existing** tools — the `ant` CLI (the node-management daemon is the `ant` binary in daemon mode; `ant-node` is fetched per node by the manager).
+The skill is self-sufficient: installing it is all an agent needs. It detects what is already present and installs the **existing** tools only when missing — the `ant` CLI (the node daemon is the same `ant` binary in daemon mode; `ant-node` is fetched per node) — mutating an existing setup only for a compatibility/security reason and within the agent's granted remit (per ADR-0009).
 
 - **Install paths, with fallbacks (x0x model):** install script (`install.sh` / `install.ps1`, which `ant-client` already ships) → direct release artifacts → build-from-source; plus a fallback source (e.g. raw GitHub) if the primary URL is unreachable.
 - **Verification:** confirm checksums and signatures *before use* and report the result to the agent — `ant-node` releases ship `SHA256SUMS` and ML-DSA-65 (FIPS-204) signatures. Plus the checks agents and distribution channels expect: declared behaviour matches actual, and a reviewed install script (ClawHub security scan).
@@ -46,7 +46,7 @@ The skill is self-sufficient: installing it is all an agent needs. It installs t
 
 ## 7. Rewards and custody (ADR-0004)
 
-Non-custodial by default: the node is given a **public rewards address** only and never holds spend-capable key material. Sourcing, in preference order: supplied by the human/principal → provisioned at setup → agent-generated fallback (record only the public address; the private key is never used to operate the node, so it is secured off the node host and resurfaces only, under authority, to spend). The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there) so the holder can view and use the earned ANT.
+Non-custodial by default: the node is given a **public wallet address** only and never holds spend-capable key material, and the skill never needs or handles the private key to run a node. Address sourcing is a **menu**, not a ranked ladder: **supplied** by the human/principal, **provisioned** at setup, or **agent-created** — where self-generation is gated (only where the agent can create, secure, and manage the key so no funds are lost) and never a default. If none is safely available, the agent stops/escalates rather than earning into an unspendable address. The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there) so the holder can view and use the earned ANT.
 
 ## 8. Spend and acquire (ADR-0005; neutral-menu principle)
 
@@ -79,4 +79,4 @@ Frontmatter: name, a triggering-tuned description, version, license, keywords. A
 
 ## Design History
 
-- **2026-Jun-17:** Rewritten and realigned to ADR-0001…0008, superseding the original pre-decision scaffold; removed the "loop" abstraction and all gas-abstraction framing; added install/secure-delivery, uninstall, licensing, and provenance.
+- **2026-Jun-17:** Rewritten and realigned to ADR-0001…0009, superseding the original pre-decision scaffold; removed the "loop" abstraction and all gas-abstraction framing; added install/secure-delivery, uninstall, licensing, and provenance; aligned to the address-sourcing menu (gated self-generation, no "fallback"/"node host" framing) and the remit-gated, non-mutating install.
