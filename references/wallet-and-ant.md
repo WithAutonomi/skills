@@ -9,7 +9,7 @@ A rewards address is a public EVM address used by `ant-node` to receive payments
 Use it like this:
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="0xb4CA36145C204d6629c33caB37796e78B4502b2A"
+PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS"
 ```
 
@@ -41,7 +41,7 @@ Therefore, the key-free balance check is on-chain and read-only.
 This calls ERC-20 `balanceOf(address)` against the Autonomi payment token on Arbitrum One using public JSON-RPC. It reads public chain state only.
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="0xb4CA36145C204d6629c33caB37796e78B4502b2A"
+PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
 ADDRESS_HEX="${PUBLIC_REWARDS_ADDRESS#0x}"
 ADDRESS_HEX="${ADDRESS_HEX#0X}"
 ADDRESS_HEX="$(printf '%s' "$ADDRESS_HEX" | tr '[:upper:]' '[:lower:]')"

@@ -66,13 +66,13 @@ Onward pointers only: wallet custody, signing, spending/withdrawing ANT, gas str
 
 ## Safe quick path
 
-Replace the address with the public rewards address supplied by the operator. Treat it as public.
+Replace the placeholder with the public rewards address supplied by the operator. Treat it as public.
 
 ```bash
 ant --version
 ant --help
 
-PUBLIC_REWARDS_ADDRESS="0x0000000000000000000000000000000000000000"
+PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS"
 ant node daemon start
 ant node start

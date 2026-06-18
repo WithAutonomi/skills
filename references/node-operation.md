@@ -56,7 +56,7 @@ Install notes:
 The rewards address must be an EVM-style address: `0x` plus 40 hex characters. It may be a human-supplied, provisioned, or safe-substrate-created public address. Tier 1 does not create wallets.
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="0xb4CA36145C204d6629c33caB37796e78B4502b2A"
+PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
 ```
 
 Do not paste or request any key, seed, keystore, or signing token.
