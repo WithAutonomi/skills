@@ -77,7 +77,7 @@ ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --node-port 12000-12001
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --metrics-port 13000-13001
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --data-dir-path /path/to/ant-node-data
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --log-dir-path /path/to/ant-node-logs
-ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --bootstrap 1.2.3.4:12000,5.6.7.8:12000
+ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --bootstrap <source-backed-bootstrap-peer-addr-1>,<source-backed-bootstrap-peer-addr-2>
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --upgrade-channel stable
 ```
 
