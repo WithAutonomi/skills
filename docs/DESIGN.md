@@ -18,9 +18,9 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 
 ## 3. Modules (`references/`, loaded on demand)
 
-- `node-operation.md` — install, run one/many, configure, monitor, upgrade/stop. **(iteration-1 core)**
-- `wallet-and-ant.md` — the public wallet address for rewards (non-custodial default + the **menu** of sourcing options — supplied / provisioned / gated self-generation, ADR-0004), EVM address on Arbitrum One (ANT is an ERC-20), checking balance, and securing a key *only where the agent generates one* (the gated custody path). **(iteration-1)**
-- `using-ant-and-data.md` — how earned ANT is used to store/retrieve data on the real ANT + Arbitrum-gas path (ADR-0005); onward pointers; acquisition deferred (pointers only in v1). **(mental-model + pointers in v1)**
+- `node-operation.md` — install, run one/many, configure, monitor, upgrade/stop. **(operate-and-earn)**
+- `wallet-and-ant.md` — the public wallet address for rewards (non-custodial default + the **menu** of sourcing options — supplied / provisioned / gated self-generation, ADR-0004), EVM address on Arbitrum One (ANT is an ERC-20), checking balance, and securing a key *only where the agent generates one* (the gated custody path). **(operate-and-earn → secure ANT)**
+- `using-ant-and-data.md` — how earned ANT is used to store/retrieve data on the real ANT + Arbitrum-gas path (ADR-0005); onward pointers; acquisition deferred (pointers only for now). **(spend / store tier — mental model + pointers until then)**
 - `operating-procedures.md` — good-citizen heuristics and the recommends / network-enforces / agent-judges boundary model.
 - `agent-autonomy-policy.md` — "operate autonomously, spend under authority": resource and spend envelopes, what needs human sign-off.
 - `troubleshooting.md`.
@@ -48,11 +48,11 @@ The skill is self-sufficient: installing it is all an agent needs. It detects wh
 
 Non-custodial by default: the node is given a **public wallet address** only and never holds spend-capable key material, and the skill never needs or handles the private key to run a node. Address sourcing is a **menu**, not a ranked ladder: **supplied** by the human/principal, **provisioned** at setup, or **agent-created** — where self-generation is gated (only where the agent can create, secure, and manage the key so no funds are lost) and never a default. If none is safely available, the agent stops/escalates rather than earning into an unspendable address. The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there) so the holder can view and use the earned ANT.
 
-_(Note: ADR-0004 is being revised per the team review — agent-created wallet becomes a first-class autonomous path with private keys kept out of the agent context; §3 and §7 will be re-synced when that lands.)_
+_(Note: ADR-0004 is being revised per the team review — agent-created wallet becomes a first-class autonomous path with private keys kept out of the agent context, secrets-out-of-context treated as necessary-but-not-sufficient, and a declared recovery path required at creation. The custody substrate itself is an open team decision. §3 and §7 will be re-synced when that lands.)_
 
 ## 8. Spend and acquire (ADR-0005; neutral-menu principle)
 
-Document the real, current path to store data — ANT (ERC-20) **plus** a little native Arbitrum gas (ETH); there is no gasless path upstream, and we invent none — and surface the gas barrier as a known limitation to escalate. Present a neutral menu of paths to ANT (earn / acquire / obtain) and the live means to assess sufficiency (balance, `ant file cost`), so the agent judges for its remit; never editorialise volatile economics. ANT **acquisition** content is deferred from iteration 1 (onward pointers in v1).
+Document the real, current path to store data — ANT (ERC-20) **plus** a little native Arbitrum gas (ETH); there is no gasless path upstream, and we invent none — and surface the gas barrier as a known limitation to escalate. Present a neutral menu of paths to ANT (earn / acquire / obtain) and the live means to assess sufficiency (balance, `ant file cost`), so the agent judges for its remit; never editorialise volatile economics. ANT **acquisition** is outside the operate-and-earn tier (onward pointers only for now).
 
 ## 9. Operating well — the boundary model
 
@@ -66,28 +66,30 @@ Every claim is **source-bound** to upstream (repo / file / symbol / commit) via 
 
 Frontmatter: name, a triggering-tuned description, version, license, keywords. An install manifest on x0x's `metadata.openclaw.install` pattern. Licensing to match upstream (likely MIT OR Apache-2.0 — TBC). Clear **provenance / "about"**: the team behind it, the upstream repos it synthesises, and links — so agents and distribution channels can see what's behind it.
 
-## 12. Progressive delivery — scope ladder and iteration-1
+## 12. Progressive delivery — capability ladder
 
-Delivery is **progressive** (per ADR-0002's expandable shape and ADR-0005's spend-is-a-frontier stance). The closed earn→store loop is *not* required for value — useful node operation ships first:
+The skill is built to expand (ADR-0002's modular, progressively-disclosed shape; ADR-0005's spend-is-a-frontier stance): useful node operation lands first, and further capability layers on without reworking the core. A closed earn→store loop is *not* required for value.
 
-- **v1 — operate and earn:** install/detect `ant`; create, accept, or provision a reward address under safe policy; run, manage, and monitor one or more nodes; track rewards and balances; clean uninstall / recovery guidance.
-- **v1.5 — secure and reason about ANT:** wallet policy; the agent-managed (secrets-out-of-context) wallet path; the user/provisioned wallet path; balance and gas visibility; "what can I do next?" guidance.
-- **v2 — spend/store loop:** a chosen gas strategy; upload/retrieve with ANT + gas (or a paymaster/funding route); the full autonomous earn→store workflow. Gated on the gas-strategy decision — ADR-0005, a known frontier requiring a team call.
+The ladder below is the **conceptual scope map** — what the capability tiers *are*:
 
-The skill is honest about the boundary: *it can operate nodes and help an agent earn; autonomous storage-spending depends on the gas/payment path (v2).*
+- **Operate and earn** — install/detect `ant`; accept or provision a public reward address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / recovery. (The skill neither creates nor holds a key at this tier.)
+- **Secure and reason about ANT** — wallet policy; the agent-managed (secrets-out-of-context) custody path and the user/provisioned path; balance and gas visibility; "what can I do next?" guidance.
+- **Spend / store loop** — a chosen gas strategy; upload/retrieve with ANT + gas (or a funding/paymaster route); the full autonomous earn→store workflow. Gated on the gas-strategy decision (ADR-0005) and the custody decision (ADR-0004).
 
-**Iteration-1 (= v1) scope:** opener → resource preflight → install (CLI + daemon, fallbacks, verification) → run one and several nodes (count/ports/distribution within diversity limits) → monitor health (status + events) → reward address (the menu of sourcing options) → track rewards/balances → clean uninstall → onward pointers for the later ladder (securing/spending ANT, data). No new tooling.
+> **Sequencing lives in roadmap planning, not here.** What each iteration contains, the order, and the definition of done are owned by `planning/ROADMAP.md` (formalised by @pm). DESIGN holds the *concept*; the roadmap holds the *plan*. ADR-0004/0005 nod to this ladder but do not fix the sequence.
 
-**Definition of done:** a clean-context agent, given only the installed skill, runs and monitors a healthy node (one and several) on the **live network**, configures a reward address, can check balances, and cleanly uninstalls — without inventing commands.
+The skill stays honest about the boundary at every tier: *it can operate nodes and help an agent earn; autonomous storage-spending depends on the gas/payment path and the custody decision.*
 
 ## 13. Open questions (carried; mostly David/maintainer)
 
 - GitHub home/org and clean install URL; published skill name; version-manifest hosting URL.
-- Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David.
+- Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
+- Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
 - Upstream watch-set and "material change" policy (for the deferred automation).
 - Pin volatile constants or fetch-live (e.g. the close-group size — read as both 5 and 7; resolve before authoring).
 
 ## Design History
 
 - **2026-Jun-17:** Rewritten and realigned to ADR-0001…0009, superseding the original pre-decision scaffold; removed the "loop" abstraction and all gas-abstraction framing; added install/secure-delivery, uninstall, licensing, and provenance; aligned to the address-sourcing menu (gated self-generation, no "fallback"/"node host" framing) and the remit-gated, non-mutating install.
-- **2026-Jun-18:** Refinement round from team review — added the v1/v1.5/v2 scope ladder (ADR-0005 as a v2 frontier, not a v1 blocker); x0x reframed as precedent not dependency; cross-repo freshness contract noted (ADR-0006).
+- **2026-Jun-18:** Refinement round from team review — added the capability ladder (ADR-0005 as a frontier, not a blocker for node operation); x0x reframed as precedent not dependency; cross-repo freshness contract noted (ADR-0006).
+- **2026-Jun-18 (later):** De-versioned the delivery framing — DESIGN keeps the capability ladder as a *concept*; the iteration sequencing, scope, and definition of done move to roadmap planning (`planning/ROADMAP.md`), nodded to from ADR-0004/0005. Module tags now name capability tiers rather than iteration numbers. Added the agent-wallet-custody substrate as an open team decision.

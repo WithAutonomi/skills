@@ -28,7 +28,7 @@ David's brief flags that agents cannot easily acquire ETH for gas. ANT is an ERC
 
 The skill **documents the real, current spend-to-store path** (ANT as an ERC-20 plus native Arbitrum gas, via existing tooling) and **neither invents nor depends on** gasless/account-abstraction mechanisms. The gas barrier is recorded as a known upstream limitation and escalated as a product decision — not solved in-skill.
 
-This is a **known product frontier, not a v1 blocker.** The autonomous earn→store loop stays blocked until a gas strategy is chosen — a team decision that needs a dedicated call. The skill ships **v1 (operate and earn) regardless**; closing the loop is **v2** (see the scope ladder in DESIGN). This ADR therefore remains **Proposed** pending that gas-strategy decision, and the skill is honest with the agent: it can operate nodes and help it earn, but autonomous storage-spending depends on the gas/payment path.
+This is a **known product frontier, not a blocker for useful node operation.** The autonomous earn→store loop stays blocked until a gas strategy is chosen — a team decision that needs a dedicated call. Useful node operation does **not** depend on that decision and proceeds independently of it; the progressive scope toward the closed loop is described conceptually in DESIGN and **sequenced in roadmap planning**, not fixed in this ADR. This ADR therefore remains **Proposed** pending the gas-strategy decision, and the skill stays honest with the agent: it can operate nodes and help it earn, but autonomous storage-spending depends on the gas/payment path.
 
 Invariants:
 - No invented or assumed mechanisms; all spend content reflects verified upstream reality.
