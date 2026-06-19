@@ -11,7 +11,7 @@ It is an **operator skill** — about *doing and using*, not *building* — deli
 ## Goals
 
 1. Give an agent everything it needs to **decide to run, and successfully run and manage one or more Autonomi nodes** — the why, a resource-fit check, the exact commands, multi-node operation, health monitoring, and good-citizen operating procedures.
-2. Teach the agent to **receive and handle the ANT it earns** — node operation is non-custodial by construction (the node holds no key); reward-address sourcing is a neutral menu (supplied / provisioned / agent-created), with agent-created first-class for autonomous use via an out-of-context custody substrate (the private key never enters the agent context; a recovery path declared at creation); plus how earning works and how to check the balance.
+2. Teach the agent to **receive and handle the ANT it earns** — node operation is non-custodial by construction (the node holds no key); wallet-address sourcing is a neutral menu (supplied / provisioned / agent-created), with agent-created first-class for autonomous use via an out-of-context custody substrate (the private key never enters the agent context; a recovery path declared at creation); plus how earning works and how to check the balance.
 3. Document, honestly, **how earned ANT is used to store data** on the real, current payment path (ANT plus native gas) — without inventing or assuming a gas-abstraction mechanism that does not exist upstream; surface the gas constraint as a known limitation and route to live docs for spend depth.
 4. Be **expandable toward whole-network use** — using ANT, acquiring more when short, storing and retrieving data — through progressive disclosure by task routing, not through extra installs.
 5. **Stay current automatically** — content derived from and source-bound to upstream, with an in-skill version self-check, structured so a future upstream-sweep can regenerate it.
@@ -28,7 +28,7 @@ It is an **operator skill** — about *doing and using*, not *building* — deli
 
 ## Success Criteria
 
-- **First pass:** a fresh agent, given only this skill, can explain why to run a node, check machine fit, install and run one and several nodes on the **live network**, monitor health, configure a non-custodial rewards address, and check and secure earnings — without inventing commands — with clear onward pointers for using ANT (storing data) and acquiring more.
+- **First pass:** a fresh agent, given only this skill, can explain why to run a node, check machine fit, install and run one and several nodes on the **live network**, monitor health, configure a non-custodial public wallet address, and check and secure earnings — without inventing commands — with clear onward pointers for using ANT (storing data) and acquiring more.
 - The skill grows by adding modules and routing, not new installs.
 - Installed copies self-report staleness; content traces to upstream sources.
 - Passes the security scan; structure and quality on par with the x0x skill.

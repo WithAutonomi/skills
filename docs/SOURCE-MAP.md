@@ -7,7 +7,7 @@
 ## Primary operator sources — bind here
 
 ### `ant-node` (Rust) — the node binary
-- **Reward address (non-custodial):** `--rewards-address`; `src/payment/wallet.rs` — node holds no key, only verifies inbound payments name the address.
+- **Public wallet address (non-custodial):** `--rewards-address`; `src/payment/wallet.rs` — node holds no key, only verifies inbound payments name the address.
 - **Node flags / behaviour:** `src/bin/ant-node/cli.rs` *(confirm exact path against the repo)*.
 - **Releases:** ML-DSA-65 (FIPS-204) signatures + `SHA256SUMS` — verify before use.
 - **Operating-procedure constants (later tiers):** IP/subnet diversity limits; storage auto-scales (no fixed per-node ceiling); close-group size (**read as both 5 and 7 — resolve against code before authoring runbooks**).

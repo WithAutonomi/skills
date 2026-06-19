@@ -71,7 +71,7 @@ PR / upstream action gate:
 
 ## Recommended next step
 
-Execute `planning/packets/PACKET-tier1-operate-and-earn.md` as the **Implementer** slice (OpenCode, feature branch): author `SKILL.md` + the Tier-1 modules + templates + install manifest, resolve the spec's four open questions from source, self-test on the live network with a public reward address only. Then run the **gauntlet** (fresh-agent clean-context test on the live network + adversarial review), write a follow-up checkpoint, and surface to Jim at the PR/transfer/publish gates. Do not touch Tier 2/3.
+Execute `planning/packets/PACKET-tier1-operate-and-earn.md` as the **Implementer** slice (OpenCode, feature branch): author `SKILL.md` + the Tier-1 modules + templates + install manifest, resolve the spec's four open questions from source, self-test on the live network with a public wallet address only. Then run the **gauntlet** (fresh-agent clean-context test on the live network + adversarial review), write a follow-up checkpoint, and surface to Jim at the PR/transfer/publish gates. Do not touch Tier 2/3.
 
 ## Handoff note
 

@@ -1,6 +1,6 @@
 # autonomi-skill
 
-Source and formal project truth for the **Autonomi operator skill** — an auto-updating, agent-facing skill that teaches an AI agent to operate the Autonomi network: run and manage nodes, receive rewards to a non-custodial public address, and route onward to wallet and data guidance for securing or spending the ANT they earn.
+Source and formal project truth for the **Autonomi operator skill** — an auto-updating, agent-facing skill that teaches an AI agent to operate the Autonomi network: run and manage nodes, receive rewards to a non-custodial public wallet address, and route onward to wallet and data guidance for securing or spending the ANT they earn.
 
 This repository holds the formal artifacts: the vision, design, decisions (ADRs), feature priorities, the roadmap, and — once authored — the skill package itself. Loose thinking, research, and planning notes live in the paired Obsidian vault project `Projects/Autonomi Skill`.
 

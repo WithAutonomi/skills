@@ -6,7 +6,7 @@
 - [ ] Resource-fit preflight the agent can run (disk, bandwidth, uptime, ports, OS/arch)
 - [ ] Install and run one or more nodes, referencing upstream binaries, per platform
 - [ ] Verify and monitor node health and earnings
-- [ ] Receive rewards to a non-custodial public address (the node holds no key) and check balance
+- [ ] Receive rewards to a non-custodial public wallet address (the node holds no key) and check balance
 - [ ] Channel-independent version self-check (manifest on an Autonomi-controlled URL)
 
 ## Should Have (V1)
