@@ -15,7 +15,7 @@ Current source of truth: **the repo** — `docs/DESIGN.md`, `docs/adr/ADR-0001�
 
 ## Goal
 
-Author the **Tier-1 (operate-and-earn) first pass** of the skill, built on the **existing** `ant` CLI + node daemon, source-bound throughout, so that a clean-context agent — given only the installed skill — can install/detect `ant`, configure a **public** reward address, run/manage one or more nodes on the **live network**, monitor health, check earned rewards for that public address, and cleanly stop/uninstall — **without seeing or handling any private key**. Resolve the four open questions in the spec by checking upstream source, not by inventing.
+Author the **Tier-1 (operate-and-earn) first pass** of the skill, built on the **existing** `ant` CLI + node daemon, source-bound throughout, so that a clean-context agent — given only the installed skill — can install/detect `ant`, configure a **public wallet address**, run/manage one or more nodes on the **live network**, monitor health, check earned rewards for that public address, and cleanly stop/uninstall — **without seeing or handling any private key**. Resolve the four open questions in the spec by checking upstream source, not by inventing.
 
 ## Read first
 

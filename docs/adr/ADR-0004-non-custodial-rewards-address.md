@@ -34,13 +34,13 @@ David's steer is that forcing ordinary users to supply or understand a crypto wa
 
 ## Decision
 
-**Node operation is non-custodial by construction.** The node is given only a public reward address and holds no key; the skill never needs, handles, or instructs placing a private key to run a node.
+**Node operation is non-custodial by construction.** The node is given only a public wallet address (where rewards are paid) and holds no key; the skill never needs, handles, or instructs placing a private key to run a node.
 
-**Reward-wallet sourcing is a neutral menu — not a ranked ladder and not a hard default.** The agent chooses from its remit, the user, and the available safe tooling:
+**Sourcing the public wallet address is a neutral menu — not a ranked ladder and not a hard default.** The agent chooses from its remit, the user, and the available safe tooling:
 
-- **Supplied** — a human/principal provides an existing public address (external custody).
+- **Supplied** — a human/principal provides an existing public wallet address (external custody).
 - **Provisioned** — whoever set the agent running provides the address at setup (external custody).
-- **Agent-created** — the agent provisions and manages its own reward wallet. This is a **first-class path for autonomous operation**, not an exceptional fallback. It is permitted only where it runs through a custody substrate that keeps key material out of the agent's context (properties below). "Agent-created" means substrate-created on the agent's behalf — **never LLM-created**.
+- **Agent-created** — the agent provisions and manages its own wallet. This is a **first-class path for autonomous operation**, not an exceptional fallback. It is permitted only where it runs through a custody substrate that keeps key material out of the agent's context (properties below). "Agent-created" means substrate-created on the agent's behalf — **never LLM-created**.
 
 **Secrets out of the agent context is necessary but not sufficient.** Keeping the private key out of the LLM, prompts, and logs is required, but on its own it does not make custody safe. An agent-created wallet is permitted only where the substrate also provides:
 
@@ -56,7 +56,7 @@ If those properties cannot be met, the wallet must be treated as **disposable/lo
 
 **Receive is autonomous; spend is under authority.** Running nodes and receiving rewards is fully autonomous regardless of sourcing. Spending or withdrawing ANT is gated by the **remit the operator granted** (envelopes), per ADR-0009 — not per-action human approval. Escalation is **risk-based, not literacy-based**: escalate on no safe custody substrate, a balance crossing a remit threshold, backup/verification failure, a spend beyond the granted envelope, or an explicit self-custody opt-in — never merely because no human supplied an address or "understands crypto."
 
-**Honest current-state boundary.** No existing path provides wallet creation, an encrypted keystore, recovery, or a signing policy, so **agent-owned spend authority is not yet enabled by existing tooling**. Operate-and-earn runs now on a public reward address (key-free). `antd`'s external-signer mode is a useful headless *seam* a custody substrate could plug into, but it is not custody — the substrate still has to exist somewhere else (a reviewed wrapper or upstream wallet support). Agent-owned custody and autonomous spend are **first-class target capabilities** gated on that. A residual remains regardless: at spend time the key must materialise in some signing process's environment — it can be kept out of the agent's context, not out of all process memory.
+**Honest current-state boundary.** No existing path provides wallet creation, an encrypted keystore, recovery, or a signing policy, so **agent-owned spend authority is not yet enabled by existing tooling**. Operate-and-earn runs now on a public wallet address (key-free). `antd`'s external-signer mode is a useful headless *seam* a custody substrate could plug into, but it is not custody — the substrate still has to exist somewhere else (a reviewed wrapper or upstream wallet support). Agent-owned custody and autonomous spend are **first-class target capabilities** gated on that. A residual remains regardless: at spend time the key must materialise in some signing process's environment — it can be kept out of the agent's context, not out of all process memory.
 
 **Where the custody substrate lives is an open team decision** — assumed host platform / signposted external tooling / a reviewed skill-provided wrapper / upstream `ant` wallet support / a staged combination. This ADR commits the invariants and required properties above; the substrate's home is escalated to the team and recorded later by amendment or a follow-on ADR. **Gas funding is a separate decision (ADR-0005):** a paymaster solves "no ETH for gas," not "who controls the key."
 
@@ -95,7 +95,7 @@ Invariants:
 
 ## Validation
 
-A clean-context agent runs a node configured with only a public address and handles no private key. For any agent-created wallet, review confirms: no key/seed/keystore/signing token ever appears in the agent's context, prompts, logs, or memory (only public address, balance, tx hash, status); a recovery path is declared at creation, else the wallet is marked disposable/low-value; spend happens only within a granted envelope, through the substrate boundary; and the agent escalates on the defined risk triggers, never on the absence of a human. The skill makes no claim of a keystore or signing boundary that upstream lacks. The live-network test uses a reward address sourced by each available path.
+A clean-context agent runs a node configured with only a public wallet address and handles no private key. For any agent-created wallet, review confirms: no key/seed/keystore/signing token ever appears in the agent's context, prompts, logs, or memory (only public address, balance, tx hash, status); a recovery path is declared at creation, else the wallet is marked disposable/low-value; spend happens only within a granted envelope, through the substrate boundary; and the agent escalates on the defined risk triggers, never on the absence of a human. The skill makes no claim of a keystore or signing boundary that upstream lacks. The live-network test uses a public wallet address sourced by each available path.
 
 ## Notes for AI-assisted work
 

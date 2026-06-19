@@ -20,7 +20,7 @@
 - [x] Standalone repo created with portfolio ADR governance (template, `.adr-kit.yaml`, governance script, CI gate) — ADR-0001.
 - [x] Scope and shape fixed: one holistic, internally-modular, progressively-disclosed operator skill (use, not build), x0x as precedent — ADR-0002, ADR-0008.
 - [x] Operator scope, boundary, and interface stance set: existing `ant` CLI + node-management daemon, no new tooling, build frontier routes to the Developer skill — ADR-0003.
-- [x] Non-custodial node operation committed; reward-address sourcing as a neutral menu (supplied / provisioned / agent-created); agent-created first-class for autonomous use via an out-of-context custody substrate (never LLM-created), secrets-out-of-context necessary-but-not-sufficient, declared recovery path at creation — ADR-0004.
+- [x] Non-custodial node operation committed; wallet-address sourcing as a neutral menu (supplied / provisioned / agent-created); agent-created first-class for autonomous use via an out-of-context custody substrate (never LLM-created), secrets-out-of-context necessary-but-not-sufficient, declared recovery path at creation — ADR-0004.
 - [x] Spend-to-store understood and escalated: real path is ANT + native Arbitrum gas; **no upstream gasless path exists**; gas is a team strategy call, not an in-skill invention — ADR-0005.
 - [x] Source-binding decided: every claim source-bound to upstream, volatile facts single-sourced, mechanically-derived vs judgement-derived split, plus the cross-repo freshness contract — ADR-0006.
 - [x] Repo home and lifecycle decided: standalone repo, org-owned before public; independent lifecycle, no lockstep between skill / `ant` / `ant-node`; source bindings are provenance, not runtime pins — ADR-0007, ADR-0009.
@@ -53,10 +53,10 @@
 
 *Tier 1 — Operate and earn (authored first; unblocked now):*
 - [ ] `node-operation.md`: install, run one/many, configure, monitor (`ant node status`, daemon `/api/v1/events` SSE), upgrade/stop, clean uninstall.
-- [ ] `wallet-and-ant.md` (receive side): the public reward address (non-custodial by construction), checking balance; the sourcing menu present with agent-created framed first-class but its substrate gated to Tier 2 — ADR-0004.
+- [ ] `wallet-and-ant.md` (receive side): the public wallet address (non-custodial by construction), checking balance; the sourcing menu present with agent-created framed first-class but its substrate gated to Tier 2 — ADR-0004.
 - [ ] `operating-procedures.md` + `troubleshooting.md`: the network-enforces / skill-recommends / agent-judges boundary model; good-citizen heuristics.
 - [ ] Templates: `node-preflight-checklist`, `node-health-report`, `human-authority-request`.
-- [ ] **Tier-1 verification gauntlet:** evidence captured; a fresh clean-context agent completes the node-operate-and-earn journey on the **live network** from a single install with only a public address (no key handled); a fresh adversarial review; blockers resolved or accepted by the maintainer — ADR-0002, ADR-0008.
+- [ ] **Tier-1 verification gauntlet:** evidence captured; a fresh clean-context agent completes the node-operate-and-earn journey on the **live network** from a single install with only a public wallet address (no key handled); a fresh adversarial review; blockers resolved or accepted by the maintainer — ADR-0002, ADR-0008.
 
 *Tier 2 — Secure and reason about ANT (gated on the custody decision, ADR-0004):*
 - [ ] `wallet-and-ant.md` (custody side): the chosen custody substrate's create/store/recover/sign path with secrets out of context; the supplied/provisioned path; balance and gas visibility; "what can I do next?" guidance.
@@ -92,7 +92,7 @@
 
 What the skill *does*, per release tier — the conceptual scope map from DESIGN §12. Phase 02 authors these in order; the **sequencing and definition of done live here, not in the ADRs** (ADR-0004/0005 nod to the ladder but do not fix it). A closed earn→store loop is **not** required for value — useful node operation lands first.
 
-- [ ] **Tier 1 — Operate and earn.** Install/detect `ant`; accept or provision a public reward address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / node-state recovery. The skill neither creates nor holds a key at this tier. *(Unblocked now.)*
+- [ ] **Tier 1 — Operate and earn.** Install/detect `ant`; accept or provision a public wallet address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / node-state recovery. The skill neither creates nor holds a key at this tier. *(Unblocked now.)*
 - [ ] **Tier 2 — Secure and reason about ANT.** Wallet policy; the agent-managed (secrets-out-of-context) custody path and the user/provisioned path; balance and gas visibility; "what can I do next?" guidance. *(Gated on the custody-substrate decision — ADR-0004.)*
 - [ ] **Tier 3 — Spend / store loop.** A chosen gas strategy; upload/retrieve with ANT + gas (or a funding/paymaster route); the full autonomous earn→store workflow. *(Gated on the gas-strategy decision — ADR-0005 — and the custody decision — ADR-0004.)*
 
