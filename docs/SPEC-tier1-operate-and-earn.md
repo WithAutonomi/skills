@@ -4,13 +4,13 @@
 
 ## Scope
 
-**In:** the operate-and-earn journey — explain why; preflight machine fit; install/detect `ant` (verified); configure a **public** reward address; add/run one and several nodes on the live network; monitor health; check earned rewards for that public address; stop and cleanly uninstall/reset. Good-citizen operating heuristics. Onward pointers to the later (gated) tiers.
+**In:** the operate-and-earn journey — explain why; preflight machine fit; install/detect `ant` (verified); configure a **public wallet address**; add/run one and several nodes on the live network; monitor health; check earned rewards for that public address; stop and cleanly uninstall/reset. Good-citizen operating heuristics. Onward pointers to the later (gated) tiers.
 
 **Out (explicitly):** agent-owned custody wrappers; key generation/storage/signing; spending or withdrawing ANT; gas / paymaster; ANT acquisition; user-facing data upload/retrieve as a goal (a public download is used only as an install smoke-test). These are Tier 2/3, gated on the open team decisions.
 
 ## Acceptance bar (definition of done)
 
-> A clean-context agent, given only the installed skill, can install/detect `ant`, configure a public rewards address, run/manage one or more nodes on the live network, monitor health, check rewards/balance, and cleanly stop/uninstall — **without seeing or handling any private key.**
+> A clean-context agent, given only the installed skill, can install/detect `ant`, configure a public wallet address, run/manage one or more nodes on the live network, monitor health, check rewards/balance, and cleanly stop/uninstall — **without seeing or handling any private key.**
 
 ## Safety invariants (Tier 1)
 
@@ -39,7 +39,7 @@
 - `SKILL.md` — lean, routing-first entry (opener · task routing · core concepts · safety boundaries · routing table), Tier-1 scoped, onward pointers to later tiers; frontmatter (name, triggering-tuned description, version, license, keywords).
 - Install manifest on x0x's `metadata.openclaw.install` pattern — installs the existing `ant`, verifies signatures/checksums; documents clean uninstall.
 - `references/node-operation.md` — install → preflight → add → start → status/monitor → stop → reset/uninstall.
-- `references/wallet-and-ant.md` (receive side) — what a reward address is; non-custodial by construction; the sourcing menu (supplied / provisioned / agent-created, the latter first-class but its substrate gated to Tier 2); how to check the reward balance **without a private key**.
+- `references/wallet-and-ant.md` (receive side) — what a public wallet address is; non-custodial by construction; the sourcing menu (supplied / provisioned / agent-created, the latter first-class but its substrate gated to Tier 2); how to check the reward balance **without a private key**.
 - `references/operating-procedures.md` — good-citizen heuristics + the network-enforces / skill-recommends / agent-judges boundary model.
 - `references/troubleshooting.md`.
 - `templates/` — `node-preflight-checklist`, `node-health-report`, `human-authority-request`.
@@ -62,5 +62,5 @@
 - Command surface: ant-client `ant-cli/src/cli.rs`; dev-docs `docs/cli/command-reference.md` & `use-the-cli.md` (header: ant-client commit `84332e2d`, verified 2026-06-10).
 - Install: ant-client `install.sh` / `install.ps1`.
 - Verification: `ant-node` releases `SHA256SUMS` + ML-DSA-65 (FIPS-204).
-- Reward address (non-custodial): ant-node `--rewards-address`, `src/payment/wallet.rs`.
+- Public wallet address (non-custodial): ant-node `--rewards-address`, `src/payment/wallet.rs`.
 - Health: `ant node status`; daemon `/api/v1/events` SSE; `--metrics-port` exists but no `/metrics` endpoint is served — do not scrape it.

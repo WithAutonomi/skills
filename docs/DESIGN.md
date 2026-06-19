@@ -12,14 +12,14 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 
 1. **Opener** — what Autonomi is, what it's for, and why run a node (David's brief). Accurate and source-bound, neutral on economics, cooperative framing, written to the agent as operator.
 2. **Task routing** — "what are you trying to do?": run a node · receive & secure ANT · use ANT to store data · operate autonomously. Routes to modules; embodies the neutral-menu principle (inform the agent's judgement, don't make the decision).
-3. **Core concepts** — brief: nodes, ANT, the rewards address, gas, data, human/agent authority.
+3. **Core concepts** — brief: nodes, ANT, the public wallet address, gas, data, human/agent authority.
 4. **Safety boundaries** — non-custodial default, irreversibility, the money line, never put a key on a node or in the repo.
 5. **Routing table** — which reference/runbook for which task, and onward pointers (Developer skill, live docs, repos).
 
 ## 3. Modules (`references/`, loaded on demand)
 
 - `node-operation.md` — install, run one/many, configure, monitor, upgrade/stop. **(operate-and-earn)**
-- `wallet-and-ant.md` — the public reward address (node non-custodial by construction) and the **menu** of sourcing options (supplied / provisioned / agent-created), with **agent-created first-class** for autonomous use via an out-of-context custody substrate — never LLM-created (ADR-0004); EVM address on Arbitrum One (ANT is an ERC-20); checking balance; and custody/recovery only where the agent owns a wallet (secrets out of context; declared recovery at creation). **(operate-and-earn → secure ANT)**
+- `wallet-and-ant.md` — the public wallet address (node non-custodial by construction) and the **menu** of sourcing options (supplied / provisioned / agent-created), with **agent-created first-class** for autonomous use via an out-of-context custody substrate — never LLM-created (ADR-0004); EVM address on Arbitrum One (ANT is an ERC-20); checking balance; and custody/recovery only where the agent owns a wallet (secrets out of context; declared recovery at creation). **(operate-and-earn → secure ANT)**
 - `using-ant-and-data.md` — how earned ANT is used to store/retrieve data on the real ANT + Arbitrum-gas path (ADR-0005); onward pointers; acquisition deferred (pointers only for now). **(spend / store tier — mental model + pointers until then)**
 - `operating-procedures.md` — good-citizen heuristics and the recommends / network-enforces / agent-judges boundary model.
 - `agent-autonomy-policy.md` — "operate autonomously, spend under authority": resource and spend envelopes, what needs human sign-off.
@@ -46,7 +46,7 @@ The skill is self-sufficient: installing it is all an agent needs. It detects wh
 
 ## 7. Rewards and custody (ADR-0004)
 
-Node operation is **non-custodial by construction**: the node is given a **public reward address** only, holds no key, and the skill never needs or handles a private key to run a node. Reward-wallet sourcing is a **neutral menu** — not a ranked ladder and not a hard default: **supplied**, **provisioned**, or **agent-created**. Agent-created is **first-class for autonomous use**, but is substrate-created on the agent's behalf — **never LLM-created**: keeping the key out of the agent context is *necessary but not sufficient*, so it is permitted only through a custody substrate that also provides encryption at rest, a **declared recovery path at creation**, a scoped spend policy, auditability, and signing confined to the substrate boundary (the agent sees only public address / balance / tx hash / status). Receiving is fully autonomous; spending is remit-gated (ADR-0009) with risk-based escalation. Because the stack provides no wallet creation, encrypted keystore, recovery, or signing policy today, agent-owned spend is a **target capability gated on an open team decision** about where the custody substrate lives (assumed-host / signposted / skill-provided wrapper / upstream `ant` / staged); operate-and-earn runs now on a public address. (`antd` does expose a headless external-signer seam — `prepare`/`finalize`, the key never enters the daemon — that a substrate could plug into, but it is not itself custody.) The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there).
+Node operation is **non-custodial by construction**: the node is given a **public wallet address** only, holds no key, and the skill never needs or handles a private key to run a node. Sourcing the public wallet address is a **neutral menu** — not a ranked ladder and not a hard default: **supplied**, **provisioned**, or **agent-created**. Agent-created is **first-class for autonomous use**, but is substrate-created on the agent's behalf — **never LLM-created**: keeping the key out of the agent context is *necessary but not sufficient*, so it is permitted only through a custody substrate that also provides encryption at rest, a **declared recovery path at creation**, a scoped spend policy, auditability, and signing confined to the substrate boundary (the agent sees only public address / balance / tx hash / status). Receiving is fully autonomous; spending is remit-gated (ADR-0009) with risk-based escalation. Because the stack provides no wallet creation, encrypted keystore, recovery, or signing policy today, agent-owned spend is a **target capability gated on an open team decision** about where the custody substrate lives (assumed-host / signposted / skill-provided wrapper / upstream `ant` / staged); operate-and-earn runs now on a public wallet address. (`antd` does expose a headless external-signer seam — `prepare`/`finalize`, the key never enters the daemon — that a substrate could plug into, but it is not itself custody.) The address must be a valid EVM address usable on **Arbitrum One** (ANT is an ERC-20 there).
 
 ## 8. Spend and acquire (ADR-0005; neutral-menu principle)
 
@@ -70,7 +70,7 @@ The skill is built to expand (ADR-0002's modular, progressively-disclosed shape;
 
 The ladder below is the **conceptual scope map** — what the capability tiers *are*:
 
-- **Operate and earn** — install/detect `ant`; accept or provision a public reward address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / node-state recovery. (The skill neither creates nor holds a key at this tier.)
+- **Operate and earn** — install/detect `ant`; accept or provision a public wallet address under safe policy; run, manage, and monitor nodes; track rewards and balances; clean uninstall / node-state recovery. (The skill neither creates nor holds a key at this tier.)
 - **Secure and reason about ANT** — wallet policy; the agent-managed (secrets-out-of-context) custody path and the user/provisioned path; balance and gas visibility; "what can I do next?" guidance.
 - **Spend / store loop** — a chosen gas strategy; upload/retrieve with ANT + gas (or a funding/paymaster route); the full autonomous earn→store workflow. Gated on the gas-strategy decision (ADR-0005) and the custody decision (ADR-0004).
 
@@ -83,7 +83,7 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 - GitHub home/org and clean install URL; published skill name; version-manifest hosting URL.
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
 - Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
-- Upstream watch-set and "material change" policy (for the deferred automation), including the `antd` external-signer surface.
+- Upstream watch-set and "material change" policy (for the deferred automation).
 - Pin volatile constants or fetch-live (e.g. the close-group size — read as both 5 and 7; resolve before authoring).
 
 ## Design History
@@ -92,4 +92,4 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 - **2026-Jun-18:** Refinement round from team review — added the capability ladder (ADR-0005 as a frontier, not a blocker for node operation); x0x reframed as precedent not dependency; cross-repo freshness contract noted (ADR-0006).
 - **2026-Jun-18 (later):** De-versioned the delivery framing — DESIGN keeps the capability ladder as a *concept*; the iteration sequencing, scope, and definition of done move to roadmap planning (`planning/ROADMAP.md`), nodded to from ADR-0004/0005. Module tags now name capability tiers rather than iteration numbers. Added the agent-wallet-custody substrate as an open team decision.
 - **2026-Jun-18 (ADR-0004 applied):** ADR-0004 reframed — agent-created wallet first-class for autonomous use via an out-of-context custody substrate (never LLM-created); secrets-out-of-context necessary-but-not-sufficient; recovery-path-at-creation; honest that `ant` has no custody tooling today (substrate location an open team decision). §3 and §7 re-synced; the "being revised" note removed.
-- **2026-Jun-18 (source-accuracy fixes, Hermes review):** recorded `antd`'s external-signer prepare/finalize mode as a headless seam (not custody) in §7 and ADR-0004; softened the ADR-0005 permit claim; "clean uninstall / node-state recovery" in the ladder to avoid implying wallet recovery at the key-free tier.
+- **2026-Jun-18 (terminology):** standardized prose on "public wallet address" (the public wallet address where rewards are paid), replacing "reward(s) address"; the literal `--rewards-address` flag and "rewards" (earnings) are unchanged.
