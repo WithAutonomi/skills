@@ -16,6 +16,8 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 4. **Safety boundaries** — non-custodial default, irreversibility, the money line, never put a key on a node or in the repo.
 5. **Routing table** — which reference/runbook for which task, and onward pointers (Developer skill, live docs, repos).
 
+> Human-facing output follows the interaction model and plain-language register in §13 (ADR-0010): the agent does the work and surfaces little, speaks plainly, and escalates by exception.
+
 ## 3. Modules (`references/`, loaded on demand)
 
 - `node-operation.md` — install, run one/many, configure, monitor, upgrade/stop. **(operate-and-earn)**
@@ -78,7 +80,33 @@ The ladder below is the **conceptual scope map** — what the capability tiers *
 
 The skill stays honest about the boundary at every tier: *it can operate nodes and help an agent earn; autonomous storage-spending depends on the gas/payment path and the custody decision.*
 
-## 13. Open questions (carried; mostly David/maintainer)
+## 13. Human interaction model (personas, disclosure, language register)
+
+> How the agent relates to and talks to the operator (ADR-0010). Default stance: the agent does the work and surfaces little; it speaks plainly when it speaks; it escalates by exception.
+
+**Operator personas.** Who or what is running through the skill shapes how much is surfaced and in what register:
+
+- **Human operator (direct).** A person running nodes themselves. Capable and intelligent, but not assumed to know wallets, transaction fees, CLIs, or node internals. Wants outcomes (is it running? what has it earned? is my money safe?), trust, and not to be handed mechanics or routine decisions. → Full plain-language register; explain on request; surface outcomes + genuine choices, handle the rest.
+- **Agent as human-proxy** (the expected case, e.g. Fae). An agent operating on behalf of a human principal. It does the operational work and routine decisions itself (judgement + granted remit) and **translates up**: surfaces outcomes and the decisions that are genuinely the human's (money, risk, recovery, authority), escalating by exception. → The translation register matters most here; disclosure to the human is minimal-but-sufficient.
+- **Fully autonomous agent.** Operating with no human in the loop (altruistic / background). Precision is internal; there is no one to address in plain language moment-to-moment. The human-facing register is dormant except for **audit / logs** and the moment it must **escalate** — and with no human available, a gate means **halt / defer within remit**, never cross it unattended.
+
+Across all three: the agent shoulders routine work, adapts disclosure and register to the persona, and never crosses a money / risk / authority gate unattended.
+
+**Disclosure & division of labour.** Default to doing the work; surface outcomes and genuinely-human choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — spend / risk / recovery / consent are always surfaced (ADR-0004/0009 risk-based escalation). Escalate by exception, not for routine ops, and never on crypto-literacy.
+
+**Language register.** Plain, not patronising — assume intelligence, not specialist knowledge. Lead with meaning before naming a precise term; report outcomes, not commands / flags / hashes; keep internals (close groups, DHT, quorum, key formats, gas mechanics) out of human view unless asked; always be ready to explain and expand on request (progressive depth). Accuracy is never sacrificed for simplicity.
+
+**Translation map (technical → human; first cut, product-owned — refine over time).**
+
+- "your EVM rewards address on Arbitrum One" → "the wallet address your node's earnings go to"
+- "ANT (ERC-20 token)" → "ANT, the network's token"
+- "native Arbitrum gas" → "a transaction fee for the payment"
+- "private key / `SECRET_KEY`" → "the secret that controls the wallet" (kept out of view)
+- raw `ant node status` table → "your node's running fine and has earned X so far"
+- "node" — keep, but introduce on first use ("a small program that stores encrypted pieces of others' data and earns tokens")
+- internal-only, not surfaced unless asked: close group, DHT, quorum, replication, ML-DSA, keystore, flags, hashes
+
+## 14. Open questions (carried; mostly David/maintainer)
 
 - GitHub home/org and clean install URL; published skill name; version-manifest hosting URL.
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
@@ -93,3 +121,4 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 - **2026-Jun-18 (later):** De-versioned the delivery framing — DESIGN keeps the capability ladder as a *concept*; the iteration sequencing, scope, and definition of done move to roadmap planning (`planning/ROADMAP.md`), nodded to from ADR-0004/0005. Module tags now name capability tiers rather than iteration numbers. Added the agent-wallet-custody substrate as an open team decision.
 - **2026-Jun-18 (ADR-0004 applied):** ADR-0004 reframed — agent-created wallet first-class for autonomous use via an out-of-context custody substrate (never LLM-created); secrets-out-of-context necessary-but-not-sufficient; recovery-path-at-creation; honest that `ant` has no custody tooling today (substrate location an open team decision). §3 and §7 re-synced; the "being revised" note removed.
 - **2026-Jun-18 (terminology):** standardized prose on "public wallet address" (the public wallet address where rewards are paid), replacing "reward(s) address"; the literal `--rewards-address` flag and "rewards" (earnings) are unchanged.
+- **2026-Jun-18 (interaction model):** added ADR-0010 + §13 — operator personas (human / agent-as-proxy / fully autonomous), do-the-work-by-default disclosure with by-exception escalation, and a plain-language register + translation map ("a transaction fee for the payment", not "native Arbitrum gas"). Open questions renumbered §13→§14.
