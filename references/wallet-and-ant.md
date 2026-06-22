@@ -1,15 +1,15 @@
 # Wallet and ANT — receive side only
 
-Tier 1 receives earnings to a public wallet address and checks that address read-only. It does not create wallets, handle keys, sign transactions, spend ANT, withdraw ANT, or solve gas.
+Tier 1 receives rewards to a public wallet address where rewards will be paid and checks that address read-only. It does not create wallets, handle keys, sign transactions, spend ANT, withdraw ANT, or solve gas.
 
-## Wallet address for node earnings
+## Public wallet address for rewards
 
-The wallet address your node's earnings go to is a public EVM address used by `ant-node` to receive payments. Source validation requires `0x` plus exactly 40 hexadecimal characters. The node stores the public address, not a private key.
+The public wallet address where rewards will be paid is a public EVM address used by `ant-node` to receive payments. Source validation requires `0x` plus exactly 40 hexadecimal characters. The node stores the public address, not a private key.
 
 Use it like this:
 
 ```bash
-: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where rewards will be paid}"
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS"
 ```
 
@@ -41,7 +41,7 @@ Therefore, the key-free balance check is on-chain and read-only.
 This calls ERC-20 `balanceOf(address)` against the Autonomi payment token on Arbitrum One using public JSON-RPC. It reads public chain state only.
 
 ```bash
-: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where rewards will be paid}"
 ADDRESS_HEX="${PUBLIC_REWARDS_ADDRESS#0x}"
 ADDRESS_HEX="${ADDRESS_HEX#0X}"
 ADDRESS_HEX="$(printf '%s' "$ADDRESS_HEX" | tr '[:upper:]' '[:lower:]')"

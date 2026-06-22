@@ -14,7 +14,7 @@ Do not invent numeric thresholds. If a number is not source-bound in `source-bin
 
 ### Network enforces
 
-- A wallet address for node earnings must be a valid EVM-style public address.
+- A public wallet address where rewards will be paid must be a valid EVM-style public address.
 - Node storage refuses writes when available disk space drops below the configured reserve.
 - The daemon refuses reset while nodes are running.
 - The daemon HTTP API binds to loopback by default; if exposed beyond loopback, it has no authentication.
@@ -97,7 +97,7 @@ Health is query-based, not log-based. Use only supported surfaces:
 - `ant node daemon status` and `ant node daemon info` for daemon state/API base/summary.
 - Daemon `/api/v1/events` for lifecycle events when needed.
 - OS host metrics for host stewardship: CPU, memory, free disk, network availability/pressure.
-- Public on-chain balance for the wallet address where earnings are paid.
+- Public on-chain balance for the public wallet address where rewards will be paid.
 
 Do **not** use these as routine health signals:
 

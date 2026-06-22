@@ -3,7 +3,7 @@
 Date/time:
 Operator/user:
 Host:
-Public wallet address where node earnings go:
+Public wallet address where rewards will be paid:
 
 ## Tooling
 

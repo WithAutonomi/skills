@@ -1,10 +1,10 @@
 # Node operation
 
-This is the Tier 1 runbook for operating Autonomi nodes with a public wallet address where earnings are paid.
+This is the Tier 1 runbook for operating Autonomi nodes with a public wallet address where rewards will be paid.
 
 ## 0. Rules before touching the machine
 
-1. Confirm the operator supplied or approved the **public wallet address where node earnings go**.
+1. Confirm the operator supplied or approved the **public wallet address where rewards will be paid**.
 2. Confirm you will not handle any private key material. Tier 1 only needs the public address.
 3. Use `templates/node-preflight-checklist.md` before installing, adding, starting, or resetting nodes.
 4. Detect first; install only when `ant` is missing or unusable.
@@ -56,7 +56,7 @@ Install notes:
 The wallet address must be an EVM-style address: `0x` plus 40 hex characters. It may be human-supplied, provisioned, or safe-substrate-created. Tier 1 does not create wallets.
 
 ```bash
-: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where rewards will be paid}"
 ADDRESS_HEX="${PUBLIC_REWARDS_ADDRESS#0x}"
 ADDRESS_HEX="${ADDRESS_HEX#0X}"
 ADDRESS_HEX="$(printf '%s' "$ADDRESS_HEX" | tr '[:upper:]' '[:lower:]')"

@@ -1,78 +1,127 @@
-# GSD Checkpoint — Autonomi Operator Skill (current state)
+# GSD Checkpoint — Tier 1 operator doctrine pass
 
-Date: 2026-06-18
+Date: 2026-06-22
 Project: Autonomi Operator Skill (`JimCollinson/autonomi-skill`)
-Slice/question: Phase 01 (design & de-risk) substantially complete; Tier-1 (operate-and-earn) authoring dispatched to OpenCode.
-Prepared by: Cowork (Claude) orchestration, on Jim's behalf
-Agents/tools used: Cowork (Claude); `gsd-plan` agent (roadmap refresh); GitHub; source verification against `WithAutonomi/*`.
+Slice/question: Apply completed operator doctrine / grounding to the already-merged Tier-1 operate-and-earn skill.
+Prepared by: OpenCode GSD orchestrator, with @pm, @operative, @codereviewer, @verifier, @craft.
 
-> **Read this first if you are the incoming agent.** `git pull` to the real `main` (tip below) before doing anything — this repo has been updated via API pushes, so a stale local clone may be missing files. Reading order: `README.md` → `docs/SPEC-tier1-operate-and-earn.md` → `planning/packets/PACKET-tier1-operate-and-earn.md` → `docs/DESIGN.md` → `docs/adr/` → `planning/ROADMAP.md`.
+> **Incoming agent:** start from `main`, then read `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (especially §13) → `docs/adr/` (especially ADR-0004, 0006, 0009, 0010, 0011) → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `CONTRIBUTING.md`.
 
 ## Status
 
-**Continue.** Design is substantially complete and the Tier-1 build slice is specced, packetised, and ready to execute. ADRs are Proposed and under David's architecture review — that does **not** block Tier 1 (it deliberately avoids the open decisions).
+**Stop for PR review.** The doctrine authoring slice is complete on branch `feat/tier1-operator-doctrine`; open a PR from that branch into `main`, then stop for review. Do not merge, publish, or transfer without Jim's approval.
+
+Meaningful work-unit? **Yes** — it changes the shipped skill content, operating policy, and source-binding manifest.
+
+Review cadence: code review + verification + Craft Review completed. **Fresh-agent clean-context live test and adversarial gauntlet are explicitly deferred** by slice instruction; they must be dispatched separately by agents that did not author this skill content.
+
+Unreviewed backlog if deferred:
+
+- Fresh clean-context live-network test from the installed skill.
+- Independent adversarial review of Tier-1 readiness, including ADR-0010 plain-language / over-exposure and ADR-0011 query-based health checks.
 
 ## What happened
 
-- Designed the skill as **one holistic, modular, progressively-disclosed operator skill** (use, not build), on the existing `ant` CLI + node daemon, x0x as structural precedent. Captured as 9 Proposed ADRs + `docs/DESIGN.md`.
-- Two decisions deliberately parked for a **team call** and recorded as open: the **agent wallet custody substrate** (ADR-0004) and the **gas strategy** (ADR-0005). A decision-support brief is in the vault (`Open Decisions Brief.md`).
-- David's Hermes reviewed twice (repo + ADRs): "near-ready." Its one blocker — ADR-0004 overstated `antd`'s spend/custody surface (it omitted the headless **external-signer** `prepare`/`finalize` mode) — was verified against source and **fixed** (commit `f843545`); the external-signer flow is recorded as an integration seam, not custody.
-- De-versioned the docs (capability ladder is a concept in DESIGN; sequencing lives in ROADMAP, not the ADRs); added an "Open team decisions" section to ROADMAP; moved VISION/FEATURES into the repo; reconciled the vault stubs.
-- Wrote the **Tier-1 SPEC** (`docs/SPEC-tier1-operate-and-earn.md`) and the **Tier-1 work packet** (`planning/packets/PACKET-tier1-operate-and-earn.md`).
-- **Operating model shift:** from here the GSD orchestrator + @pm own roadmapping, planning, sequencing, and packet generation; Jim + Cowork stay at review/steer/amend.
+- Synced from current `main` (`5178dee`) into a fresh clone and created `feat/tier1-operator-doctrine`.
+- Ran @pm to turn the approved slice into a concrete implementation checklist.
+- Ran @operative to apply the doctrine pass in commit `6e0250c`:
+  - added the grounded SKILL opener and About/references section from `docs/skill-grounding.md`;
+  - wove the DESIGN §13 personas and ADR-0010 plain-language / by-exception escalation model through `SKILL.md`;
+  - deepened `references/operating-procedures.md` from `docs/operating-doctrine.md`;
+  - added `references/agent-autonomy-policy.md`;
+  - updated wallet-address language, validation snippets, query-based health guidance, and source bindings;
+  - removed the committed runtime public wallet address from source bindings.
+- Ran code review, goal verification, and Craft Review.
+- Added verifier evidence at `planning/phases/tier1-operator-doctrine/VERIFICATION.md` and cleaned up the source-binding section layout.
 
 ## Evidence
 
-Files changed/artifacts produced (all on `main`):
+CI arbiter / green of record:
 
-- Docs: `README.md`, `docs/VISION.md`, `docs/FEATURES.md`, `docs/DESIGN.md`, `docs/SPEC-tier1-operate-and-earn.md`, `docs/adr/ADR-0001…0009` (+ ADR `README`/`TEMPLATE`/`TOOLING`).
-- Planning: `planning/ROADMAP.md` (build phases + capability ladder + Open team decisions), `planning/packets/PACKET-tier1-operate-and-earn.md`.
-- Governance: `scripts/adr-governance.py`, `.adr-kit.yaml`, `.github/workflows/`.
-- Vault: `Open Decisions Brief.md`; VISION/FEATURES/DESIGN/ROADMAP/DECISIONS are stubs pointing here.
-- Key commits: `356058c` (VISION/FEATURES in repo), `f843545` (Hermes source-accuracy fix), `3743aeb` (Tier-1 SPEC), `7fe7245` (Tier-1 packet). **Current `main` tip: `7fe7245`** (plus this checkpoint).
+- Location: GitHub Actions `ADR Governance` workflow on PR/main changes touching ADR governance files.
+- Status: pending/not yet observed for this PR branch at checkpoint time.
+- Note: this repo currently has no full skill-content CI arbiter; evidence for Markdown skill changes is local review + PR review, so non-ADR evidence is weaker than clean CI.
+
+Local fast gate / `.gsd/gate.sh`:
+
+- Installed? N/A — no `.gsd/gate.sh` exists in this repo.
+- Commands run:
+  - `python3 scripts/adr-governance.py`
+  - `git diff --check main...HEAD`
+- Result: passed.
+
+Files changed/artifacts produced:
+
+- `SKILL.md`
+- `references/agent-autonomy-policy.md`
+- `references/operating-procedures.md`
+- `references/node-operation.md`
+- `references/wallet-and-ant.md`
+- `references/troubleshooting.md`
+- `templates/node-preflight-checklist.md`
+- `templates/node-health-report.md`
+- `source-bindings/tier1-operate-and-earn.md`
+- `planning/phases/tier1-operator-doctrine/VERIFICATION.md`
+- `docs/CURRENT.md`
 
 Checks run:
 
-- `python3 scripts/adr-governance.py` → **passed, 9 ADRs.**
-- Source verification of the Tier-1 command surface: ant-client `ant-cli/src/cli.rs` + dev-docs `command-reference.md`/`use-the-cli.md` (verification header @ `84332e2d`, 2026-06-10); install via `install.sh`/`install.ps1`; `antd` external-signer in `antd/src/rest/upload.rs`; `ant-node` releases ship `SHA256SUMS` + ML-DSA-65 (FIPS-204).
+- `python3 scripts/adr-governance.py` → passed, 11 ADR files checked.
+- `git diff --check main...HEAD` → passed.
+- @codereviewer → passed.
+- @verifier → passed, 6/6 goals; wrote `planning/phases/tier1-operator-doctrine/VERIFICATION.md`.
+- @craft → passed; no CONFORMANCE findings.
 
-Results: governance green; command surface grounded and source-bound; the one review blocker resolved.
+## Honesty rules check
+
+- No-harness-modification: **Pass** — no CI, gate, harness, daemon wrapper, build invocation, or test-harness changes.
+- Baseline-diff for evidence: **N/A / Pass** — no failures dismissed as flaky/environmental/pre-existing.
+- Evidence reproducible-from-branch: **Pass** for local Markdown checks; deferred fresh-agent live gauntlet still required for full Tier-1 readiness.
+- Local vs CI consistency: CI not yet observed for this PR branch; no local/CI conflict known.
 
 ## Review findings
 
 Clean-context test:
 
-- Reviewer/tool: gsd-clean-context-tester
-- Result: **Not run** — Tier 1 is not built yet; this is the gauntlet defined in the packet.
-- Findings: —
+- Reviewer/tool: Not run.
+- Result: **Not run — explicitly deferred.**
+- Findings: Must be run by a fresh agent after this authoring PR, from repo/docs/skill only.
 
 Adversarial review:
 
-- Reviewer/tool: David's Hermes (documentation/ADR review, two passes) — note this was a **docs** review, not the code/skill adversarial gauntlet.
-- Result: Concerns, **resolved** (the `antd` external-signer overstatement fixed in `f843545`).
-- Findings: structure coherent; ADR-0004 distinctions correct; ladder treats custody/gas as gating team decisions; one source-accuracy blocker (now fixed); minor non-blocking suggestions applied.
+- Reviewer/tool: Not run.
+- Required? Yes for Tier-1 readiness, but explicitly deferred by this slice instruction.
+- Result: **Not run — explicitly deferred.**
+- Findings: Run separately before treating Tier 1 as ready.
+
+Craft Review:
+
+- Reviewer/tool: @craft.
+- Verdict: **Pass.**
+- CONFORMANCE findings and dispositions: none.
+- NIT carried/fixed: source-binding doctrine sections were moved out of the original “Resolved open questions” sequence into `Doctrine and product claim bindings`.
 
 ## Drift / scope concerns
 
-- ADRs are **Proposed, not Accepted** — acceptance is a human gate (Jim as decision owner, after David's review). Never mark Accepted autonomously; never edit an ADR (supersede via Jim).
-- **Tier 2/3 are gated** on the custody (ADR-0004) and gas (ADR-0005) team decisions — do not start them.
-- Local-clone-vs-remote: pushes were via API; pull `main` to avoid acting on a stale tree.
+- Tier 2/3 remain gated on custody/gas decisions (ADR-0004/0005). This slice did not implement custody, signing, spend, gas, upload, or acquisition.
+- Health remains query-based per ADR-0011: no log scraping, metrics scraping, or node-internal file reads for health.
+- Runtime public wallet addresses are operational inputs; do not commit them to source bindings, evidence, PR text, or issues.
 
 ## Open questions / decisions for Jim
 
-- The two team decisions (custody substrate, gas strategy) need the dedicated call — see the vault `Open Decisions Brief.md`.
-- ADR acceptance awaits David's architecture review.
+- PR review/merge decision.
+- Whether to dispatch the deferred clean-context live-network test and adversarial review immediately against this PR branch.
 
 PR / upstream action gate:
 
-- PR ready to raise? **No** — Tier 1 not built yet.
-- Jim confirmed PR may be opened? **N/A.** (Work to date has been direct pushes to `main` on Jim's own repo; the gates are **transfer to WithAutonomi** and **external publish**, neither pending. PR/merge against any shared/upstream repo would need Jim's explicit approval.)
-- Draft PR title/description prepared: N/A.
+- PR ready to raise? **Yes.**
+- Jim confirmed PR may be opened? **Yes — requested in the slice.**
+- Jim confirmed PR may be merged? **No.** Stop for review.
 
 ## Recommended next step
 
-Execute `planning/packets/PACKET-tier1-operate-and-earn.md` as the **Implementer** slice (OpenCode, feature branch): author `SKILL.md` + the Tier-1 modules + templates + install manifest, resolve the spec's four open questions from source, self-test on the live network with a public wallet address only. Then run the **gauntlet** (fresh-agent clean-context test on the live network + adversarial review), write a follow-up checkpoint, and surface to Jim at the PR/transfer/publish gates. Do not touch Tier 2/3.
+Review the PR. Then dispatch fresh-agent clean-context live-network testing and independent adversarial review before declaring Tier 1 ready.
 
 ## Handoff note
 
-You are picking up a clean, source-grounded design with a ready Tier-1 build packet. The non-negotiables for Tier 1: **never generate, store, log, or pass a private key** (`SECRET_KEY`/`AUTONOMI_WALLET_KEY`) — the node takes a **public `--rewards-address` only**; **no invented commands** (everything source-bound, ADR-0006); don't edit ADRs; don't transfer/publish without Jim. The orchestrator/@pm now own planning and sequencing; Jim + Cowork review and steer.
+This branch is an authoring/doctrine pass only. It deliberately does **not** run the Tier-1 live gauntlet. Future reviewers should focus on whether the skill now speaks in the approved plain-language/persona register, whether `agent-autonomy-policy.md` correctly reflects the operating doctrine, and whether source bindings cover all new product/doctrine claims without runtime-address leakage.

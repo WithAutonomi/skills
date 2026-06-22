@@ -13,7 +13,7 @@ The agent may operate nodes within the resource and authority envelope it has be
 - read daemon/node status and public on-chain balance;
 - stop adding or stop nodes to protect the host.
 
-Receiving is autonomous and key-free. A node receives only a public wallet address where earnings are paid. It does not need, hold, or spend from a private key.
+Receiving is autonomous and key-free. A node receives only a public wallet address where rewards will be paid. It does not need, hold, or spend from a private key.
 
 ## What is outside Tier 1
 

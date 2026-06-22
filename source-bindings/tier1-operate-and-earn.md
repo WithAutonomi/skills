@@ -39,7 +39,7 @@ known_incompatible:
 
 ### 1. Balance check without a private key
 
-Answer: current `ant node status` and the node-management daemon `/api/v1/events` stream are health/lifecycle surfaces and do not report reward totals. The Tier 1 key-free balance path is a read-only ERC-20 `balanceOf(address)` call for the public wallet address where node earnings are paid against the Autonomi payment token on Arbitrum One.
+Answer: current `ant node status` and the node-management daemon `/api/v1/events` stream are health/lifecycle surfaces and do not report reward totals. The Tier 1 key-free balance path is a read-only ERC-20 `balanceOf(address)` call for the public wallet address where rewards will be paid against the Autonomi payment token on Arbitrum One.
 
 source_evidence:
 
@@ -114,7 +114,9 @@ source_evidence:
 - ant-client `ant-cli/src/main.rs` and ant-node `src/bin/ant-node/main.rs` both force at least 4 Tokio worker threads. ant-client lines 21-28 at commit `4d0448458ec302af68a5504c533d105b0991c93c`; ant-node lines 91-99 at commit `c53665bf4dda87cdbcf848606fa0182e822297d7`.
 - ant-client `ant-cli/src/commands/node/daemon.rs::BindArgs` says default daemon bind is `127.0.0.1` and binding to non-loopback exposes node management because the daemon has no authentication. Lines 9-25 at commit `4d0448458ec302af68a5504c533d105b0991c93c`.
 
-### 5. Product opener and cooperative framing
+## Doctrine and product claim bindings
+
+### Product opener and cooperative framing
 
 Answer: the SKILL.md opener is product-grounded in canonical Autonomi pages and doctrine-grounded in this repo. It is not a runtime/code compatibility claim.
 
@@ -125,7 +127,7 @@ source_evidence:
 - Repo `docs/skill-grounding.md` lines 9-28 supplies the approved SKILL.md opener wording and cooperative framing: running a node helps secure data and earns ANT; the network is strongest when nodes are well-distributed, reliable, and fair; the skill is non-custodial by default.
 - Repo `docs/VISION.md` lines 40-50 supplies the cooperative principle: running nodes helps secure the network's data; earning ANT is the means to use the network.
 
-### 6. Persona/plain-language doctrine and autonomy policy
+### Persona/plain-language doctrine and autonomy policy
 
 Answer: Tier 1 skill content treats fully autonomous operation as the engine, with human-proxy and steered operation as layers. Human-facing language defaults to plain outcomes, not mechanics, and escalation is by exception.
 
@@ -136,7 +138,7 @@ source_evidence:
 - Repo `docs/operating-doctrine.md` lines 43-61 defines autonomous stop/escalation and persona layering.
 - Repo `docs/adr/ADR-0009-independent-lifecycle-no-lockstep.md` lines 28-36 binds remit-gated/non-mutating operation and independent lifecycle.
 
-### 7. Operating doctrine and query-based health
+### Operating doctrine and query-based health
 
 Answer: operating-procedure claims are doctrine-bound to this repo and source-bound upstream where they cite commands/flags/constants. Health is query-based and reduced-mode: no log-scraping, no metrics scraping, no node-internal file reads for health.
 
@@ -148,7 +150,7 @@ source_evidence:
 - Upstream status/daemon/event command bindings for the query-based surfaces are listed above in sections 1, 2, and `Node-management daemon`.
 - Address/range distribution figures in `docs/operating-doctrine.md` are not used as numeric Tier 1 source-backed thresholds in `references/operating-procedures.md`; the skill deliberately downgrades them to non-numeric distribution guidance unless/until independently source-bound.
 
-### 8. Agent autonomy policy boundaries
+### Agent autonomy policy boundaries
 
 Answer: `references/agent-autonomy-policy.md` is doctrine-bound, not a new authority model. It keeps receiving autonomous/key-free and spending/custody/gas/acquisition outside Tier 1.
 

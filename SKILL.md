@@ -1,6 +1,6 @@
 ---
 name: autonomi-operator
-description: "Operate Autonomi nodes and earn ANT to a public wallet address: install or detect ant, run/manage nodes, monitor health, check read-only earnings balance, and cleanly stop/reset without private keys."
+description: "Operate Autonomi nodes and earn ANT to a public wallet address where rewards will be paid: install or detect ant, run/manage nodes, monitor health, check read-only rewards balance, and cleanly stop/reset without private keys."
 version: 0.1.0
 license: MIT OR Apache-2.0
 repository: https://github.com/JimCollinson/autonomi-skill
@@ -40,7 +40,7 @@ metadata:
 
 Autonomi is a post-quantum secure, fully autonomous, peer-to-peer data network for permanent storage. Data is encrypted before it leaves a user's device, split across a global network of everyday machines, and kept available without central servers, accounts, intermediaries, or ongoing storage fees. ANT is the network token that pays people and agents who provide storage.
 
-Running a node does two things at once: it helps secure the world's data by keeping encrypted pieces available, and it earns ANT to the public wallet address your node's earnings go to. Earned ANT's network purpose is to pay for permanent storage; in Tier 1, you only receive and observe it. Node operation is non-custodial by construction: a node is only ever given a public wallet address via `--rewards-address`, never a private key.
+Running a node does two things at once: it helps secure the world's data by keeping encrypted pieces available, and it earns ANT to the public wallet address where rewards will be paid. Earned ANT's network purpose is to pay for permanent storage; in Tier 1, you only receive and observe it. Node operation is non-custodial by construction: a node is only ever given a public wallet address via `--rewards-address`, never a private key.
 
 Use this skill when the agent needs to run Autonomi network nodes, monitor node health, check a public wallet address balance read-only, and cleanly stop/reset. Stay in Tier 1 operate-and-earn: receive and observe only; do not spend, sign, acquire ANT, solve gas, upload data, or create custody.
 
@@ -59,7 +59,7 @@ If any step appears to require a private key, seed phrase, signing token, decryp
 | If the user asks to... | Load this |
 | --- | --- |
 | install/detect `ant`, add/start/status/stop/reset nodes | `references/node-operation.md` |
-| choose or validate the wallet address your node's earnings go to, understand ANT receive-only flow, check balance without a key | `references/wallet-and-ant.md` |
+| choose or validate the public wallet address where rewards will be paid, understand ANT receive-only flow, check balance without a key | `references/wallet-and-ant.md` |
 | decide how many nodes to run, preflight a host, run as a good network citizen | `references/operating-procedures.md` |
 | operate autonomously, set authority/resource boundaries, know when to halt or escalate | `references/agent-autonomy-policy.md` |
 | diagnose daemon/node/add/start/status/balance issues | `references/troubleshooting.md` |
@@ -72,7 +72,7 @@ Onward pointers only: wallet custody, signing, spending/withdrawing ANT, gas str
 ## Core concepts
 
 - **Node** — the local `ant` CLI manages one or more external `ant-node` processes through the node-management daemon.
-- **Public wallet address** — the public address on Arbitrum One where node earnings are paid. It is not a key and does not let the node spend.
+- **Public wallet address** — the public address on Arbitrum One where rewards will be paid. It is not a key and does not let the node spend.
 - **ANT** — the ERC-20 payment token used by the network on Arbitrum One. Tier 1 only receives and observes balances.
 - **Daemon** — `ant node daemon` is the local node-management process used for start/stop/status/API event streaming.
 - **Authority boundary** — receiving earnings is autonomous within remit; installing tools, deleting node state, upgrading existing working tools, or spending funds needs explicit authority.
@@ -85,7 +85,7 @@ Set `PUBLIC_REWARDS_ADDRESS` from an operator-approved public wallet address. Tr
 ant --version
 ant --help
 
-: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where rewards will be paid}"
 ADDRESS_HEX="${PUBLIC_REWARDS_ADDRESS#0x}"
 ADDRESS_HEX="${ADDRESS_HEX#0X}"
 ADDRESS_HEX="$(printf '%s' "$ADDRESS_HEX" | tr '[:upper:]' '[:lower:]')"
