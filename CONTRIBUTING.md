@@ -18,6 +18,17 @@ Contributors are humans and AI agents alike; these conventions keep the trail re
 - Open a PR into `main` using the [pull request template](.github/pull_request_template.md). Fill in what's relevant; delete what isn't.
 - Merge needs green CI and a completed PR. An approving review is required for ADR, architecture, or security/custody changes and for agent-authored PRs — and welcome on anything else.
 
+## Working in parallel (humans + agents)
+
+Humans and agents (e.g. OpenCode) often work this repo at the same time; these rules keep us from diverging.
+
+- **Lanes — one writer per area.** Design and decisions (`docs/`, `docs/adr/`, `planning/`) are one lane; the skill itself (`SKILL.md`, `references/`, `templates/`, `source-bindings/`) is another. A file has a single owner at a time — don't edit the same file from two places at once. Design lands as an ADR or spec; the implementer turns it into skill content.
+- **Never commit to `main` directly** — including via the GitHub API. Everything goes through a short-lived branch and a PR. (Direct API pushes to `main` are what caused an earlier divergence.)
+- **Fetch before you work, and after every merge.** `git fetch` and rebase onto the latest `main` before starting a session and whenever a PR lands, so nobody builds on a stale base.
+- **Keep branches small and merge them promptly.** Long-lived branches drift; short ones reconcile cleanly.
+- **Announce pushes.** When you push a branch or open a PR, say so, so others know to fetch.
+- **One person merges** to `main` at a time, deliberately — no racing merges.
+
 ## Checks before you open a PR
 
 - Run the ADR governance gate: `python3 scripts/adr-governance.py`.
