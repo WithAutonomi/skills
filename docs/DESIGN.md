@@ -82,21 +82,44 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 
 ## 13. Human interaction model (personas, disclosure, language register)
 
-> How the agent relates to and talks to the operator (ADR-0010). Default stance: the agent does the work and surfaces little; it speaks plainly when it speaks; it escalates by exception.
+> How the agent relates to and talks to the operator (ADR-0010). Default stance: do the work, surface little, speak plainly, escalate by exception. The personas are **concentric, not parallel**: the **fully-autonomous agent is the engine** (the operating doctrine — §9 and `agent-autonomy-policy`); the two human-facing personas **inherit it wholesale** and layer disclosure and control on top.
 
-**Operator personas.** Who or what is running through the skill shapes how much is surfaced and in what register:
+### The three personas
 
-- **Human operator (direct).** A person running nodes themselves. Capable and intelligent, but not assumed to know wallets, transaction fees, CLIs, or node internals. Wants outcomes (is it running? what has it earned? is my money safe?), trust, and not to be handed mechanics or routine decisions. → Full plain-language register; explain on request; surface outcomes + genuine choices, handle the rest.
-- **Agent as human-proxy** (the expected case, e.g. Fae). An agent operating on behalf of a human principal. It does the operational work and routine decisions itself (judgement + granted remit) and **translates up**: surfaces outcomes and the decisions that are genuinely the human's (money, risk, recovery, authority), escalating by exception. → The translation register matters most here; disclosure to the human is minimal-but-sufficient.
-- **Fully autonomous agent.** Operating with no human in the loop (altruistic / background). Precision is internal; there is no one to address in plain language moment-to-moment. The human-facing register is dormant except for **audit / logs** and the moment it must **escalate** — and with no human available, a gate means **halt / defer within remit**, never cross it unattended.
+**1. Fully autonomous agent — the engine (base).**
+- *Who:* operating autonomously toward a **delegated, often long-running or open-ended objective**, with **no human engaged in the operational loop**. A human (or another agent) has very likely set the objective and owns the outcome — but isn't present for the running of it and isn't consulted for routine operation. The network work is usually a *means* to a broader goal (earn revenue, contribute to infrastructure, store data in the background); the agent holds full command of the operational and crypto detail.
+- *Surfaces:* nothing routinely — an auditable trace, and outcomes only if the delegator has a channel to receive them.
+- *Asks / escalates:* at a gate it can't cross alone, it **escalates asynchronously to whoever delegated the objective if it can reach them; if not, it halts or defers within remit.** It never crosses a money / risk / authority gate unattended.
+- *Controls:* none in real time; it self-governs within the remit it was given and the doctrine.
+- *Register:* the conversational register is dormant — it speaks only in audit/logs and in any escalation it raises.
 
-Across all three: the agent shoulders routine work, adapts disclosure and register to the persona, and never crosses a money / risk / authority gate unattended.
+**2. Agent as human-proxy — engine + "translate and escalate up."** *(the expected case, e.g. Fae; the primary persona for language)*
+- *Who:* an agent operating on behalf of a human principal. The human hands it resources toward an explicit goal ("run nodes and earn," "contribute ~100 GB").
+- *Surfaces:* outcomes in plain language — is it running, what it's earned, is the money safe — and the occasional genuinely-useful, opt-in suggestion. Not mechanics, not routine ops.
+- *Asks / escalates:* the genuinely-human gates only — spend/authority beyond remit, balance over a threshold, backup/recovery, consent — **by exception, never routine, never gated on crypto-literacy.**
+- *Controls:* light and goal-level. The human sets the goal, the resource budget, and grants authority; the agent decides the how. The human can redirect ("earn more," "use less"), not micromanage.
+- *Register:* full plain-language translation (the map below); assume intelligence, not knowledge; explain on request. This is where the register matters most.
+- *Example:* the agent runs quietly for weeks, then surfaces only when it must — *"Heads up: your node has earned enough now that it's worth protecting. Securing it needs a one-time setup and a recovery step only you can approve — shall we do that now? It keeps running either way."* (A money/recovery gate, surfaced plainly, the human decides; no mechanics.)
 
-**Disclosure & division of labour.** Default to doing the work; surface outcomes and genuinely-human choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — spend / risk / recovery / consent are always surfaced (ADR-0004/0009 risk-based escalation). Escalate by exception, not for routine ops, and never on crypto-literacy.
+**3. Steered operation (hands-on, agent-assisted) — engine + finer human levers.**
+- *Who:* a person who wants more direct control, likely already familiar with the network or already running nodes. They use the agent to avoid the command line — but still aren't pushing buttons; it's a chat/text-driven operation where they issue specific signals and queries.
+- *Surfaces:* more, on demand — node status, counts, what's contributed, where rewards go — with more depth available than the proxy offers, when asked.
+- *Asks / escalates:* the same money/risk/recovery/consent gates, but a hands-on operator chooses to confirm more decisions by preference. The agent still never crosses a gate unattended.
+- *Controls:* finer levers — how many nodes, how a node is set up, how much is contributed, where rewards go, when to scale. The agent works the CLI/API; the human directs the specifics.
+- *Register:* plain by default, but it **meets the operator's fluency** — precise terms are fine with a knowledgeable user — and never forces jargon; explains on request.
+- *Example:* — "I've loads of disk free; can I run more nodes?" — *"Disk isn't the limit here — your internet connection is. The network only counts about two nodes per address, so on this one connection ~2 productive nodes is the ceiling; more would sit idle and earn nothing. To run more you'd add another network or location. Want me to make sure your two are running well instead?"* (Finer lever, but honest about the real constraint, in plain words.)
 
-**Language register.** Plain, not patronising — assume intelligence, not specialist knowledge. Lead with meaning before naming a precise term; report outcomes, not commands / flags / hashes; keep internals (close groups, DHT, quorum, key formats, gas mechanics) out of human view unless asked; always be ready to explain and expand on request (progressive depth). Accuracy is never sacrificed for simplicity.
+**Across all three:** the agent shoulders routine work, adapts disclosure and register to the persona, and **never crosses a money / risk / authority gate unattended.** The line between autonomous and proxy is *how present the human is* — a distal delegator who has stepped back (1) versus a present principal who expects to be kept in the loop (2) — not whether a human exists at all.
 
-**Translation map (technical → human; first cut, product-owned — refine over time).**
+### Disclosure & division of labour
+
+Default to doing the work; surface outcomes and genuinely-human choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — spend / risk / recovery / consent are always surfaced (ADR-0004/0009 risk-based escalation). Escalate by exception, not for routine ops, and never on crypto-literacy.
+
+### Language register
+
+Plain, not patronising — assume intelligence, not specialist knowledge. Lead with meaning before naming a precise term; report outcomes, not commands / flags / hashes; keep internals (close groups, DHT, quorum, key formats, gas mechanics) out of human view unless asked; always be ready to explain and expand on request (progressive depth). Accuracy is never sacrificed for simplicity.
+
+### Translation map (technical → human; first cut, product-owned — refine over time)
 
 - "your EVM rewards address on Arbitrum One" → "the wallet address your node's earnings go to"
 - "ANT (ERC-20 token)" → "ANT, the network's token"
@@ -122,3 +145,4 @@ Across all three: the agent shoulders routine work, adapts disclosure and regist
 - **2026-Jun-18 (ADR-0004 applied):** ADR-0004 reframed — agent-created wallet first-class for autonomous use via an out-of-context custody substrate (never LLM-created); secrets-out-of-context necessary-but-not-sufficient; recovery-path-at-creation; honest that `ant` has no custody tooling today (substrate location an open team decision). §3 and §7 re-synced; the "being revised" note removed.
 - **2026-Jun-18 (terminology):** standardized prose on "public wallet address" (the public wallet address where rewards are paid), replacing "reward(s) address"; the literal `--rewards-address` flag and "rewards" (earnings) are unchanged.
 - **2026-Jun-18 (interaction model):** added ADR-0010 + §13 — operator personas (human / agent-as-proxy / fully autonomous), do-the-work-by-default disclosure with by-exception escalation, and a plain-language register + translation map ("a transaction fee for the payment", not "native Arbitrum gas"). Open questions renumbered §13→§14.
+- **2026-Jun-22 (interaction model expanded):** §13 personas deepened on a consistent Surfaces / Asks / Controls / Register frame with the concentric framing (fully-autonomous = the engine; proxy + steered inherit it) and worked examples; persona 3 renamed **Steered operation** (was "human operator (direct)"); the fully-autonomous persona reframed from "no human in the loop" to "no human in the *operational* loop" (distal delegator; async escalation). Design under ADR-0010 (no new decision).
