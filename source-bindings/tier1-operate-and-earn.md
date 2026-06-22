@@ -10,12 +10,22 @@ Purpose: bind every Tier 1 command, flag, volatile constant, and important factu
 | ant-node | https://github.com/WithAutonomi/ant-node.git | `c53665bf4dda87cdbcf848606fa0182e822297d7` | Binding target for `ant-node` flags, rewards-address parsing, storage/resource constants, bootstrap discovery, and release-signature verifier. |
 | evmlib | https://github.com/WithAutonomi/evmlib.git | `225acbb1af613193bcc8264b6ede4d7e4a7ac607` | Binding target only for EVM constants and read-only token balance path. |
 
+## Canonical product grounding read
+
+These are product-grounding sources, not runtime code bindings.
+
+| Source | Retrieval | Role |
+| --- | --- | --- |
+| `https://autonomi.com/llms.txt` | fetched 2026-06-22 | Canonical AI-assistant index for high-level Autonomi description, core docs, source repositories, ANT purpose, and related products. |
+| `https://autonomi.com/overview.md` | fetched 2026-06-22 | Canonical network overview for Autonomi description, permanent storage, no central servers/accounts/intermediaries/ongoing fees, encryption before upload, everyday devices, and ANT utility. |
+| `https://autonomi.com/llms-full.txt` | attempted 2026-06-22, returned 404 | Listed by the AI-assistant index as comprehensive inline context, but not used as evidence in this pass because it was unreachable. |
+
 ## Compatibility metadata
 
 tested_with:
 
 - Local authoring source: commits listed above.
-- Live self-test: installed `ant 0.1.5` at `/usr/local/bin/ant`; `ant node add/start/status/stop`, `ant node daemon start/status/info/stop`, daemon `DELETE /api/v1/nodes/{id}`, and read-only Arbitrum One `balanceOf` succeeded with public rewards address `0xb4CA36145C204d6629c33caB37796e78B4502b2A`. The added test node used `ant-node 0.13.0`. Do not treat source commits as runtime pins.
+- Live self-test: installed `ant 0.1.5` at `/usr/local/bin/ant`; `ant node add/start/status/stop`, `ant node daemon start/status/info/stop`, daemon `DELETE /api/v1/nodes/{id}`, and read-only Arbitrum One `balanceOf` succeeded with a public runtime wallet address. Runtime public wallet addresses are operational data, not source evidence, and must not be committed. The added test node used `ant-node 0.13.0`. Do not treat source commits as runtime pins.
 
 requires_min:
 
@@ -29,7 +39,7 @@ known_incompatible:
 
 ### 1. Balance check without a private key
 
-Answer: current `ant node status` and the node-management daemon `/api/v1/events` stream are health/lifecycle surfaces and do not report reward totals. The Tier 1 key-free balance path is a read-only ERC-20 `balanceOf(address)` call for the public rewards address against the Autonomi payment token on Arbitrum One.
+Answer: current `ant node status` and the node-management daemon `/api/v1/events` stream are health/lifecycle surfaces and do not report reward totals. The Tier 1 key-free balance path is a read-only ERC-20 `balanceOf(address)` call for the public wallet address where node earnings are paid against the Autonomi payment token on Arbitrum One.
 
 source_evidence:
 
@@ -88,7 +98,7 @@ Answer: source-backed numeric thresholds are limited. Tier 1 may require checks 
 
 Source-backed checks/recommendations:
 
-- Validate public rewards address format.
+- Validate public wallet address format.
 - Preserve disk above the default storage reserve; current default reserve is 500 MiB.
 - Storage auto-scales from available disk and can grow on demand; no fixed per-node ceiling is claimed.
 - If a release signature is verified with the built-in ML-DSA verifier, the verifier loads the whole binary in memory; source comments describe typical release binaries as 50-100 MB and recommend minimum 512 MB RAM for verification.
@@ -103,6 +113,52 @@ source_evidence:
 - ant-node `src/upgrade/signature.rs` documents ML-DSA-65 verification loading full binaries, typical 50-100 MB release builds, and minimum 512 MB RAM recommended. Lines 1-18 at commit `c53665bf4dda87cdbcf848606fa0182e822297d7`.
 - ant-client `ant-cli/src/main.rs` and ant-node `src/bin/ant-node/main.rs` both force at least 4 Tokio worker threads. ant-client lines 21-28 at commit `4d0448458ec302af68a5504c533d105b0991c93c`; ant-node lines 91-99 at commit `c53665bf4dda87cdbcf848606fa0182e822297d7`.
 - ant-client `ant-cli/src/commands/node/daemon.rs::BindArgs` says default daemon bind is `127.0.0.1` and binding to non-loopback exposes node management because the daemon has no authentication. Lines 9-25 at commit `4d0448458ec302af68a5504c533d105b0991c93c`.
+
+### 5. Product opener and cooperative framing
+
+Answer: the SKILL.md opener is product-grounded in canonical Autonomi pages and doctrine-grounded in this repo. It is not a runtime/code compatibility claim.
+
+source_evidence:
+
+- `https://autonomi.com/llms.txt` says Autonomi is a post-quantum secure, fully autonomous peer-to-peer data network; stores data permanently across everyday devices; has no central servers, accounts, intermediaries, or ongoing fees; encrypts data on the user's device before it leaves; and lists ANT as used for storage payments and node rewards.
+- `https://autonomi.com/overview.md` repeats the permanent-storage/no-central-servers/no-accounts/no-intermediaries/no-ongoing-fees framing; describes encryption before upload and distribution across home computers/everyday devices; and lists ANT as used for storage payments and node rewards.
+- Repo `docs/skill-grounding.md` lines 9-28 supplies the approved SKILL.md opener wording and cooperative framing: running a node helps secure data and earns ANT; the network is strongest when nodes are well-distributed, reliable, and fair; the skill is non-custodial by default.
+- Repo `docs/VISION.md` lines 40-50 supplies the cooperative principle: running nodes helps secure the network's data; earning ANT is the means to use the network.
+
+### 6. Persona/plain-language doctrine and autonomy policy
+
+Answer: Tier 1 skill content treats fully autonomous operation as the engine, with human-proxy and steered operation as layers. Human-facing language defaults to plain outcomes, not mechanics, and escalation is by exception.
+
+source_evidence:
+
+- Repo `docs/DESIGN.md` §13 lines 83-130 defines the persona model: fully autonomous agent as engine; human-proxy as translate/escalate upward; steered operation as finer human levers; outcomes/plain-language register; mechanics hidden unless asked.
+- Repo `docs/adr/ADR-0010-human-facing-language-register.md` lines 31-47 defines the interaction model: do the work, surface outcomes and genuinely-human choices, by-exception escalation, plain language, outcomes not mechanics, accuracy over simplicity.
+- Repo `docs/operating-doctrine.md` lines 43-61 defines autonomous stop/escalation and persona layering.
+- Repo `docs/adr/ADR-0009-independent-lifecycle-no-lockstep.md` lines 28-36 binds remit-gated/non-mutating operation and independent lifecycle.
+
+### 7. Operating doctrine and query-based health
+
+Answer: operating-procedure claims are doctrine-bound to this repo and source-bound upstream where they cite commands/flags/constants. Health is query-based and reduced-mode: no log-scraping, no metrics scraping, no node-internal file reads for health.
+
+source_evidence:
+
+- Repo `docs/operating-doctrine.md` lines 5-31 defines objective, shared-host default, dedicated-host declaration, good-citizen SOP, budgets → node count → monitor → adjust, and graduated down-levers.
+- Repo `docs/operating-doctrine.md` lines 37-42 defines query-based observability in reduced mode: node liveness from CLI; host metrics from OS; earnings on-chain; deferred connectivity/peer-count/records until upstream CLI health commands exist.
+- Repo `docs/adr/ADR-0011-health-observability-query-based.md` lines 34-55 defines the health invariant: do not enable node logging for ongoing health, do not scrape logs, do not read node-internal files, use supported interfaces, host metrics via OS permitted, reduced mode honest.
+- Upstream status/daemon/event command bindings for the query-based surfaces are listed above in sections 1, 2, and `Node-management daemon`.
+- Address/range distribution figures in `docs/operating-doctrine.md` are not used as numeric Tier 1 source-backed thresholds in `references/operating-procedures.md`; the skill deliberately downgrades them to non-numeric distribution guidance unless/until independently source-bound.
+
+### 8. Agent autonomy policy boundaries
+
+Answer: `references/agent-autonomy-policy.md` is doctrine-bound, not a new authority model. It keeps receiving autonomous/key-free and spending/custody/gas/acquisition outside Tier 1.
+
+source_evidence:
+
+- Repo `docs/adr/ADR-0004-non-custodial-rewards-address.md` lines 35-73 defines node non-custodial operation, public wallet address sourcing menu, receive autonomous/spend under authority, no current custody substrate, and receive/spend invariants.
+- Repo `docs/adr/ADR-0009-independent-lifecycle-no-lockstep.md` lines 28-36 defines non-mutating install/update posture within granted remit.
+- Repo `docs/adr/ADR-0010-human-facing-language-register.md` lines 31-47 defines persona-aware by-exception escalation and plain-language output.
+- Repo `docs/adr/ADR-0011-health-observability-query-based.md` lines 34-55 defines health-observability authority boundaries.
+- Repo `docs/operating-doctrine.md` lines 32-52 defines receiving as non-custodial/autonomous, spending as gated, and stop/escalation triggers.
 
 ## Command and flag bindings
 
@@ -169,3 +225,5 @@ source_evidence:
 - Operator scope uses existing CLI/daemon surfaces and builds no new tooling: repo ADR-0003 lines 28-37.
 - Node operation is non-custodial and receives to public address only; custody/spend is out of Tier 1: repo ADR-0004 lines 35-73.
 - Install is detect-first/non-mutating by default: repo ADR-0008 lines 31-37 and ADR-0009 lines 28-36.
+- Health observability is query-based, not log/metrics/internal-file based: repo ADR-0011 lines 34-55.
+- Human/proxy/steered persona layering and plain-language register: repo DESIGN §13 lines 83-130 and ADR-0010 lines 31-47.

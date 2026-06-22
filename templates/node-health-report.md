@@ -3,7 +3,7 @@
 Date/time:
 Operator/user:
 Host:
-Public rewards address:
+Public wallet address where node earnings go:
 
 ## Tooling
 
@@ -17,7 +17,7 @@ Public rewards address:
 - Count:
 - Service names:
 - Data directories:
-- Log directories:
+- Log directories (record only; not a health signal):
 - Node ports:
 - Metrics ports:
 - Upgrade channel:

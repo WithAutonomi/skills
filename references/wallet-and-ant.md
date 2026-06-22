@@ -1,15 +1,15 @@
 # Wallet and ANT — receive side only
 
-Tier 1 receives rewards to a public address and checks that public address read-only. It does not create wallets, handle keys, sign transactions, spend ANT, withdraw ANT, or solve gas.
+Tier 1 receives earnings to a public wallet address and checks that address read-only. It does not create wallets, handle keys, sign transactions, spend ANT, withdraw ANT, or solve gas.
 
-## Rewards address
+## Wallet address for node earnings
 
-A rewards address is a public EVM address used by `ant-node` to receive payments. Source validation requires `0x` plus exactly 40 hexadecimal characters. The node stores the public address, not a private key.
+The wallet address your node's earnings go to is a public EVM address used by `ant-node` to receive payments. Source validation requires `0x` plus exactly 40 hexadecimal characters. The node stores the public address, not a private key.
 
 Use it like this:
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS"
 ```
 
@@ -41,11 +41,12 @@ Therefore, the key-free balance check is on-chain and read-only.
 This calls ERC-20 `balanceOf(address)` against the Autonomi payment token on Arbitrum One using public JSON-RPC. It reads public chain state only.
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
 ADDRESS_HEX="${PUBLIC_REWARDS_ADDRESS#0x}"
 ADDRESS_HEX="${ADDRESS_HEX#0X}"
 ADDRESS_HEX="$(printf '%s' "$ADDRESS_HEX" | tr '[:upper:]' '[:lower:]')"
-test ${#ADDRESS_HEX} -eq 40 || { printf 'invalid public rewards address\n' >&2; exit 1; }
+test "${#ADDRESS_HEX}" -eq 40 || { printf 'invalid public wallet address\n' >&2; exit 1; }
+case "$ADDRESS_HEX" in (*[!0-9a-f]*) printf 'invalid public wallet address\n' >&2; exit 1;; esac
 CALL_DATA="0x70a08231000000000000000000000000${ADDRESS_HEX}"
 
 curl -sS https://arb1.arbitrum.io/rpc \
@@ -68,7 +69,7 @@ Interpretation:
 
 Ask for human/operator authority when:
 
-- no valid public rewards address is available;
+- no valid public wallet address is available;
 - the operator wants the agent to create or own a wallet;
 - the operator wants to move, spend, bridge, approve, or withdraw ANT;
 - the public balance grows beyond a remit threshold the operator set;

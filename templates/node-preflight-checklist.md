@@ -14,11 +14,11 @@ Purpose:
 - [ ] Authority to reset/delete node state, if teardown is planned.
 - [ ] No authority granted for private keys, custody, signing, spending, gas funding, withdrawals, bridging, or ANT acquisition.
 
-## Rewards address
+## Wallet address for node earnings
 
-- [ ] Public rewards address recorded:
+- [ ] Public wallet address recorded:
 - [ ] Address starts with `0x` and has 40 hex characters after the prefix.
-- [ ] Address is intended for Arbitrum One ANT rewards.
+- [ ] Address is intended for Arbitrum One ANT earnings.
 - [ ] No private key, seed phrase, keystore, or signing token was requested or received.
 
 ## Tooling
@@ -42,7 +42,7 @@ Purpose:
 ## Planned command path
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="0x..."
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS"
 ant node daemon start
 ant node start

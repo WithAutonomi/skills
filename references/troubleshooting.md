@@ -16,7 +16,7 @@ Start with the invariant: if a proposed fix needs private key material, it is no
 - Run the binary by full path to confirm it exists.
 - If install output said bootstrap config already existed, do not overwrite it without authority.
 
-## `ant node add` rejects the rewards address
+## `ant node add` rejects the wallet address
 
 - Confirm the public address starts with `0x` and has 40 hex characters after the prefix.
 - Do not substitute a private key, seed, mnemonic, or keystore.
@@ -57,7 +57,8 @@ ant node status
 ## Node is `Errored` or repeatedly crashes
 
 - Capture `ant node status` and `ant node daemon status`.
-- Check the data/log path printed by `ant node add`. If no custom log dir was configured, node stdout/stderr logs are written under the node data directory.
+- Use query-based health first: `ant node status`, daemon status/info/events, OS host metrics, and public balance. Do not enable or scrape logs for routine health, and do not read node-internal files for health.
+- For targeted debugging only, record the data/log path printed by `ant node add` so a human/operator can inspect it if they choose.
 - Confirm bootstrap config exists or explicit bootstrap peers were supplied.
 - Confirm disk has free space above the reserve.
 - If the issue persists, stop and report the exact output; do not invent flags.

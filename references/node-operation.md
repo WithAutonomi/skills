@@ -1,10 +1,10 @@
 # Node operation
 
-This is the Tier 1 runbook for operating Autonomi nodes with a public rewards address only.
+This is the Tier 1 runbook for operating Autonomi nodes with a public wallet address where earnings are paid.
 
 ## 0. Rules before touching the machine
 
-1. Confirm the operator supplied or approved a **public EVM rewards address**.
+1. Confirm the operator supplied or approved the **public wallet address where node earnings go**.
 2. Confirm you will not handle any private key material. Tier 1 only needs the public address.
 3. Use `templates/node-preflight-checklist.md` before installing, adding, starting, or resetting nodes.
 4. Detect first; install only when `ant` is missing or unusable.
@@ -51,12 +51,17 @@ Install notes:
 - The installers add/copy `bootstrap_peers.toml` to the platform config directory when missing.
 - If you verify downloaded release archives/signatures/checksums separately, report the exact verification result before use. If you cannot verify, say so explicitly; do not claim verified delivery.
 
-## 3. Validate the public rewards address
+## 3. Validate the public wallet address
 
-The rewards address must be an EVM-style address: `0x` plus 40 hex characters. It may be a human-supplied, provisioned, or safe-substrate-created public address. Tier 1 does not create wallets.
+The wallet address must be an EVM-style address: `0x` plus 40 hex characters. It may be human-supplied, provisioned, or safe-substrate-created. Tier 1 does not create wallets.
 
 ```bash
-PUBLIC_REWARDS_ADDRESS="<public EVM rewards address supplied by operator>"
+: "${PUBLIC_REWARDS_ADDRESS:?Set PUBLIC_REWARDS_ADDRESS to the public wallet address where node earnings go}"
+ADDRESS_HEX="${PUBLIC_REWARDS_ADDRESS#0x}"
+ADDRESS_HEX="${ADDRESS_HEX#0X}"
+ADDRESS_HEX="$(printf '%s' "$ADDRESS_HEX" | tr '[:upper:]' '[:lower:]')"
+test "${#ADDRESS_HEX}" -eq 40 || { printf 'invalid public wallet address\n' >&2; exit 1; }
+case "$ADDRESS_HEX" in (*[!0-9a-f]*) printf 'invalid public wallet address\n' >&2; exit 1;; esac
 ```
 
 Do not paste or request any key, seed, keystore, or signing token.
@@ -77,7 +82,8 @@ ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --node-port 12000-12001
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --metrics-port 13000-13001
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --data-dir-path /path/to/ant-node-data
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --log-dir-path /path/to/ant-node-logs
-ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --bootstrap <source-backed-bootstrap-peer-addr-1>,<source-backed-bootstrap-peer-addr-2>
+: "${BOOTSTRAP_PEERS:?Set BOOTSTRAP_PEERS to a comma-separated source-backed peer list first}"
+ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --bootstrap "$BOOTSTRAP_PEERS"
 ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" --upgrade-channel stable
 ```
 
@@ -152,7 +158,7 @@ Expected healthy signs:
 - no node is `Errored`;
 - the node process remains up across repeated status checks.
 
-Do not scrape a metrics endpoint as the Tier 1 health path. The source-backed management surfaces for this skill are `ant node status`, `ant node daemon status/info`, and the daemon event stream.
+Do not use log-scraping, metrics scraping, or node-internal file reads as the Tier 1 health path. Logs stay off by default and are targeted-debugging only. The source-backed management surfaces for this skill are `ant node status`, `ant node daemon status/info`, the daemon event stream, OS host metrics, and public on-chain balance.
 
 ## 8. Check rewards/balance without a key
 
@@ -204,7 +210,8 @@ When you added one test node on a machine that already has other registered node
 2. Stop that node only:
 
    ```bash
-   ant node stop --service-name node11
+   : "${NODE_SERVICE_NAME:?Set NODE_SERVICE_NAME from ant node status or ant node add output}"
+   ant node stop --service-name "$NODE_SERVICE_NAME"
    ```
 
 3. Ensure the daemon is running and get the API base:
@@ -217,7 +224,9 @@ When you added one test node on a machine that already has other registered node
 4. Use the reported `api_base` and node ID to remove only that registry entry:
 
    ```bash
-   curl -sS -X DELETE http://127.0.0.1:PORT/api/v1/nodes/11
+   : "${DAEMON_API_BASE:?Set DAEMON_API_BASE from ant --json node daemon info}"
+   : "${NODE_ID:?Set NODE_ID for the stopped node from status/add output}"
+   curl -sS -X DELETE "${DAEMON_API_BASE%/}/nodes/${NODE_ID}"
    ```
 
 5. Delete only the data/log directories that were created for that same test node, and only if they are not shared with any other node.
