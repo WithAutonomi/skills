@@ -37,7 +37,6 @@ It's written for **agents operating the network** — often on behalf of a human
 
 **Autonomi — canonical docs** (LLM-readable: append `.md` to any page for Markdown, and pages support a dynamic `?ask=<question>` query)
 - What Autonomi is: `docs.autonomi.com/introduction/what-is-autonomi`
-- Start a node (human guide): `docs.autonomi.com/node`
 - Agent-readable doc index: `docs.autonomi.com/llms.txt`
 - Canonical source-repository list: `docs.autonomi.com/developers/reference-extras/source-repositories`
 - Project site: `autonomi.com`
