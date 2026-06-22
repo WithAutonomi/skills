@@ -9,7 +9,7 @@ Prepared by: OpenCode GSD orchestrator, with @pm, @operative, @codereviewer, @ve
 
 ## Status
 
-**Stop for PR review.** The doctrine authoring slice is complete on branch `feat/tier1-operator-doctrine`; open a PR from that branch into `main`, then stop for review. Do not merge, publish, or transfer without Jim's approval.
+**Stop for PR review.** The doctrine authoring slice is complete on branch `feat/tier1-operator-doctrine`; PR #7 is open into `main`: https://github.com/JimCollinson/autonomi-skill/pull/7. Do not merge, publish, or transfer without Jim's approval.
 
 Meaningful work-unit? **Yes** — it changes the shipped skill content, operating policy, and source-binding manifest.
 
@@ -39,7 +39,7 @@ Unreviewed backlog if deferred:
 CI arbiter / green of record:
 
 - Location: GitHub Actions `ADR Governance` workflow on PR/main changes touching ADR governance files.
-- Status: pending/not yet observed for this PR branch at checkpoint time.
+- Status: no checks reported on branch `feat/tier1-operator-doctrine` / PR #7 at checkpoint time (`gh pr checks 7`).
 - Note: this repo currently has no full skill-content CI arbiter; evidence for Markdown skill changes is local review + PR review, so non-ADR evidence is weaker than clean CI.
 
 Local fast gate / `.gsd/gate.sh`:
@@ -68,6 +68,7 @@ Checks run:
 
 - `python3 scripts/adr-governance.py` → passed, 11 ADR files checked.
 - `git diff --check main...HEAD` → passed.
+- `gh pr checks 7` → no checks reported on the branch.
 - @codereviewer → passed.
 - @verifier → passed, 6/6 goals; wrote `planning/phases/tier1-operator-doctrine/VERIFICATION.md`.
 - @craft → passed; no CONFORMANCE findings.
@@ -115,6 +116,7 @@ Craft Review:
 PR / upstream action gate:
 
 - PR ready to raise? **Yes.**
+- PR raised? **Yes:** https://github.com/JimCollinson/autonomi-skill/pull/7
 - Jim confirmed PR may be opened? **Yes — requested in the slice.**
 - Jim confirmed PR may be merged? **No.** Stop for review.
 
