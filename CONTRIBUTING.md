@@ -16,7 +16,7 @@ Contributors are humans and AI agents alike; these conventions keep the trail re
 - Branch names: `feat/…`, `fix/…`, `docs/…`, `chore/…` (or `name/topic` for personal / WIP branches).
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org): `feat`, `fix`, `docs`, `chore`, `refactor`, `test` — e.g. `feat(tier1): add node preflight checklist`.
 - Open a PR into `main` using the [pull request template](.github/pull_request_template.md). Fill in what's relevant; delete what isn't.
-- Merge needs at least one approving review and green CI. <!-- working default; the exact merge gate is the maintainers' call -->
+- Merge needs green CI and a completed PR. An approving review is required for ADR, architecture, or security/custody changes and for agent-authored PRs — and welcome on anything else.
 
 ## Checks before you open a PR
 
