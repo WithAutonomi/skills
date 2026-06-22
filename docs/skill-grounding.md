@@ -1,6 +1,6 @@
 # Skill grounding — opener + references
 
-> Grounding for the SKILL.md opener — what Autonomi is and why run a node — plus an About / references section. The purpose/why framing is product/vision; the factual claims are source-bound via the Tier-1 source-binding manifest.
+> Grounding for the SKILL.md opener — what Autonomi is and why run a node — plus an About / references section. The purpose/why framing is product/vision; the factual claims are source-bound via the Tier-1 source-binding manifest. Descriptions and links align with Autonomi's canonical docs (`docs.autonomi.com`).
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### What Autonomi is
 
-Autonomi is a decentralised network for **permanent, private data storage**. Data is split into pieces, encrypted, and spread across many independent **nodes** run by people and agents around the world — there are no central servers. The network pays those who provide that storage in **ANT**, its token.
+Autonomi is an **autonomous data network** — critical infrastructure for the next web, built from everyday devices and owned by us all. Your files are split into pieces, encrypted, and stored across many independent **nodes** contributed by people and agents worldwide — no central servers, and no blockchain holding the data. Storage is **permanent: paid once, kept for life**, **private by design**, and post-quantum secure. The network's token, **ANT**, pays those who provide the storage.
 
 ### Why run a node
 
@@ -33,13 +33,16 @@ It's written for **agents operating the network** — often on behalf of a human
 
 > Provenance and pointers — references and further reading, not authority. The skill's facts are bound to upstream *code* via the source-binding manifest, not to these pages.
 
-**About this skill.** Built and maintained by the Autonomi / MaidSafe team. It synthesises operator-relevant truth from the upstream Autonomi repositories into one agent-facing skill. Source: this repository.
+**About this skill.** Built and maintained by the Autonomi team (see `docs.autonomi.com/learn-more/team`). It synthesises operator-relevant truth from the upstream Autonomi code into one agent-facing skill. Source: this repository.
 
-**Autonomi — project & docs**
-- Project site: `autonomi.com`
+**Autonomi — canonical docs** (LLM-readable: append `.md` to any page for Markdown, and pages support a dynamic `?ask=<question>` query)
+- What Autonomi is: `docs.autonomi.com/introduction/what-is-autonomi`
 - Start a node (human guide): `docs.autonomi.com/node`
+- Agent-readable doc index: `docs.autonomi.com/llms.txt`
+- Canonical source-repository list: `docs.autonomi.com/developers/reference-extras/source-repositories`
+- Project site: `autonomi.com`
 
-**Upstream repositories it synthesises** (`github.com/WithAutonomi`)
+**Upstream repositories it synthesises** (`github.com/WithAutonomi`; full list at the source-repository page above)
 - `ant-client` — the `ant` CLI + node-management daemon (the operator surface)
 - `ant-node` — the node binary
 - `ant-protocol` — the wire protocol
