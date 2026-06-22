@@ -1,6 +1,6 @@
-# Autonomous Operating Doctrine — the engine (DRAFT)
+# Autonomous Operating Doctrine — the engine
 
-> What the **fully-autonomous agent** does by default — operating autonomously toward a delegated objective, with **no human engaged in the operational loop** (a human usually set the objective and owns it, but isn't present for the running of it). This is the shared base; the **human-proxy** and **steered** personas layer disclosure and control on top (the concentric model — §8). Grounded in the deep source research (rewards, storage, topology, daemon/observability) and ADR-0004/0005/0006/0009/0010/0011. Reads as "start here, then tweak." Observability is query-based per ADR-0011. Destined for the skill's `references/operating-procedures.md` + `references/agent-autonomy-policy.md` (OpenCode's lane to author from this).
+> What the **fully-autonomous agent** does by default — operating autonomously toward a delegated objective, with **no human engaged in the operational loop** (a human usually set the objective and owns it, but isn't present for the running of it). This is the shared base; the **human-proxy** and **steered** personas layer disclosure and control on top (the concentric model — §8). Grounded in the deep source research (rewards, storage, topology, daemon/observability) and ADR-0004/0005/0006/0009/0010/0011. Observability is query-based per ADR-0011. Feeds the skill's `references/operating-procedures.md` and `references/agent-autonomy-policy.md`.
 
 ## 1. Objective — what it optimises for
 
@@ -38,7 +38,7 @@
 
 - **No log-scraping for health; logs stay off by default** (debugging-only). No reading the node's internal files for health either.
 - **What the engine can see today (reduced mode):** node **liveness** (status / pid / uptime / version) from the CLI; **host metrics** from the OS (CPU, memory, free disk, network); **earnings** on-chain by address.
-- **Deferred to upstream CLI health commands:** connectivity, peer count, records stored (the minimal health-query surface the skill asked for). Until those land, the agent **operates conservatively and stays honest about what it can't yet see** — it does less, not more, when it can't confirm.
+- **Deferred to upstream CLI health commands:** connectivity, peer count, records stored (the minimal health-query surface the skill needs). Until those land, the agent **operates conservatively and stays honest about what it can't yet see** — it does less, not more, when it can't confirm.
 
 ## 7. Stop / escalate rules — no human in the operational loop
 
@@ -51,11 +51,11 @@ A fully-autonomous agent **escalates asynchronously to whoever delegated the obj
 
 It records just enough context **at the point of an escalation** for a human to pick up — not a standing log. When it can't observe enough to decide safely, it chooses the smaller, reversible action.
 
-## 8. What the personas layer on top — next step
+## 8. What the personas layer on top
 
 This engine is the **fully-autonomous base**. The two human-facing personas inherit it wholesale and add:
 
 - **Human-proxy** — a "translate and escalate upward" layer: it does the work, and surfaces to a principal only outcomes and the genuinely-human decisions (money, risk, recovery, consent), in the plain-language register (ADR-0010).
 - **Steered** — finer human levers and queries, with more on-demand disclosure, while the agent still runs the machinery.
 
-**Next:** spell out, per persona, exactly what each one **surfaces, asks, and controls** on top of this engine — the human-involved UX.
+The per-persona detail — what each one **surfaces, asks, and controls**, and the plain-language register — is in DESIGN §13 (the human interaction model).
