@@ -46,7 +46,7 @@ What the installer does:
 - Installs `ant` to `~/.local/bin` (Linux), `/usr/local/bin` (macOS), or `%LOCALAPPDATA%\ant\bin` (Windows), unless `INSTALL_DIR` is set.
 - Places `bootstrap_peers.toml` in the platform config directory if it's missing (it won't overwrite an existing one).
 - The node binary (`ant-node`) is fetched and managed by `ant` when you add nodes — so installing `ant` brings everything needed to run nodes.
-- The installer puts `ant` in a user bin dir and updates `PATH`; if `ant` isn't found immediately after installing, open a new shell so the change applies.
+- The installer puts `ant` in a user bin dir (default `~/.local/bin` on Linux, `/usr/local/bin` on macOS) but **doesn't edit `PATH`** — it only warns if that dir isn't already on it. If `ant` isn't found after installing, add the dir to `PATH` (e.g. `export PATH="$HOME/.local/bin:$PATH"`) or call `ant` by its full path.
 
 **Verification.** Releases are signed (ML-DSA-65). If you verify a downloaded archive's signature or checksum, report the exact result before use. If you can't verify, say so plainly — never claim verified delivery you didn't perform.
 
