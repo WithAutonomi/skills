@@ -34,6 +34,8 @@ Network health, within the host's resource limits. Reliable earnings follow from
 
 Size by the resource that runs out first, not by a node count you picked. Budget each resource with headroom — disk (**at least ~20 GB free per node** — the team-recommended minimum to avoid that individual node being shunned (per-node, not the agent or machine), docs/source to follow — above the network's hard 500 MiB write-reserve), memory and bandwidth (keep the host responsive; no swapping, the human's own work not starved) — and let the **tightest** budget set how many nodes you run. Start conservative, then monitor and adjust deliberately. On a shared machine, run as a background tenant: take spare capacity, yield to the host's own work. The node won't throttle its own CPU/memory — apply OS-level priority or limits from outside if you need to.
 
+Disk needn't be the system drive: `ant node add --data-dir-path <path>` places a node's data on any mounted volume (one prefix can hold several nodes' data), so survey **all** volumes (`df -h`) when deciding how many nodes and where — not just the default one. Using the human's other media (an external drive) is theirs to consent to (propose it; see `node-provisioning.md`), and the volume must stay attached. Treat this sizing as a living decision, not a one-off: re-check as load, earnings, and free space change, and rebalance or escalate deliberately rather than churning nodes.
+
 ## Running nodes
 
 Add more nodes only when there's headroom and remit allows. Use optional flags only if they appear in `ant node add --help`:
@@ -66,6 +68,14 @@ ant node daemon info       # API base, ports
 
 Healthy signs: the daemon is running; `ant node status` shows nodes `Running` (or `Starting`, or `Upgrade scheduled` during an expected upgrade); nothing is `Errored`; processes stay up across repeated checks. `ant node status` and the daemon event stream report lifecycle and health, **not** earned totals — check earnings on-chain via `wallet-and-tokens.md`.
 
+## Disk and capacity over time
+
+Capacity planning isn't one-time. A node's disk use grows as it stores more, and a host's spare resources shift. Watch free space on each node's **data volume** (the one behind its data dir — default or `--data-dir-path`), not just the system drive.
+
+- As a volume approaches the node's **500 MiB write-reserve**, that node stops accepting writes, and a chronically cramped node risks being shunned — so act before then. Escalate early with specifics: which volume, how full, how close to the reserve, and the options (free space, or place **new** nodes on a roomier volume with `--data-dir-path`).
+- Relocating an **existing** node's data to another drive isn't a single CLI step — treat it as a human-directed move, not something to improvise. Stopping a node keeps its data and is restartable; don't churn it just to chase space.
+- Never rely on removable media that may be detached — a data volume going away takes the node's standing with it.
+
 ## Scaling, step by step
 
 1. Add and start one node.
@@ -87,4 +97,4 @@ There's no per-node storage ceiling on `ant node add` — storage auto-scales wi
 
 ## When to escalate
 
-Surface to a human when: there's no valid public address; the human wants the agent to create or own a wallet, or to move / spend / withdraw / acquire ANT; the balance passes a remit threshold the human set; or a key, seed, keystore, or signing token appears in the task context. Report unknowns plainly — if a threshold isn't in source, say it's a human judgement, not a network rule.
+Surface to a human when: there's no valid public address; the human wants the agent to create or own a wallet, or to move / spend / withdraw / acquire ANT; the balance passes a remit threshold the human set; the host can't meet the ~20 GB/node disk bar on any available volume, or using the human's other media for node data needs their consent; or a key, seed, keystore, or signing token appears in the task context. Report unknowns plainly — if a threshold isn't in source, say it's a human judgement, not a network rule.
