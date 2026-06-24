@@ -50,13 +50,14 @@ curl -sS https://arb1.arbitrum.io/rpc \
 Reading the result:
 
 - A successful response has a `result` hex string — the raw ERC-20 balance as a `uint256`.
+- **Report the raw value, or say it's in the token's base units — don't convert to a human-readable ANT figure.** The token's decimals aren't asserted here, so a converted number would be guesswork; if a human needs a friendly amount, get the decimals from source first.
 - `0x0` (or a 32-byte zero) means no token balance yet.
 - Treat it as an observation of a public address, not proof a specific node has earned — payments may not have arrived.
 - If RPC is unavailable, retry later or use a human-approved Arbitrum One read-only explorer. Never enter a key.
 
 ## Why not `ant wallet balance`?
 
-In the current CLI, `ant wallet address` and `ant wallet balance` build a wallet from a private-key path — a spend-capable path that's out of scope here. Use the read-only public balance call above instead.
+In the current CLI, `ant wallet address` and `ant wallet balance` build a wallet from a private key (the `SECRET_KEY` environment variable) — a spend-capable path that's out of scope here. Use the read-only public balance call above instead.
 
 ## When to escalate
 
