@@ -67,7 +67,13 @@ Run these before the first node. This is a one-time fit check, not something to 
 - `ant --version` / `ant --help` work (or the human approved the install).
 - The public rewards address passes the `0x` + 40-hex check above.
 - No private key material is anywhere in the task context.
-- **Free disk** — at least **~20 GB per node** (team-recommended minimum, docs/source to follow; too little risks **that individual node** being **shunned** — the network drops just that node, not the agent or the machine), and comfortably above the network's hard **500 MiB write-reserve**. Storage auto-scales up from there; don't plan against a fixed per-node ceiling.
+- **Free disk — check it; treat ~20 GB per node as the bar.** Check free space on the volume that will hold the node data (your home/data volume by default; the volume behind `--data-dir-path` if you'll set one):
+
+  ```bash
+  df -h "$HOME"        # or the filesystem holding the node's data dir
+  ```
+
+  Aim for **at least ~20 GB free per node** — a team-recommended minimum (docs/source to follow). It's a strong recommendation, **not** a network-enforced limit: below it, **that individual node** is likely to be **shunned** — the network drops just that one node so it earns nothing (other nodes, the agent, and the machine are unaffected). This is separate from the network's hard **500 MiB write-reserve** (a node stops accepting writes below that). **If free disk is under ~20 GB/node, don't add the node by default** — report the shortfall and let the human choose: free space, point `--data-dir-path` at a roomier volume, or accept the risk explicitly. Storage auto-scales up from the minimum; don't plan against a fixed per-node ceiling.
 - If you'll use fixed node/metrics ports, they're free and the ranges match the node count.
 - A `bootstrap_peers.toml` exists (from the installer/release), or the human supplied source-backed bootstrap peers.
 - The daemon API will stay on loopback unless a human explicitly accepts the exposure.
