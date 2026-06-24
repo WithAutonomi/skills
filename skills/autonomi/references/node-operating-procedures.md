@@ -32,7 +32,7 @@ Network health, within the host's resource limits. Reliable earnings follow from
 
 ## Resource strategy
 
-Size by the resource that runs out first, not by a node count you picked. Budget each resource with headroom — disk (an absolute free-space floor above the network's reserve), memory and bandwidth (keep the host responsive; no swapping, the human's own work not starved) — and let the **tightest** budget set how many nodes you run. Start conservative, then monitor and adjust deliberately. On a shared machine, run as a background tenant: take spare capacity, yield to the host's own work. The node won't throttle its own CPU/memory — apply OS-level priority or limits from outside if you need to.
+Size by the resource that runs out first, not by a node count you picked. Budget each resource with headroom — disk (**at least ~20 GB free per node** — the team-recommended minimum to avoid that individual node being shunned (per-node, not the agent or machine), docs/source to follow — above the network's hard 500 MiB write-reserve), memory and bandwidth (keep the host responsive; no swapping, the human's own work not starved) — and let the **tightest** budget set how many nodes you run. Start conservative, then monitor and adjust deliberately. On a shared machine, run as a background tenant: take spare capacity, yield to the host's own work. The node won't throttle its own CPU/memory — apply OS-level priority or limits from outside if you need to.
 
 ## Running nodes
 
@@ -52,7 +52,7 @@ ant node stop
 ant node stop  --service-name node1
 ```
 
-Avoid a one-shot large `--count` unless the human asked for it and the host is provisioned for it. The CLI has a hard per-call cap to prevent accidental exhaustion — that's a guard, not a sizing recommendation.
+Avoid a one-shot large `--count` unless the human asked for it and the host is provisioned for it. The CLI validates `--count` and the port ranges you pass — a guard against accidental misconfiguration, not a sizing recommendation.
 
 ## Watching health
 
@@ -75,7 +75,7 @@ Healthy signs: the daemon is running; `ant node status` shows nodes `Running` (o
 
 ## Upgrades — hands off
 
-`ant`, `ant-node`, and this skill have independent lifecycles. Nodes auto-upgrade and the network propagates versions, so keep them running rather than chasing a version. Don't run `ant update` just because this skill changed — only for an explicit compatibility/security reason or human request. If a setup is working, prefer observation over mutation.
+`ant`, `ant-node`, and this skill have independent lifecycles. Nodes auto-upgrade along their upgrade channel (`--upgrade-channel`, e.g. `stable`) and the network propagates versions, so keep them running rather than chasing a version. Don't run `ant update` just because this skill changed — only for an explicit compatibility/security reason or human request. If a setup is working, prefer observation over mutation.
 
 ## Down-levers — and don't churn
 
