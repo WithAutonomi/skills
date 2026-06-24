@@ -10,8 +10,7 @@ Start with the invariant: **if a proposed fix needs private key material, it is 
 
 ## Installer ran but `ant --help` fails
 
-- Open a new shell so `PATH` changes apply.
-- Run the binary by full path to confirm it exists.
+- The installer places `ant` in its install dir but doesn't edit `PATH`. Add that dir to `PATH` (e.g. `export PATH="$HOME/.local/bin:$PATH"`), or run `ant` by its full path to confirm it's there.
 - If the installer said a bootstrap config already existed, don't overwrite it without authority.
 
 ## The install download fails (403 / proxy / blocked endpoint)
