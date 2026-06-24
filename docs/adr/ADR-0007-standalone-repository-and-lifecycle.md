@@ -1,73 +1,69 @@
-# ADR-0007: Standalone repository and release lifecycle for the skill
+# ADR-0007: Dedicated first-party skills repository and release lifecycle
 
 - **Status:** Proposed
 - **Date:** 2026-06-17
 - **Decision owners:** Jim Collinson
-- **Reviewers:** David Irvine
+- **Reviewers:** David Irvine, Hermes
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0002 (single holistic skill), ADR-0006 (source-binding); the Autonomi Developer skill (`WithAutonomi/autonomi-developer-docs`); vault `spec/DECISIONS.md`
+- **Related:** ADR-0002 (single holistic skill), ADR-0008 (structure & distribution), ADR-0006 (source-binding), ADR-0009 (independent lifecycle); the Autonomi Developer skill (`WithAutonomi/autonomi-developer-docs`)
 
 ## Context
 
-This skill is a **synthesis**. To teach an agent to use Autonomi as an operator, it must draw on and reconcile **multiple upstream repositories** — covering, among others:
+This skill is a **synthesis**. To teach an agent to use Autonomi as an operator it draws on and reconciles **multiple upstream repositories** — operating a node (`ant-node`); the CLI + node-management daemon (`ant-client`); ANT and what it is for (`evmlib`, token docs); data and the network beneath it (`self_encryption`), plus node and developer documentation. No single upstream repo encapsulates this agent-as-user view, so the skill has no natural home inside any one of them; embedding it in a code or docs repo would misrepresent its cross-cutting scope and couple it to that repo's lifecycle.
 
-- operating a node (`ant-node`);
-- the CLI and the node-management daemon (`ant-client`);
-- ANT tokens — holding them, and what they can be used for, such as storing data (`evmlib`, `ant-protocol`, the token docs);
-- data and the network beneath it (`self_encryption`, `saorsa-core`), plus the node and developer documentation.
-
-No single upstream repository encapsulates all of these moving parts from a functional, **agent-as-user** perspective — which is precisely what this skill sets out to do. So there is no existing repo where it naturally lives: embedding it in any one of them (a single code repo, or a docs repo) would misrepresent its cross-cutting scope and couple it to that repo's lifecycle. It is a synthesis job, and it deserves a repository of its own.
-
-The supporting reasons reinforce this. It is an **operator skill** (action), not documentation (a discrete knowledge collection); it references upstream binaries; it carries its own automation (an upstream-sweep and version manifest, per ADR-0006) and verification workflow, maintained by multiple agents; and it needs to be **installable and accessible from anywhere**, independent of any one repo's structure. Co-locating it in — or installing it from — a docs repo (as the Developer skill does) is one option that was considered, but a docs-repo URL is an odd marketplace for an operator skill and couples unrelated cadences. The likely reviewer question — "why a separate repo?" — is answered by the synthesis nature above.
+Autonomi also already has **more than one** first-party skill: the operator skill (`autonomi`) and a developer skill (build *on* Autonomi). They need a single, predictable, discoverable home rather than being scattered across the org's repos — today the developer skill sits inside a docs repo (`autonomi-developer-docs`), itself an awkward home for skill/action content. And skills install via tools such as `skills.sh`, whose interactive selection lists a repo's skills by **name + description** for the user to choose — so a dedicated skills repo with a README that lists what is available gives one clean install surface and a clear menu.
 
 ## Decision Drivers
 
 - The skill synthesises across multiple upstream repos — no single repo is its natural home.
-- It must be installable and accessible from anywhere, independent of any one repo.
-- Independent lifecycle and release cadence, decoupled from the docs site.
-- A distinct mandate from the documentation project: action/skill, not a knowledge collection.
-- Its own automation (upstream-sweep, version manifest) and verification workflow.
+- More than one first-party skill exists; they want one predictable, discoverable home, not scattering across org repos.
+- Installation ergonomics: one clean install surface; selection is description-driven; a README menu of available skills.
+- A single *primary* skill for the everyday journey (use nodes to earn + store data) — users/agents should not install several skills for basic use — while leaving room for distinct, niche skills (e.g. developer) chosen by need.
+- Independent lifecycle and release cadence, decoupled from any docs site or code repo (ADR-0009).
+- Each skill self-contained; only the skill bundle ships, internal provenance/process stays repo-side.
 - Cross-repository ADR/governance consistency with the Autonomi/Saorsa portfolio.
 
 ## Considered Options
 
-1. **A task/sub-stream under the Autonomi 2.0 documentation work.** Rejected: different mandate and lifecycle; too much (binaries, automation, multi-agent, releases) to ride as a docs task.
-2. **Live inside one upstream code repo (e.g. `ant-node` or `ant-client`).** Rejected: the skill spans several repos; no single one covers what it references, so embedding it in one misrepresents its scope and couples it to that repo's lifecycle.
-3. **Co-locate in / install from a docs repo (`autonomi-node-docs`, as the Developer skill does).** Rejected: docs repos hold discrete, knowledge-based collections, not skill/action content, and do not span the multi-repo surface this skill needs; a docs URL is an odd install home and couples release cadences.
-4. **Its own standalone repository and project.** Chosen.
+1. **Sub-stream of the Autonomi 2.0 documentation work.** Rejected: different mandate and lifecycle.
+2. **Inside one upstream code repo (`ant-node`/`ant-client`).** Rejected: the skill spans several repos; embedding in one misrepresents scope and couples lifecycles.
+3. **Co-located in / installed from a docs repo** (as the developer skill currently is). Rejected: docs repos hold knowledge collections, not skill/action content; a docs URL is an odd install home and couples cadences.
+4. **A standalone repository for a single skill.** Rejected: more than one first-party skill already exists; a single-skill repo does not accommodate siblings or give users one menu.
+5. **A dedicated first-party skills repository holding one or more skills (`skills/<name>/`).** Chosen.
 
 ## Decision
 
-The skill lives in its **own repository**, with its own ADRs, specs, and release lifecycle — because no upstream repo is its natural home (it synthesises several) and it must be installable and accessible from anywhere. It is **not** a sub-stream of the documentation project and is **not** installed from `autonomi-node-docs`. `docs.autonomi.com/node` becomes a pointer to the skill, not its source. The repository mirrors the portfolio ADR governance for consistency.
+First-party Autonomi skills live in a **dedicated skills repository** — **`WithAutonomi/skills`** — with its own ADRs, specs, and release lifecycle. Each skill is self-contained under **`skills/<name>/`** (`SKILL.md` + bundled `references/`). The **`autonomi`** skill (operate nodes + use the network: upload/manage data) is the primary skill and the everyday journey; **sibling skills** (the developer skill, today in `autonomi-developer-docs`) consolidate in over time. The repo **README lists the available skills** with descriptions, mirroring what install tools show when choosing. `docs.autonomi.com/node` is a pointer to the skill, not its source. The repo starts under a personal account on an interim basis and is org-owned before any public or official use.
 
 Invariants:
-- Own repo, own ADRs/specs, own release lifecycle and automation.
-- Not embedded in, nor installed from, any single upstream code or docs repo; it references many and belongs to none.
-- The docs site is a pointer, not the source.
-- PR / merge / publish against any shared or upstream repo is a maintainer-approval gate.
 
-Open (not decided here): the GitHub organisation/home and the clean install URL — a maintainer decision. The repo should be **org-owned before any public or official use**; it starts local/interim under a personal account for visibility. The lifecycle-coupling boundary that a separate repo must respect is specified in ADR-0009.
+- A dedicated first-party skills repo; **not** embedded in, nor installed from, any single upstream code or docs repo.
+- One skill per `skills/<name>/`; a **single primary skill** for everyday use, with room for distinct niche skills by choice.
+- Only the **skill bundle** ships (`SKILL.md` + `references/`); `docs/`, `docs/adr/`, `planning/`, `source-bindings/` are repo-side only and never ship.
+- The README lists available skills + descriptions.
+- Own ADRs/specs, own release lifecycle and automation (ADR-0006/0009).
+- PR / merge / publish / **repo transfer** against any shared or upstream repo is a maintainer-approval gate.
+
+Open (not decided here): re-homing the developer skill into this repo is a scheduled migration (its own automation + docs-pull; draft/beta; Jim-owned) — direction set here, logistics owned by the roadmap. Transfer of the repo to `WithAutonomi` is a gated step.
 
 ## Consequences
 
 ### Positive
-
-- A single canonical home for a multi-repo synthesis, installable and accessible from anywhere.
-- Independent, ergonomic release and install path; a clear mandate separate from docs.
-- Room for the skill's own automation and verification without entangling any upstream repo.
+- One canonical, discoverable home for first-party skills; one clean install surface; a clear README menu.
+- Description-driven selection works well; the everyday user installs one primary skill.
+- Room for niche skills without scattering across the org; independent lifecycle.
 
 ### Negative / Trade-offs
-
-- Another repository to maintain; the GitHub home and install URL remain open decisions.
+- Migrating the developer skill in is a non-trivial project (its own automation + docs-pull).
+- A repo to maintain; the move to `WithAutonomi` remains a gated step.
 
 ### Neutral / Operational
-
-- The repo adopts the same ADR governance as the rest of the portfolio (ADR-0001) for consistency.
+- Adopts portfolio ADR governance (ADR-0001). The concrete install mechanics + quality bar are ADR-0008's job.
 
 ## Validation
 
-The repository carries its own ADRs, specs, and (later) release artifacts, references multiple upstream repos without belonging to any of them, and the skill installs without depending on a docs or single-code repo. The open items (GitHub org/home, install URL) are resolved with the maintainer before publish.
+The repository carries its own ADRs/specs/release artifacts, references multiple upstream repos without belonging to any, and the skill installs from it without depending on a docs or single-code repo. The README lists the available skills. Open items (org transfer, developer-skill migration) are resolved with the maintainer before publish.
 
 ## Notes for AI-assisted work
 
