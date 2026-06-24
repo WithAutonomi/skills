@@ -57,7 +57,7 @@ What the earned ANT is for: its core purpose is to **pay to store data** permane
 - **`ant`** — the Autonomi command-line tool you use to run and manage nodes (it also runs the node-management daemon). Lower-case `ant` always means this tool.
 - **ANT** — the **Autonomi Network Token**: what the network pays your nodes for the storage they provide, and what is later spent to store data. Upper-case ANT always means the token, never the tool.
 - **Node** — a small, long-running program that stores encrypted pieces of other people's data and keeps them available; your nodes earn ANT for the storage they provide. You run **many small nodes**, not one big one.
-- **Daemon** — the local node-management service that starts, stops, and reports on your nodes. It's the **`ant` binary itself in daemon mode** (`ant node daemon`), not a separate install. `ant node start`/`stop` need it running; `ant node add` does not.
+- **Daemon** — the local node-management service that starts, stops, and reports on your nodes. It's the **`ant` binary itself in daemon mode** (run via `ant node daemon start`), not a separate install. `ant node start`/`stop` need it running; `ant node add` does not.
 - **Public address** — the public address your nodes' earnings are paid into. It receives only: it cannot spend, and it is never a private key. (Precisely: an EVM address on Arbitrum One — `0x` plus 40 hex characters — given to a node with `--rewards-address`.)
 
 ## How you operate
@@ -146,13 +146,13 @@ ant node reset [--force]                Delete ALL node data/logs + registry   (
 ant update --force                      Update the tool   (only for an explicit compatibility/security reason)
 ```
 
-Upgrades happen by themselves — nodes auto-upgrade and the network propagates versions, so keep them running rather than resetting or manually upgrading to chase a version. The node binary defaults its network to **Arbitrum One**; `ant node add` adds one node by default. There's no per-node storage cap on the command line — storage auto-scales with free disk (see Configuration).
+Upgrades are hands-off — nodes auto-upgrade along their upgrade channel (`--upgrade-channel`, e.g. `stable`) and the network propagates versions, so keep them running rather than resetting or manually upgrading to chase a version. The node binary defaults its network to **Arbitrum One**; `ant node add` adds one node by default. There's no per-node storage cap on the command line — storage auto-scales with free disk (see Configuration).
 
 ## Configuration
 
 Most operation needs no config file. The settings that matter:
 
-- **Disk reserve / storage size.** A node refuses writes when free disk drops below a reserve (**default 500 MiB**); otherwise storage auto-scales from available disk and grows on demand. There's no fixed per-node ceiling, and you can't set one with `ant node add` — a per-node cap is only available via the node's own TOML config (advanced; see `references/node-operating-procedures.md`).
+- **Disk per node.** Provision **at least ~20 GB of free disk per node** — a team-recommended minimum (docs/source to follow): below it, **that individual node** risks being **shunned** — the network drops that one node (it earns nothing), while other nodes, the agent, and the machine are unaffected. This is separate from the network's hard **500 MiB write-reserve** (a node stops accepting writes below it). Above the minimum, storage auto-scales with free disk and grows on demand — no fixed per-node ceiling, and you can't set one with `ant node add` (a per-node cap is only in the node's own TOML config — advanced; see `references/node-operating-procedures.md`).
 - **Ports.** Node and metrics ports auto-select; set fixed ones (`--node-port`, `--metrics-port`, as ranges matching `--count`) only when you need firewall rules.
 - **Bootstrap.** Peers are auto-discovered from a `bootstrap_peers.toml` the installer places; pass `--bootstrap` only with source-backed peers from the human.
 
@@ -173,7 +173,7 @@ Full diagnostics: `references/troubleshooting.md`.
 
 ## About
 
-This skill teaches an agent to operate the Autonomi network from its existing tools — the `ant` command-line tool and its node-management daemon — adding no new tooling of its own. It synthesises what an agent needs to operate Autonomi from its upstream code into one place, and every command and figure here is bound to that source.
+This skill teaches an agent to operate the Autonomi network from its existing tools — the `ant` command-line tool and its node-management daemon — adding no new tooling of its own. It synthesises what an agent needs to operate Autonomi from its upstream code into one place, and every command and figure here is bound to that source — any figure that runs ahead of the published docs (like the per-node storage minimum) is flagged inline as team-confirmed, pending source.
 
 - Autonomi: https://autonomi.com — agent index: https://autonomi.com/llms.txt (full context: https://autonomi.com/llms-full.txt)
 - Run a node (human guide): https://docs.autonomi.com/node
