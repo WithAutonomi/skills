@@ -62,24 +62,39 @@ It must be `0x` followed by exactly 40 hexadecimal characters. It may be **suppl
 
 ## 4. Preflight the host (once)
 
-Run these before the first node. This is a one-time fit check, not something to repeat on every start/stop:
+A one-time fit check before the first node — not something to repeat on every start/stop. Two parts: **decide what you're contributing**, then **confirm the host can carry it**.
+
+### Decide your contribution — what, where, how much
+
+A deliberate choice, not a default. Make it on the merits and within the human's remit — autonomously (or by proxy) if you have that remit, otherwise by asking:
+
+- **Where the node data lives.** It can sit on the system drive *or* any other mounted volume — an attached external drive, a separate data disk. Pick the location that's the best fit (enough free space, stays attached, not fighting the human's own use), rather than assuming the system drive. `df -h` shows every mounted volume and its free space; also weigh spare memory and bandwidth.
+- **How many nodes.** Each node wants **≥ ~20 GB free** on its data volume. More nodes contribute — and earn — more, but only if the chosen location truly has the room and the host stays responsive; a stuffed host earns less. Size to the resource that runs out first (full doctrine: `node-operating-procedures.md`, Resource strategy).
+- **Act or ask.** Proceed if you have remit to choose. Ask when the choice is materially the human's — using their other media for node data, a plan that differs from what they asked, or a contribution beyond your remit. Put it concretely, e.g.: "The system drive has 3 GB free; your external drive at `/Volumes/Backup` has 400 GB. I'd run two nodes there — OK?"
+
+### Confirm the host can carry it
 
 - `ant --version` / `ant --help` work (or the human approved the install).
 - The public rewards address passes the `0x` + 40-hex check above.
 - No private key material is anywhere in the task context.
-- **Free disk — check it; treat ~20 GB per node as the bar.** Check free space on the volume that will hold the node data (your home/data volume by default; the volume behind `--data-dir-path` if you'll set one):
-
-  ```bash
-  df -h "$HOME"        # or the filesystem holding the node's data dir
-  ```
-
-  Aim for **at least ~20 GB free per node** — a team-recommended minimum (docs/source to follow). It's a strong recommendation, **not** a network-enforced limit: below it, **that individual node** is likely to be **shunned** — the network drops just that one node so it earns nothing (other nodes, the agent, and the machine are unaffected). This is separate from the network's hard **500 MiB write-reserve** (a node stops accepting writes below that). **If free disk is under ~20 GB/node, don't add the node by default** — report the shortfall and let the human choose: free space, point `--data-dir-path` at a roomier volume, or accept the risk explicitly. Storage auto-scales up from the minimum; don't plan against a fixed per-node ceiling.
+- **Free space on the volume(s) you chose** — `df -h <path>` — is **≥ ~20 GB per node** you'll place there. This ~20 GB is a strong recommendation, **not** a network-enforced limit: below it, **that individual node** is likely to be **shunned** (the network drops just that one node, so it earns nothing; other nodes, the agent, and the machine are unaffected). It's separate from the network's hard **500 MiB write-reserve** (a node stops accepting writes below that). If your chosen volume can't meet the bar and no other can, and the human can't free space, stop and report — don't squeeze a node onto a volume below it. Above the bar, storage auto-scales; don't plan against a fixed per-node ceiling.
 - If you'll use fixed node/metrics ports, they're free and the ranges match the node count.
 - A `bootstrap_peers.toml` exists (from the installer/release), or the human supplied source-backed bootstrap peers.
 - The daemon API will stay on loopback unless a human explicitly accepts the exposure.
 - The machine can stay online long enough to be useful — a human judgement; there's no source-backed uptime number.
 
 If release-signature verification will run, note the verifier loads the whole binary into memory; release builds are typically 50–100 MB and ≥ 512 MB RAM is recommended for that step.
+
+### Placing node data on a chosen volume
+
+When the location you chose isn't the default, point the node at it with `--data-dir-path` — a custom data-directory prefix (pair with `--log-dir-path` if logs should follow). One prefix can hold several nodes' data:
+
+```bash
+ant node add --rewards-address "$PUBLIC_REWARDS_ADDRESS" \
+  --data-dir-path /Volumes/Backup/autonomi
+```
+
+Source-bound: `--data-dir-path <PATH>` / `--log-dir-path <PATH>` are options on `ant node add`. Choose a volume that **stays attached** — node data must remain available or the node loses its standing, so removable media that may be unplugged is a poor choice. If, after surveying, **no** volume can meet the bar and the human can't free space, stop and report — there's nowhere safe to put the data.
 
 ## 5. Add your first node
 
@@ -89,6 +104,8 @@ ant node daemon start
 ant node start
 ant node status
 ```
+
+If you chose a non-default data location in preflight, add `--data-dir-path <path>` (and `--log-dir-path` if wanted) to the `add` command above.
 
 Defaults from source: one node (`--count 1`); the node binary uses `--evm-network arbitrum-one`; bootstrap peers auto-discovered. Don't rely on `--network-id` as a live network selector — the current daemon doesn't forward it to the node.
 
