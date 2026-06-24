@@ -46,6 +46,7 @@ What the installer does:
 - Installs `ant` to `~/.local/bin` (Linux), `/usr/local/bin` (macOS), or `%LOCALAPPDATA%\ant\bin` (Windows), unless `INSTALL_DIR` is set.
 - Places `bootstrap_peers.toml` in the platform config directory if it's missing (it won't overwrite an existing one).
 - The node binary (`ant-node`) is fetched and managed by `ant` when you add nodes — so installing `ant` brings everything needed to run nodes.
+- The installer puts `ant` in a user bin dir and updates `PATH`; if `ant` isn't found immediately after installing, open a new shell so the change applies.
 
 **Verification.** Releases are signed (ML-DSA-65). If you verify a downloaded archive's signature or checksum, report the exact result before use. If you can't verify, say so plainly — never claim verified delivery you didn't perform.
 
@@ -66,7 +67,7 @@ Run these before the first node. This is a one-time fit check, not something to 
 - `ant --version` / `ant --help` work (or the human approved the install).
 - The public rewards address passes the `0x` + 40-hex check above.
 - No private key material is anywhere in the task context.
-- **Free disk** sits comfortably above the node's reserve (**default 500 MiB**). Storage auto-scales with free disk; don't plan against a fixed per-node ceiling.
+- **Free disk** — at least **~20 GB per node** (team-recommended minimum, docs/source to follow; too little risks **that individual node** being **shunned** — the network drops just that node, not the agent or the machine), and comfortably above the network's hard **500 MiB write-reserve**. Storage auto-scales up from there; don't plan against a fixed per-node ceiling.
 - If you'll use fixed node/metrics ports, they're free and the ranges match the node count.
 - A `bootstrap_peers.toml` exists (from the installer/release), or the human supplied source-backed bootstrap peers.
 - The daemon API will stay on loopback unless a human explicitly accepts the exposure.
