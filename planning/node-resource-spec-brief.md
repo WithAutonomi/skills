@@ -4,7 +4,7 @@
 >
 > *Synthesised from two independent, clean-context agent passes (this assistant + an OpenCode agent), each working only from the installed skill, neither seeing the other's view. Strong convergence is noted where it occurred.*
 
-> **Form of the answer matters as much as the content.** Agents must **not** be left to infer numbers from soft prose — that is exactly where different models diverge ("keep the host responsive" → 50% headroom to one, 5% to another). The document must deliver **hard, quantified values with units, in a structured, versioned, source-bindable form** (a parameters table / manifest), with prose reserved for the *why* and the judgement. The agent should **read** the values, like it reads a command flag, not interpret them. The concrete list of values required is in *Parameters the document must quantify*, below.
+> **The answer needs two registers — and both matter.** Where a figure is genuinely knowable, deliver it as a **hard, quantified value with units, in a structured, versioned, source-bindable form** (a parameters table / manifest) — agents must not infer numbers from soft prose, which is exactly where models diverge ("keep the host responsive" → 50% headroom to one, 5% to another). Where the right answer is inherently a matter of judgement (trade-off priorities, good-citizen conduct, shared-host tenancy), deliver it as an **explicit principle, guideline, or recommendation** — deliberate SOP guidance. The document must make **clear which is which**, so an agent knows when it's reading a binding value versus exercising judgement inside a stated principle. The failure to avoid is *accidental* vagueness — a soft phrase sitting where a real number exists — not deliberate principle. (This mirrors the skill itself, which already pairs hard source-bound facts with operating doctrine.) The hard values required are listed in *Parameters the document must quantify*; the judgement-based guidance is needed throughout the blind-spots above.
 
 ## What "operating well" demands of the agent
 
@@ -32,7 +32,7 @@ Notice what's missing: **how earning works, what "healthy" means to the network,
 
 ## Blind spots & information needs
 
-Each item: **what's needed**, and **the decision it unblocks**. *(C = both passes converged independently.)*
+Each item: **what's needed**, and **the decision it unblocks**. *(C = both passes converged independently.)* Some answers will be hard values, some explicit principles — see the two-registers note above.
 
 ### A. Earning & economics
 
@@ -79,7 +79,7 @@ Each item: **what's needed**, and **the decision it unblocks**. *(C = both passe
 
 ## Parameters the document must quantify (with units)
 
-These are the **hard values** the document must state — not describe. For each, give the **value or range**, the **unit**, the **condition** it applies under, and whether it is a **hard limit** (network-enforced) or a **recommendation** (judgement). Where a value genuinely varies, give a range and the variable it depends on. "It depends" is only acceptable with the dependency named and bounded.
+These are the **hard values** the document must state — not describe. For each, give the **value or range**, the **unit**, the **condition** it applies under, and whether it is a **hard limit** (network-enforced) or a **recommendation** (judgement). Where a value genuinely varies, give a range and the variable it depends on. Where no single value is right because the call is genuinely judgement-based, say so explicitly and give the **principle or recommendation** to apply instead — that is a legitimate SOP answer, not a gap. The only thing to avoid is *accidental* vagueness: a soft phrase where a real number exists.
 
 **Disk**
 - Minimum free disk **per node** — value (GB); and state explicitly **additive vs shared-pool** across nodes on one drive.
@@ -118,4 +118,5 @@ These are the **hard values** the document must state — not describe. For each
 
 ## How the skill will consume this
 
-One authoritative, **versioned** document at a stable upstream path → the **values block above is delivered structured and machine-readable**, so the skill **source-binds** each figure (like commands and flags) and the agent reads it rather than inferring it → the freshness automation re-pins when it changes, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until it exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — but every figure in the parameters list needs to arrive as a hard value, not prose.
+One authoritative, **versioned** document at a stable upstream path, in **two registers**: the **values block** delivered structured and machine-readable so the skill **source-binds** each figure (like commands and flags) and the agent reads it rather than inferring it; and the **principles/guidance** carried as operating doctrine (the skill already does this — the boundary model, don't-churn, yield-to-the-host). The freshness automation re-pins when values change, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until the document exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — but every figure in the parameters list needs to arrive as a hard value, and every judgement call as an explicit principle.
+
