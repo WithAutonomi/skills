@@ -1,38 +1,71 @@
-# autonomi-skill
+# Autonomi Skills
 
-Source and formal project truth for the **Autonomi operator skill** — an auto-updating, agent-facing skill that teaches an AI agent to operate the Autonomi network: run and manage nodes, receive rewards to a non-custodial public wallet address, and route onward to wallet and data guidance for securing or spending the ANT they earn.
+First-party [Agent Skills](https://agentskills.io) for the **Autonomi** network — installable, self-contained instructions that teach an AI agent to operate Autonomi from its own tools.
 
-This repository holds the formal artifacts: the vision, design, decisions (ADRs), feature priorities, the roadmap, and — once authored — the skill package itself. Loose thinking, research, and planning notes live in the paired Obsidian vault project `Projects/Autonomi Skill`.
+This is the home for Autonomi's first-party skills. It holds one or more skills under `skills/`, each independently installable.
 
-## Status
+## Skills in this repo
 
-**Phase 01 — design & de-risk, substantially complete.** The design and the nine load-bearing decisions are drafted; the skill itself is not yet authored. The ADRs are **Proposed**, pending acceptance (Jim as decision owner, after David's review). Two decisions are deliberately left open for a team call — see **Open team decisions** in the roadmap:
+| Skill | What it's for | Status |
+| --- | --- | --- |
+| **`autonomi`** | Run and manage Autonomi nodes, and earn ANT (the Autonomi Network Token) for the storage they provide. Non-custodial. | **Available** |
+| `autonomi-developer` | Build applications *on* Autonomi (libraries, SDK). | Planned — currently at [`WithAutonomi/autonomi-developer-docs`](https://github.com/WithAutonomi/autonomi-developer-docs) |
 
-- **Agent wallet custody substrate** — where key generation, storage, recovery, and signing live (ADR-0004).
-- **Gas strategy** — how an agent holding only ANT pays the Arbitrum gas needed to spend it (ADR-0005).
+## Install
 
-## Start here (reading order)
+The skill is standards-compliant ([agentskills.io](https://agentskills.io)), so it isn't tied to one channel.
 
-1. `docs/VISION.md` — why we're building it, for whom, and the principles.
-2. `docs/DESIGN.md` — what we're building and how it works, realigned to the ADRs.
-3. `docs/adr/` — the architectural decisions and their rationale (start at `docs/adr/README.md`; ADR-0001…0009).
-4. `planning/ROADMAP.md` — build phases, the delivery scope ladder (capability tiers), and the **Open team decisions** that gate later tiers.
+### skills.sh (from GitHub)
 
-(`docs/FEATURES.md` carries the MoSCoW feature priorities.)
+```bash
+# Install the autonomi skill (it's the only one here, so a bare add installs it)
+npx skills add JimCollinson/skills
 
-## Layout
+# …or name it explicitly
+npx skills add JimCollinson/skills --skill autonomi
+```
 
-- `docs/VISION.md` — purpose, goals, non-goals, principles, audience.
-- `docs/DESIGN.md` — the design, realigned to the ADRs. _(Forthcoming: a source-binding manifest and the skill package.)_
-- `docs/FEATURES.md` — MoSCoW feature priorities.
-- `docs/adr/` — Architecture Decision Records (team-standard governance; see `docs/adr/README.md`).
-- `planning/ROADMAP.md` — phases, capability ladder, and open team decisions (the vault holds only a pointer).
-- `scripts/adr-governance.py` — ADR validation gate; CI workflow in `.github/workflows/`.
+Useful flags: `--skill <name>` (pick a specific skill), `--all` (install all), `-a <agent>` (target agent, e.g. `opencode`, `claude`, or `*` for all), `-g` (install globally), `-l` (list without installing), `-y` (no prompts). When the repo holds more than one skill, a bare `add` opens an interactive picker keyed on each skill's name + description.
 
-## Governance
+### ClawHub / OpenClaw
 
-This repo follows the Autonomi/Saorsa ADR standard. Before changing architecture, inspect `docs/adr/`; draft Proposed ADRs from `docs/adr/TEMPLATE.md`; never edit an Accepted ADR (supersede it); never mark an ADR Accepted autonomously. PR / publish against any shared or upstream repo is a maintainer-approval gate.
+```bash
+openclaw skills install autonomi
+```
 
-## Positioning
+The skill carries an OpenClaw install manifest in its frontmatter (`metadata.openclaw`) describing how to fetch and verify the upstream `ant` binary.
 
-Draws on the x0x skill (`saorsa-labs/x0x`) as a **structural precedent and quality bar — not a dependency** (ADR-0008). Distinct from the Autonomi Developer skill (`WithAutonomi/autonomi-developer-docs`): that covers building *on* Autonomi; this covers *operating and using* it.
+### What gets installed
+
+The **skill bundle** — `skills/autonomi/SKILL.md` plus its bundled `references/`. The skill is agent-facing instructions; on first use it guides the agent to install the upstream **`ant`** CLI (the Autonomi tool) itself, non-custodially. Nothing here holds keys or moves funds.
+
+> **Heads-up — binary install in locked-down sandboxes.** The `ant` installer downloads its binary from GitHub's release CDN (`release-assets.githubusercontent.com`), which some AI-agent sandboxes block even when `github.com` is allowed. The skill detects this and tells you exactly what to allowlist rather than failing silently. Tracked as an upstream/release item in [`planning/release-endpoint-accessibility.md`](planning/release-endpoint-accessibility.md).
+
+## Repo layout
+
+```
+skills/<name>/          # the installable skill bundle(s) — the ONLY thing that ships
+  autonomi/
+    SKILL.md            # entry point: what Autonomi is, key terms, safety, get-started, CLI ref, config
+    references/         # on-demand depth: provisioning, operating, uninstall, wallet, troubleshooting
+
+docs/                   # repo-side, never ships
+  adr/                  # architecture decision records
+planning/               # briefs, handoff, open threads
+source-bindings/        # provenance: every command/figure bound to upstream code (drives auto-update)
+scripts/                # maintenance / freshness automation
+```
+
+Only `skills/<name>/` is discovered and installed; everything else is for maintainers.
+
+## Contributing
+
+Branch + PR (never direct-to-main); architecture/protocol/security decisions go through an ADR in `docs/adr/`. See [`CONTRIBUTING.md`](CONTRIBUTING.md), and [`planning/HANDOFF.md`](planning/HANDOFF.md) for current state, open decisions, and how to test.
+
+## Status & roadmap
+
+This repo is being established as the first-party skills home. Planned: transfer to the `WithAutonomi` org as `WithAutonomi/skills` (pending sign-off). Current state, the rebuild brief, and the review entry point are in [`planning/`](planning/).
+
+---
+
+Built by the Autonomi team (MaidSafe). Autonomi: <https://autonomi.com>
