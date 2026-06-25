@@ -1,90 +1,71 @@
-# Brief — Recommended Node Resource Document
+# Brief — what an operating agent needs to understand to run Autonomi nodes well
 
-> **For:** the Autonomi dev team. **From:** Jim + agent (drafted 2026-06-25). **Purpose:** define the questions an authoritative node-resource document needs to answer, so an agent can operate nodes well. This brief lists the *questions*, not the answers — several need real research/measurement.
+> **For:** the Autonomi dev team. **From:** Jim + agent (2026-06-25). **Purpose:** written from the standpoint of the *agent the skill drives* — what it must understand to operate nodes effectively, and where its blind spots are given what's knowable today. This is the **input** to a single authoritative **Recommended Node Resource Document** that should live at a stable location in an upstream repo. It states the agent's information needs, not the answers.
 
-## Why this document should exist
+## What "operating well" actually demands of the agent
 
-The `autonomi` skill teaches an agent to decide **what resources to contribute, where, and how many nodes** — then run them as a good citizen and adapt over time. To do that responsibly it needs authoritative resource guidance. Today the skill carries the **~20 GB/node** minimum as *team-confirmed, pending source*, and treats **memory, CPU, and bandwidth** as judgement-only ("keep the host responsive," no numbers).
+The skill asks an agent to deliver four outcomes at once:
 
-Recommendation: capture this as **one authoritative document with a stable location in an upstream repo we already consume** (e.g. `ant-node` or `ant-client`), versioned, so the skill can **source-bind** to it exactly as it binds commands and flags — and the planned auto-update automation re-pins it when it changes. A single home avoids the figures drifting across docs.
+1. **Best use of the host's resources** *and* **what's best for the network** — contribute real capacity without harming the machine or its owner.
+2. **Be a good network citizen and not get shunned** — run nodes the network keeps and rewards, not ones it drops.
+3. **Feed back timely, correct information to the human operator** — earnings, health, risks, in language they can act on.
+4. **Make clear allocation/utilisation decisions for the best outcome for all parties.**
 
-## The decision an agent is making
+Each of these needs knowledge the agent does **not** fully have today. The rest of this brief is that gap, made explicit.
 
-Given a host, the agent chooses a contribution and runs it, **optimising across three interests that sometimes pull against each other**:
+## What the agent can already determine
 
-1. **Best allocation of the host's resources** — use spare capacity efficiently without harming the machine or its owner.
-2. **What's best for the network** — reliability, capacity, and healthy spread.
-3. **What's best for the local operator** — earn properly, keep upkeep low, and avoid the node being *shunned*.
+So the gaps are visible, here's what the skill encodes today (source-bound or team-confirmed):
 
-The document should let an agent reason about all three, and tell it the **priority order when they conflict**.
+- The node takes a public rewards address only; earnings are read **on-chain by that address**, and node status reports lifecycle/health but **not earned totals**.
+- A node won't accept writes below a **500 MiB** disk reserve; it goes serve-only, not crash. A per-node disk cap exists only in TOML, not on `ant node add`.
+- A node **does not self-throttle** CPU/RAM — capping is the operator's job (OS-level).
+- Storage share is **network-set**; you grow contribution by adding nodes, not enlarging one. Address spread ≈ **2/IP, ≈5/subnet**; excess nodes go unused. ~**7×** replication.
+- **~20 GB free disk per node** avoids that node being shunned *(team-confirmed, pending source)* — assumed additive.
 
-## Questions to answer
+Notice what's missing from that list: **how earning works, what "healthy" means to the network, and what the agent can actually see.** Those are the real blind spots.
 
-### A. Disk / storage
+## Blind spots & information needs
 
-- Is the **~20 GB/node** figure **additive** (per node — so N nodes on one drive want ~20 GB × N, which the skill currently assumes) or a **shared pool**? **How is the budget managed when multiple nodes share one drive?**
-- What precisely is the relationship between the ~20 GB recommendation and the hard **500 MiB write-reserve**? Is shunning risk tied to falling below ~20 GB, to the reserve, to sustained vs. momentary shortfall?
-- How fast does a node's stored data **grow**, and does it **plateau** or grow unbounded? Recommended **free-space headroom** above the minimum?
-- **SSD vs HDD** — any requirement or strong preference? IOPS sensitivity? Filesystem constraints?
-- Multiple nodes on one volume vs. spread across volumes — any **I/O-contention** guidance?
+Each item: **what I'd need to know**, and **the decision it unblocks**.
 
-### B. Memory
+### 1. The reward model — how earning actually works
+The single biggest gap. I can read a balance, but I don't know **what drives it**: is it paid for storing data, for serving retrievals, for capacity held over time, or some mix? Is it event-driven or continuous? **Decision it unblocks:** what to actually optimise for ("earn properly"), and whether more nodes / more disk / better uptime is what moves earnings — without this I'm guessing.
 
-- RAM **per node**, idle vs. active, and how it scales with stored data / peer count?
-- Total RAM **headroom** to keep a host responsive (esp. a shared machine)?
-- Behaviour under **memory pressure** — can a node be OOM-killed, and what does that do to its standing?
+### 2. Cost and time to first reward
+Is there any **cost or stake to participate** (gas to register, a bond)? The skill assumes receive-only and non-custodial, but if joining has a cost, that changes the advice and may need the human. And **how long until a new node earns** — a fresh node's expected ramp. **Decision it unblocks:** setting honest expectations, and not alarming a human over a zero balance that's simply normal-for-now.
 
-### C. CPU
+### 3. What "healthy / in good standing" means — and what I can observe
+Today I can see a **process is up** (status, pid, uptime, version). I **cannot see whether the network considers my node well-connected, well-replicated, or in good standing** — the on-demand CLI doesn't expose peer count, record count, or connectivity yet (this is the upstream health-metrics work). This is a critical operating blind spot: I'm asked to keep nodes healthy and avoid shunning while half-blind to the thing that matters. **Decision it unblocks:** real health monitoring and early intervention. **The SOP should say which standing/health signals will be exposed and which ones matter.**
 
-- CPU **per node**, steady-state vs. bursts (replication, verification)?
-- The node doesn't self-throttle — what **external caps** (OS priority / cgroups) are safe **without harming standing**? Recommended limits?
-- Relationship between **core count** and how many nodes a host should run?
+### 4. Shunning — triggers, warning, recovery
+What **specifically** gets a node shunned — sustained disk shortfall, low uptime, slow/dropped responses, version lag, poor connectivity? Is there a **warning state or a reputation score** I can read before it's terminal? Is shunning **recoverable**, how long, and how? **Decision it unblocks:** acting *before* a node is dropped rather than discovering it after — the difference between good citizenship and wasted capacity.
 
-### D. Bandwidth / connectivity
+### 5. A node's load profile over its life
+What does a node *do* to a host over time? Is there an **initial sync/onboarding burst** (how long, how heavy)? Do **repair/replication events** (when peers leave) cause CPU/bandwidth/disk spikes I should expect rather than misread as faults? **Decision it unblocks:** sizing for peaks not just steady-state, and not panicking (or starving the host) during a normal repair storm.
 
-- **Up/down bandwidth per node**, steady-state vs. burst?
-- **Total data transfer over time** (e.g. GB/month) — needed to reason about metered/capped connections?
-- **Connectivity quality** (latency, packet loss, inbound reachability / NAT, port requirements) — thresholds below which a node risks shunning or reduced earnings?
-- Confirm and detail the **address-spread caps** (we believe ≈2 nodes/IP, ≈5/subnet): what happens to **excess** nodes (idle? penalised?), and how should an agent reason about **shared IPs / CGNAT**?
+### 6. Disk semantics — the 20 GB question
+Is ~20 GB **per node (additive)** or a **shared pool** across nodes on one drive? How fast does a node fill, does it **plateau**, and what **headroom** above the minimum is sane? Relationship between the ~20 GB recommendation and the 500 MiB hard reserve. **Decision it unblocks:** the core capacity math and the `--data-dir-path` placement guidance.
 
-### E. Shunning — the failure mode to design against
+### 7. Memory, CPU, bandwidth envelopes
+Per-node figures (idle vs active), how they scale with stored data/peers, and **host headroom** to stay responsive. For bandwidth: steady-state vs burst, and **total transfer over time** (metered connections). The skill currently has *no numbers* here. **Decision it unblocks:** how many nodes a given host can carry, and replacing "keep the host responsive" with something an agent can actually check.
 
-- A **precise definition**: which behaviours/thresholds get a node shunned (disk, uptime, latency, dropped responses, version lag, …)?
-- Is shunning **recoverable** — how long, and what does recovery require?
-- **Early, observable signals** (within a query-based health model, i.e. no log-scraping) that predict shunning, so an agent can act *before* it happens?
+### 8. Connectivity and the spread caps
+Confirm the ≈2/IP, ≈5/subnet caps and what happens to excess nodes. How should I reason about **NAT / CGNAT / a single home connection**, where the effective cap is low — so I recognise **diminishing returns** and don't spin up ten nodes that the network won't use? Does inbound reachability / port openness affect standing or earnings? **Decision it unblocks:** "best use of resources" — knowing when *more nodes stops helping* on a given connection.
 
-### F. Uptime / churn
+### 9. Uptime, churn cost, and graceful exit
+Minimum **uptime/availability** to be worth running and not shunned. The quantified **cost of churn** on standing. And is there a **graceful-departure** path that helps the network re-replicate cleanly and preserves standing, versus a hard stop? **Decision it unblocks:** whether intermittent hosts (laptops that sleep) are viable, and how to bring a node down *well*.
 
-- Recommended **minimum uptime / availability** for a node to be worth running and not shunned?
-- The **cost of churn** (stopping/removing/re-adding) on standing — quantified?
-- Are **intermittent hosts** (laptops that sleep, machines that move networks) viable, and under what thresholds?
+### 10. Version / protocol currency
+How current must a node be — does running a lagging version risk shunning, and what's the tolerance? (Auto-upgrade exists, but I should know the stakes.) **Decision it unblocks:** how hard to insist on upgrades vs. leaving a working setup alone.
 
-### G. Scaling & earnings efficiency
+### 11. What to feed back to the human, and when
+What does a human operator actually care to hear, and at what cadence — earnings milestones, health degradation, shunning risk, resource pressure, a node down? What's noise? **Decision it unblocks:** the "timely, correct feedback" outcome — surfacing what matters without pestering.
 
-- Given the spread caps, at what point do **extra nodes on one host/IP stop adding value**?
-- Is there an **optimal node size/count** per resource envelope ("many small vs. fewer large")?
-- What does an agent **optimise to earn properly** — storage served, uptime, standing? How do these relate to reward?
+## What probably does *not* belong in this SOP
 
-### H. The three lenses — explicit trade-offs
+To keep it operational and not a protocol spec, it likely **doesn't** need: consensus/encryption internals; the data **upload/storage** side (future skill scope); building **on** Autonomi (developer skill); anything requiring **keys/spend** (out of scope, non-custodial); the wire protocol or crate architecture. The agent needs *operating* knowledge — what to do and the parameters to decide — not how the network is built.
 
-- **Network:** what does the network most need from a contributor — reliability, capacity, or spread?
-- **Host / human:** safe defaults for a **background tenant** vs. a **dedicated host**; how to guarantee the human's own use isn't degraded.
-- **Operator standing / earnings:** the **minimum viable contribution** that earns without being shunned.
-- **When these conflict, what is the recommended priority order?**
+## How the skill will consume this
 
-## Starting assumptions to confirm or correct
-
-The skill currently encodes these (source-bound or team-confirmed). The document should validate or revise them:
-
-- ~20 GB free disk **per node**, additive, to avoid that node being shunned *(team-confirmed, pending source)*.
-- Hard **500 MiB** write-reserve; below it a node goes **serve-only** (no crash).
-- A node **does not self-throttle** CPU/RAM; capping is the operator's job (OS-level).
-- Storage share is **network-set**; you grow contribution by adding nodes, not enlarging one.
-- Address spread ≈ **2/IP, ≈5/subnet**; excess nodes go unused.
-- ~**7× replication** (a single node going down loses nothing).
-- Per-node disk cap is settable **only via the node's TOML config**, not `ant node add`.
-- Earnings are read **on-chain by public address**; node status does not report earned totals.
-
-## How the skill will consume the result
-
-One authoritative, versioned document at a stable upstream path → the skill **source-binds** each figure to it (like commands/flags) → the freshness automation re-pins when it changes → until it exists, the skill keeps these figures flagged *team-confirmed, pending source*. Answering these questions unblocks firm resource guidance in the skill and removes the judgement-only placeholders for memory, CPU, and bandwidth.
+One authoritative, **versioned** document at a stable upstream path → the skill **source-binds** its figures (like commands and flags) → the freshness automation re-pins when it changes, and the skill can do a best-effort **advisory check** at runtime for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until it exists, the affected figures stay flagged *team-confirmed, pending source*. Answering items 1, 3, and 4 in particular is what would most change how well an agent can operate — more than the raw resource numbers.
