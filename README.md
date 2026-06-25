@@ -19,10 +19,10 @@ The skill is standards-compliant ([agentskills.io](https://agentskills.io)), so 
 
 ```bash
 # Install the autonomi skill (it's the only one here, so a bare add installs it)
-npx skills add JimCollinson/skills
+npx skills add WithAutonomi/skills
 
 # …or name it explicitly
-npx skills add JimCollinson/skills --skill autonomi
+npx skills add WithAutonomi/skills --skill autonomi
 ```
 
 Useful flags: `--skill <name>` (pick a specific skill), `--all` (install all), `-a <agent>` (target agent, e.g. `opencode`, `claude`, or `*` for all), `-g` (install globally), `-l` (list without installing), `-y` (no prompts). When the repo holds more than one skill, a bare `add` opens an interactive picker keyed on each skill's name + description.
@@ -64,7 +64,7 @@ Branch + PR (never direct-to-main); architecture/protocol/security decisions go 
 
 ## Status & roadmap
 
-This repo is being established as the first-party skills home. Planned: transfer to the `WithAutonomi` org as `WithAutonomi/skills` (pending sign-off). Current state, the rebuild brief, and the review entry point are in [`planning/`](planning/).
+This repo is the org's first-party skills home at `WithAutonomi/skills` (private for now; it'll go public when it's ready to distribute). Current state, the rebuild brief, and the review entry point are in [`planning/`](planning/).
 
 ---
 

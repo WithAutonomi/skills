@@ -9,7 +9,7 @@ Review mode, if applicable: N/A (independent parallel take — not a review of e
 ## Project / workspace
 
 Project: Autonomi Skill — the `autonomi` agent skill (run Autonomi nodes, earn ANT, non-custodial)
-Repo/path: github.com/JimCollinson/skills, branch `rebuild-skill`; skill at `skills/autonomi/`
+Repo/path: github.com/WithAutonomi/skills (private); skill at `skills/autonomi/`
 Obsidian/project notes: not needed — do **not** read them (see Constraints)
 Current source of truth: the installed `autonomi` skill bundle (`SKILL.md` + `references/`)
 
@@ -22,7 +22,7 @@ Produce an independent, fresh-context brief answering: **as an AI agent tasked w
 - Install and read the skill (its bundled instructions are the knowledge an operator is *given*):
 
   ```
-  npx skills add "https://github.com/JimCollinson/skills/tree/rebuild-skill/skills/autonomi" -s autonomi -y
+  npx skills add WithAutonomi/skills
   ```
 
   Read `SKILL.md` and every file under its `references/`.

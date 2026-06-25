@@ -5,7 +5,7 @@
 
 ## TL;DR
 
-The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, agent-tested, and ready to review. **Everything is now on `main`** — one branch, no open PRs to chase — so `npx skills add JimCollinson/skills` installs it directly. This handoff maps the repo, states what you can decide while Jim's away, and how to test.
+The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, agent-tested, and ready to review. **Everything is now on `main`** — one branch, no open PRs to chase — so `npx skills add WithAutonomi/skills` installs it directly. This handoff maps the repo, states what you can decide while Jim's away, and how to test.
 
 **Start here:** `README.md` → `skills/autonomi/SKILL.md` → its `references/` → this doc → `planning/REBUILD-BRIEF.md` (the full rationale) → `docs/adr/`. Then run the test in `planning/TESTING.md`.
 
@@ -25,7 +25,7 @@ Agreed model: **David + Hermes self-approve within bounds.**
 
 - **Proceed freely (review + merge):** skill content and wording, `references/`, `docs/` prose, `README`, `planning/` notes, troubleshooting, tests, bug fixes, source-binding corrections. Use branch + PR; David approves Hermes's PRs and vice-versa.
 - **Hold for Jim (or take to the wider team):** **architecture / protocol / security** decisions and marking ADRs **Accepted**; **distribution-channel** changes; any further **repo/skill renaming**; anything touching **keys / custody / spend** (out of scope for the skill anyway). These aren't blockers for improving the skill — they're the few things to leave parked.
-- **Org transfer to `WithAutonomi`** is pending Hermes confirming the name/home (ADR-0007 / 0012); once he's happy, Jim does the transfer. Until then it stays on `JimCollinson/skills` (GitHub auto-redirects old URLs after the move).
+- **Transferred to `WithAutonomi/skills`** (private), with Hermes's sign-off on the name/home (ADR-0007 / 0012). It'll go public when ready to distribute.
 - The **release-endpoint** item (below) is an upstream `ant-client` change — raise with the wider MaidSafe team, not gated on Jim.
 
 ADR discipline holds: inspect `docs/adr/` before changing architecture; draft new decisions as **Proposed**; never edit an Accepted ADR (supersede instead).
@@ -41,7 +41,7 @@ ADR discipline holds: inspect `docs/adr/` before changing architecture; draft ne
 
 ## Open items & Jim's guidance (so you're not blocked)
 
-1. **Org transfer + repo name.** Move to **`WithAutonomi/skills`** so the team owns it while Jim's away — pending your 👍 on the name/home (reasoning in ADR-0007 / 0012). Jim does the transfer once confirmed. Renamable later.
+1. **Org transfer + repo name — done.** Transferred to **`WithAutonomi/skills`** (private); Hermes confirmed the name/home (reasoning in ADR-0007 / 0012). Renamable later if needed.
 2. **The decision ADRs (0007 / 0008 / 0012)** — on `main`, **Proposed**. Review and comment freely, but leave them Proposed; Jim marks them Accepted on his return.
 3. **Release-endpoint accessibility** (`planning/release-endpoint-accessibility.md`). The `ant` binary serves from a CDN many agent sandboxes block. Directions + a PR-candidate are written up; raise with the wider team (likely Chris / the release process) — it's an `ant-client` change, not a skills-repo one.
 4. **Node-resource SOP brief → dev team** (`planning/node-resource-spec-brief.md`). What an operating agent needs to understand (resource numbers + the standing/shunning/reward model) and the *form* the answers must take (hard values where knowable, explicit principles where judgement). The dev team should author a single authoritative *Recommended Node Resource Document* the skill source-binds to. Being shared with the team.
