@@ -4,6 +4,8 @@
 >
 > *Synthesised from two independent, clean-context agent passes (this assistant + an OpenCode agent), each working only from the installed skill, neither seeing the other's view. Strong convergence is noted where it occurred.*
 
+> **Form of the answer matters as much as the content.** Agents must **not** be left to infer numbers from soft prose — that is exactly where different models diverge ("keep the host responsive" → 50% headroom to one, 5% to another). The document must deliver **hard, quantified values with units, in a structured, versioned, source-bindable form** (a parameters table / manifest), with prose reserved for the *why* and the judgement. The agent should **read** the values, like it reads a command flag, not interpret them. The concrete list of values required is in *Parameters the document must quantify*, below.
+
 ## What "operating well" demands of the agent
 
 The skill asks an agent to deliver four outcomes at once:
@@ -75,10 +77,45 @@ Each item: **what's needed**, and **the decision it unblocks**. *(C = both passe
 - **Daemon security on shared hosts:** local multi-user risk, firewall expectations, and whether loopback-only is sufficient. *Unblocks:* safe operation on machines the agent shares.
 - **Key-material incident protocol:** the skill correctly says *stop* if a key/seed/keystore appears in context, but not what to record or how to sanitise. *Unblocks:* safe, clean handling of an accidental exposure.
 
-## What probably does *not* belong in this SOP
+## Parameters the document must quantify (with units)
 
-To keep it operational, not a protocol spec — and confirmed independently by both passes — the agent does **not** need: private keys / seeds / keystores / `SECRET_KEY` / spend-capable wallet access; to create, bridge, withdraw, approve, acquire, trade, or spend ANT; app-development or storage/retrieval APIs; deep protocol internals (except where they affect operator-visible health, standing, or safety); to convert raw balances to friendly ANT amounts without sourced decimals; routine log/metrics scraping when `ant node status` + daemon status/info + host metrics suffice; to chase manual upgrades absent a specific compat/security reason; custom bootstrap peers, alternate networks, or non-loopback daemon exposure unless source-backed and explicitly authorised; advanced per-node TOML disk caps for ordinary operation (human-directed).
+These are the **hard values** the document must state — not describe. For each, give the **value or range**, the **unit**, the **condition** it applies under, and whether it is a **hard limit** (network-enforced) or a **recommendation** (judgement). Where a value genuinely varies, give a range and the variable it depends on. "It depends" is only acceptable with the dependency named and bounded.
+
+**Disk**
+- Minimum free disk **per node** — value (GB); and state explicitly **additive vs shared-pool** across nodes on one drive.
+- Recommended headroom above the minimum — GB or %.
+- Typical disk-growth rate — GB/day (or GB/week), and any plateau ceiling — GB.
+- Hard write-reserve — MB *(known: 500 MiB)*.
+
+**CPU**
+- Per node at idle — cores or %; under load/burst — cores or %.
+- Recommended host CPU headroom to leave free — %.
+
+**Memory**
+- Per node at idle — MB; under load — MB; scaling with stored data — MB per GB stored (if applicable).
+- Recommended host RAM headroom — MB/GB or %.
+
+**Bandwidth & connectivity**
+- Sustained up/down per node — Mbps; burst up/down — Mbps.
+- Monthly transfer per node — GB/month.
+- Minimum connection quality — latency (ms), max packet loss (%); inbound-reachability requirement (yes/no).
+
+**Topology**
+- Max *useful* nodes per IP — count *(confirm ≈2)*; per subnet — count *(confirm ≈5)*.
+- Suggested nodes-per-host for a typical home connection — range.
+
+**Uptime, standing & shunning**
+- Minimum uptime/availability to be worth running / avoid shunning — % or hours/day.
+- Max tolerable continuous downtime before standing is harmed — hours.
+- Max tolerable version lag — releases or days.
+- Time from a trigger to being shunned — minutes/hours.
+- Recovery time and conditions after shunning — hours/days.
+
+**Earnings**
+- Reward settlement cadence — time between payments.
+- Expected time-to-first-reward for a new node — days.
+- Token decimals / unit for balance display — integer *(so the agent can present a friendly amount)*.
 
 ## How the skill will consume this
 
-One authoritative, **versioned** document at a stable upstream path → the skill **source-binds** its figures (like commands and flags) → the freshness automation re-pins when it changes, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until it exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — more than any raw resource number.
+One authoritative, **versioned** document at a stable upstream path → the **values block above is delivered structured and machine-readable**, so the skill **source-binds** each figure (like commands and flags) and the agent reads it rather than inferring it → the freshness automation re-pins when it changes, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until it exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — but every figure in the parameters list needs to arrive as a hard value, not prose.
