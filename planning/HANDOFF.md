@@ -1,7 +1,7 @@
 # Handoff — review entry & continuity
 
 > **For:** Hermes (review) and David (gate-holder). **From:** Jim. **Date:** 2026-06-25.
-> **Heads-up:** Jim is **off-grid from 2026-06-26 until 2026-07-13** — no connectivity, can't unblock anything. This doc is written so the team can keep moving without him.
+> **Heads-up:** Jim is **away and unavailable for a period** — can't unblock anything in real time. This doc is written so the team can keep moving without him.
 
 ## TL;DR
 
@@ -25,7 +25,7 @@ Agreed model: **David + Hermes self-approve within bounds.**
 
 - **Proceed freely (review + merge):** skill content and wording, `references/`, `docs/` prose, `README`, `planning/` notes, troubleshooting, tests, bug fixes, source-binding corrections. Use branch + PR; David approves Hermes's PRs and vice-versa.
 - **Hold until Jim is back (or take to the wider team):** **architecture / protocol / security** decisions and marking ADRs **Accepted**; **distribution-channel** changes; any further **repo/skill renaming**; anything touching **keys / custody / spend** (out of scope for the skill anyway). These aren't blockers for improving the skill — they're the few things to leave parked.
-- **The one exception, time-boxed to today:** the **org transfer to `WithAutonomi`** is being asked of Hermes *now*. If he confirms the name/home (ADR-0007/0012) before EOD, Jim transfers before he leaves; if not, it waits until his return. After today, treat the transfer as parked.
+- **The one exception, time-boxed to today:** the **org transfer to `WithAutonomi`** is being asked of Hermes *now*. If he confirms the name/home (ADR-0007/0012) before EOD, Jim transfers before he's away; if not, it waits until he's back. After today, treat the transfer as parked.
 - The **release-endpoint** item (below) is an upstream `ant-client` change — raise with the wider MaidSafe team, not gated on Jim.
 
 ADR discipline holds: inspect `docs/adr/` before changing architecture; draft new decisions as **Proposed**; never edit an Accepted ADR (supersede instead).
@@ -41,10 +41,10 @@ ADR discipline holds: inspect `docs/adr/` before changing architecture; draft ne
 
 ## Open decisions & Jim's guidance (so you're not blocked)
 
-1. **Org transfer + repo name.** Plan: transfer to **`WithAutonomi/skills`** (repo name `skills`, the org's multi-skill home) so the team owns it during the holiday. **Asked of Hermes today** — if he confirms the name/home (ADR-0007/0012), Jim transfers before leaving; otherwise on his return. Renamable later.
+1. **Org transfer + repo name.** Plan: transfer to **`WithAutonomi/skills`** (repo name `skills`, the org's multi-skill home) so the team owns it while Jim's away. **Asked of Hermes today** — if he confirms the name/home (ADR-0007/0012), Jim transfers before he's away; otherwise on his return. Renamable later.
 2. **The three decision ADRs (0007/0008/0012).** Proposed. Review and comment freely while Jim's away, but **leave them Proposed** — Jim marks them Accepted on his return.
 3. **Release-endpoint accessibility** (`planning/release-endpoint-accessibility.md`). The `ant` binary serves from a CDN many agent sandboxes block. Directions + a PR-candidate are written up; raise with the wider team — it's an `ant-client` release-workflow change, not a skills-repo one.
-4. **Node-resource SOP brief → dev team** (`planning/node-resource-spec-brief.md`). What an operating agent needs to understand (resource numbers + standing/shunning/reward model), and the *form* the answers must take (hard values where knowable, explicit principles where judgement). The dev team should author a single authoritative *Recommended Node Resource Document* the skill source-binds to. Going to them via Slack EOD.
+4. **Node-resource SOP brief → dev team** (`planning/node-resource-spec-brief.md`). What an operating agent needs to understand (resource numbers + standing/shunning/reward model), and the *form* the answers must take (hard values where knowable, explicit principles where judgement). The dev team should author a single authoritative *Recommended Node Resource Document* the skill source-binds to. Going to them via Slack.
 5. **Parked next-phase threads** (`planning/NEXT-PHASE.md`): UX/model tuning; the resource specs above; source-bound auto-update automation; consolidating the developer skill into this repo; and the **skill self-update mechanism** (§5 — how an installed copy learns it's stale across channels, not just skills.sh).
 6. **Voice/behaviour ADRs not yet written.** The brief (§10) plans three: "no autonomy tiers," "skill voice — no internal vocabulary," and a tightening of ADR-0010 (modes design-only; two-register voice). Captured as intent; the team can author them.
 7. **Keywords / discovery.** A supply-side keyword pass (`earn`, `spare-capacity`, etc.) and the `post-quantum` keyword call are open (brief §8).
@@ -56,4 +56,4 @@ See **`planning/TESTING.md`** — it has the repeatable agent-run prompt, the ev
 
 ## Contact
 
-Jim is offline **2026-06-26 → 2026-07-13**. **David is the point of contact** in his absence. Feedback that would otherwise go to Jim: leave it in PR comments / `planning/` notes for his return.
+Jim is away and unavailable for a period. **David is the point of contact** in his absence. Feedback that would otherwise go to Jim: leave it in PR comments / `planning/` notes for his return.
