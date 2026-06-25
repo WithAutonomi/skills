@@ -1,71 +1,84 @@
 # Brief — what an operating agent needs to understand to run Autonomi nodes well
 
-> **For:** the Autonomi dev team. **From:** Jim + agent (2026-06-25). **Purpose:** written from the standpoint of the *agent the skill drives* — what it must understand to operate nodes effectively, and where its blind spots are given what's knowable today. This is the **input** to a single authoritative **Recommended Node Resource Document** that should live at a stable location in an upstream repo. It states the agent's information needs, not the answers.
+> **For:** the Autonomi dev team. **From:** Jim + agents (2026-06-25). **Purpose:** written from the standpoint of the *agent the skill drives* — what it must understand to operate nodes effectively, and where its blind spots are. This is the **input** to a single authoritative **Recommended Node Resource Document** the team should author and keep at a stable location, which the skill then **source-binds** to. It states the agent's information needs, not the answers.
+>
+> *Synthesised from two independent, clean-context agent passes (this assistant + an OpenCode agent), each working only from the installed skill, neither seeing the other's view. Strong convergence is noted where it occurred.*
 
-## What "operating well" actually demands of the agent
+## What "operating well" demands of the agent
 
 The skill asks an agent to deliver four outcomes at once:
 
-1. **Best use of the host's resources** *and* **what's best for the network** — contribute real capacity without harming the machine or its owner.
-2. **Be a good network citizen and not get shunned** — run nodes the network keeps and rewards, not ones it drops.
-3. **Feed back timely, correct information to the human operator** — earnings, health, risks, in language they can act on.
-4. **Make clear allocation/utilisation decisions for the best outcome for all parties.**
+1. **Best use of the host's resources** *and* **what's best for the network**.
+2. **Be a good network citizen and not get shunned**.
+3. **Feed back timely, correct information** — to the human operator it acts for, *and* (as field reports) to the dev team.
+4. **Make clear allocation/utilisation decisions** within a clear authority/remit, for the best outcome for all parties.
 
-Each of these needs knowledge the agent does **not** fully have today. The rest of this brief is that gap, made explicit.
+Each needs knowledge the agent does not fully have today.
 
 ## What the agent can already determine
 
-So the gaps are visible, here's what the skill encodes today (source-bound or team-confirmed):
+So the gaps are visible — the skill encodes this today (source-bound or team-confirmed):
 
-- The node takes a public rewards address only; earnings are read **on-chain by that address**, and node status reports lifecycle/health but **not earned totals**.
-- A node won't accept writes below a **500 MiB** disk reserve; it goes serve-only, not crash. A per-node disk cap exists only in TOML, not on `ant node add`.
+- Node takes a **public rewards address only**; earnings read **on-chain by address**; node status reports lifecycle/health but **not earned totals**.
+- A node won't accept writes below a **500 MiB** reserve (serve-only, not crash). Per-node disk cap only in TOML, not on `ant node add`.
 - A node **does not self-throttle** CPU/RAM — capping is the operator's job (OS-level).
-- Storage share is **network-set**; you grow contribution by adding nodes, not enlarging one. Address spread ≈ **2/IP, ≈5/subnet**; excess nodes go unused. ~**7×** replication.
-- **~20 GB free disk per node** avoids that node being shunned *(team-confirmed, pending source)* — assumed additive.
+- Storage share is **network-set** (grow by adding nodes); spread ≈ **2/IP, ≈5/subnet** (excess nodes unused); ~**7×** replication.
+- **~20 GB free disk per node** to avoid that node being shunned *(team-confirmed, pending source)*, assumed additive.
+- No OS service is installed (daemon/nodes are supervised processes); installer doesn't edit PATH.
 
-Notice what's missing from that list: **how earning works, what "healthy" means to the network, and what the agent can actually see.** Those are the real blind spots.
+Notice what's missing: **how earning works, what "healthy" means to the network, what the agent can actually see, and the authority it's operating under.** Those are the real gaps.
 
 ## Blind spots & information needs
 
-Each item: **what I'd need to know**, and **the decision it unblocks**.
+Each item: **what's needed**, and **the decision it unblocks**. *(C = both passes converged independently.)*
 
-### 1. The reward model — how earning actually works
-The single biggest gap. I can read a balance, but I don't know **what drives it**: is it paid for storing data, for serving retrievals, for capacity held over time, or some mix? Is it event-driven or continuous? **Decision it unblocks:** what to actually optimise for ("earn properly"), and whether more nodes / more disk / better uptime is what moves earnings — without this I'm guessing.
+### A. Earning & economics
 
-### 2. Cost and time to first reward
-Is there any **cost or stake to participate** (gas to register, a bond)? The skill assumes receive-only and non-custodial, but if joining has a cost, that changes the advice and may need the human. And **how long until a new node earns** — a fresh node's expected ramp. **Decision it unblocks:** setting honest expectations, and not alarming a human over a zero balance that's simply normal-for-now.
+- **The reward model — what actually drives earnings.** Is it paid for data stored, retrievals served, capacity held over time, or a mix? Event-driven or continuous? *Unblocks:* what to actually optimise for — without it, "earn properly" is guesswork.
+- **Cost / stake and time to first reward.** Any cost to participate (gas to register, a bond)? How long before a new node earns? *Unblocks:* honest expectations, whether joining needs the human, and not alarming anyone over a normal zero balance.
+- **Normal balance baseline.** How long a zero/low balance is expected. *Unblocks:* correct "this is fine" vs "something's wrong" calls.
 
-### 3. What "healthy / in good standing" means — and what I can observe
-Today I can see a **process is up** (status, pid, uptime, version). I **cannot see whether the network considers my node well-connected, well-replicated, or in good standing** — the on-demand CLI doesn't expose peer count, record count, or connectivity yet (this is the upstream health-metrics work). This is a critical operating blind spot: I'm asked to keep nodes healthy and avoid shunning while half-blind to the thing that matters. **Decision it unblocks:** real health monitoring and early intervention. **The SOP should say which standing/health signals will be exposed and which ones matter.**
+### B. Resource envelopes & sizing *(C)*
 
-### 4. Shunning — triggers, warning, recovery
-What **specifically** gets a node shunned — sustained disk shortfall, low uptime, slow/dropped responses, version lag, poor connectivity? Is there a **warning state or a reputation score** I can read before it's terminal? Is shunning **recoverable**, how long, and how? **Decision it unblocks:** acting *before* a node is dropped rather than discovering it after — the difference between good citizenship and wasted capacity.
+- **Per-node figures beyond disk:** CPU, RAM, bandwidth, IO, and disk-growth-over-time, idle vs active, and how they scale with stored data/peers. *Unblocks:* how many nodes a host can carry; replaces "keep the host responsive" with something checkable.
+- **Host-fit thresholds:** what "stays responsive" means concretely — swap/load/network-saturation levels that should trigger reducing or stopping nodes. *Unblocks:* protecting the human's own use.
+- **Disk semantics:** is ~20 GB **per node (additive)** or a **shared pool** across nodes on one drive? Growth rate, plateau, sensible headroom, and the relationship to the 500 MiB hard reserve. *Unblocks:* the core capacity math and `--data-dir-path` placement.
+- **Load profile over a node's life:** initial sync/onboarding burst (how long, how heavy) and repair/replication spikes (when peers leave) to *expect* rather than misread. *Unblocks:* sizing for peaks; not panicking during a normal repair storm.
+- **Storage placement specifics:** acceptable drive classes, filesystem expectations, detach risk, and how to judge "stays attached" operationally. *Unblocks:* safe use of external/secondary volumes.
 
-### 5. A node's load profile over its life
-What does a node *do* to a host over time? Is there an **initial sync/onboarding burst** (how long, how heavy)? Do **repair/replication events** (when peers leave) cause CPU/bandwidth/disk spikes I should expect rather than misread as faults? **Decision it unblocks:** sizing for peaks not just steady-state, and not panicking (or starving the host) during a normal repair storm.
+### C. Scaling & topology *(C)*
 
-### 6. Disk semantics — the 20 GB question
-Is ~20 GB **per node (additive)** or a **shared pool** across nodes on one drive? How fast does a node fill, does it **plateau**, and what **headroom** above the minimum is sane? Relationship between the ~20 GB recommendation and the 500 MiB hard reserve. **Decision it unblocks:** the core capacity math and the `--data-dir-path` placement guidance.
+- **Scaling policy:** how long to observe one node before adding more, how many to add per step, and what signals should *block* further scaling. *Unblocks:* disciplined, safe growth.
+- **Topology:** confirm the ≈2/IP, ≈5/subnet caps and what happens to excess nodes; how to reason about NAT/CGNAT and a single home connection; does the network benefit more from **fewer nodes across diverse IPs/locations** than many behind one connection? *Unblocks:* "best use of resources" — recognising diminishing returns and when more nodes stops helping.
 
-### 7. Memory, CPU, bandwidth envelopes
-Per-node figures (idle vs active), how they scale with stored data/peers, and **host headroom** to stay responsive. For bandwidth: steady-state vs burst, and **total transfer over time** (metered connections). The skill currently has *no numbers* here. **Decision it unblocks:** how many nodes a given host can carry, and replacing "keep the host responsive" with something an agent can actually check.
+### D. Standing, shunning & good citizenship *(C on the shunning model)*
 
-### 8. Connectivity and the spread caps
-Confirm the ≈2/IP, ≈5/subnet caps and what happens to excess nodes. How should I reason about **NAT / CGNAT / a single home connection**, where the effective cap is low — so I recognise **diminishing returns** and don't spin up ten nodes that the network won't use? Does inbound reachability / port openness affect standing or earnings? **Decision it unblocks:** "best use of resources" — knowing when *more nodes stops helping* on a given connection.
+- **A concrete shunning model:** what behaviours trigger it, how fast, whether it's observable, and how recovery works. *Unblocks:* acting *before* a node is dropped.
+- **The standing-observability gap:** today the agent can see a *process is up* (pid/uptime/version) but **not whether the network considers the node well-connected, well-replicated, or in good standing** (the CLI doesn't expose peers/records/connectivity yet). *Unblocks:* real health monitoring — the SOP should say which standing signals *will* be exposed and which matter. *(Direct input to the upstream CLI health-metrics work.)*
+- **Differential impact on standing:** do downtime, repeated start/stops, resets, version lag, full disks, detached volumes, and NAT/firewall issues affect standing *differently*? *Unblocks:* prioritising what to avoid.
+- **"Do not churn," with examples:** which operator actions are harmless, which mildly harmful, which force costly re-replication. *Unblocks:* safe day-to-day operation.
+- **Uptime, maintenance & graceful exit:** minimum uptime/availability to be worth running; how to **pause safely** and for how long during planned host work; a **graceful-departure** path that preserves standing and helps clean re-replication; and whether a supported **autostart/service model** for reboot/sleep is expected. *Unblocks:* viability of intermittent hosts and bringing nodes down *well*.
+- **Version/protocol currency tolerance:** does a lagging version risk shunning, and what's the tolerance? *Unblocks:* how hard to insist on upgrades vs. leaving a working setup alone.
 
-### 9. Uptime, churn cost, and graceful exit
-Minimum **uptime/availability** to be worth running and not shunned. The quantified **cost of churn** on standing. And is there a **graceful-departure** path that helps the network re-replicate cleanly and preserves standing, versus a hard stop? **Decision it unblocks:** whether intermittent hosts (laptops that sleep) are viable, and how to bring a node down *well*.
+### E. Feedback & reporting
 
-### 10. Version / protocol currency
-How current must a node be — does running a lagging version risk shunning, and what's the tolerance? (Auto-upgrade exists, but I should know the stakes.) **Decision it unblocks:** how hard to insist on upgrades vs. leaving a working setup alone.
+- **To the human operator:** what they actually care to hear (earnings milestones, health degradation, shunning risk, resource pressure, a node down), at what cadence, and what's noise. *Unblocks:* timely feedback without pestering.
+- **To the dev team (field reports):** a reporting contract — what events, where, at what urgency, in what format — plus a **minimal diagnostic bundle** (exact `ant` outputs, versions, daemon info, node IDs/service names, host OS, disk/volume state, network/RPC failures, timestamps). *Unblocks:* useful, consistent reports that improve the network and skill.
+- **Privacy / redaction rules:** whether public rewards addresses, node IDs, paths, IPs, logs, and hostnames are safe to include in a report. *Unblocks:* reporting without leaking operator data.
+- **Escalation taxonomy:** named categories — install failure, daemon failure, node crash, suspected shunning, disk pressure, balance-read failure, RPC block, CLI/skill mismatch. *Unblocks:* consistent routing and urgency.
+- **Normal baselines:** how long `Starting` can last, how often transient errors occur, how long zero balance is normal, what upgrade states look like. *Unblocks:* distinguishing normal from faulty.
 
-### 11. What to feed back to the human, and when
-What does a human operator actually care to hear, and at what cadence — earnings milestones, health degradation, shunning risk, resource pressure, a node down? What's noise? **Decision it unblocks:** the "timely, correct feedback" outcome — surfacing what matters without pestering.
+### F. Remit, authority & safe autonomous operation
+
+- **An operator remit template:** max node count, max disk, allowed volumes, bandwidth limits, install/update/reset authority, external-drive consent, and the balance-escalation threshold. *Unblocks:* the agent operating confidently inside clear bounds, and knowing exactly when to ask.
+- **Supply-chain verification procedure** (if agents are expected to verify releases): trusted keys/checksums and accepted failure handling. *Unblocks:* honest "verified delivery" claims.
+- **Daemon security on shared hosts:** local multi-user risk, firewall expectations, and whether loopback-only is sufficient. *Unblocks:* safe operation on machines the agent shares.
+- **Key-material incident protocol:** the skill correctly says *stop* if a key/seed/keystore appears in context, but not what to record or how to sanitise. *Unblocks:* safe, clean handling of an accidental exposure.
 
 ## What probably does *not* belong in this SOP
 
-To keep it operational and not a protocol spec, it likely **doesn't** need: consensus/encryption internals; the data **upload/storage** side (future skill scope); building **on** Autonomi (developer skill); anything requiring **keys/spend** (out of scope, non-custodial); the wire protocol or crate architecture. The agent needs *operating* knowledge — what to do and the parameters to decide — not how the network is built.
+To keep it operational, not a protocol spec — and confirmed independently by both passes — the agent does **not** need: private keys / seeds / keystores / `SECRET_KEY` / spend-capable wallet access; to create, bridge, withdraw, approve, acquire, trade, or spend ANT; app-development or storage/retrieval APIs; deep protocol internals (except where they affect operator-visible health, standing, or safety); to convert raw balances to friendly ANT amounts without sourced decimals; routine log/metrics scraping when `ant node status` + daemon status/info + host metrics suffice; to chase manual upgrades absent a specific compat/security reason; custom bootstrap peers, alternate networks, or non-loopback daemon exposure unless source-backed and explicitly authorised; advanced per-node TOML disk caps for ordinary operation (human-directed).
 
 ## How the skill will consume this
 
-One authoritative, **versioned** document at a stable upstream path → the skill **source-binds** its figures (like commands and flags) → the freshness automation re-pins when it changes, and the skill can do a best-effort **advisory check** at runtime for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until it exists, the affected figures stay flagged *team-confirmed, pending source*. Answering items 1, 3, and 4 in particular is what would most change how well an agent can operate — more than the raw resource numbers.
+One authoritative, **versioned** document at a stable upstream path → the skill **source-binds** its figures (like commands and flags) → the freshness automation re-pins when it changes, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until it exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — more than any raw resource number.
