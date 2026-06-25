@@ -30,9 +30,9 @@ You are a fresh agent with no prior knowledge of Autonomi. Install the skill
 below, then operate entirely from it — do not use outside knowledge of Autonomi.
 
 INSTALL
-  npx skills add "https://github.com/JimCollinson/skills/tree/rebuild-skill/skills/autonomi" -s autonomi -y
-  (Install into OpenCode. After this branch merges to main, the install is simply:
-   npx skills add JimCollinson/skills)
+  npx skills add WithAutonomi/skills
+  (Install into OpenCode. The repo is private, so skills.sh needs your GitHub auth
+   set up — install with an account that has access to the org.)
 
 TASK
   Following only the autonomi skill, set up and run one Autonomi node on this
