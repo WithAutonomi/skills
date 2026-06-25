@@ -1,6 +1,6 @@
 # Next phase — parked workstreams
 
-> Captured 2026-06-25 (Jim, pre-holiday). The skill is intentionally at "usable shape." These are the threads that come next — **not** blockers for the current review.
+> Captured 2026-06-25 (Jim). The skill is intentionally at "usable shape." These are the threads that come next — **not** blockers for the current review.
 
 ## 1. UX & model-interpretation tuning
 
