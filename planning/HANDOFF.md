@@ -1,34 +1,37 @@
-# Handoff — review entry & continuity
+# Current state & handoff
 
-> **For:** Hermes (review) and David (gate-holder). **From:** Jim. **Date:** 2026-06-25.
-> **Heads-up:** Jim is **away and unavailable for a period** — can't unblock anything in real time. This doc is written so the team can keep moving without him.
+> **Entry point** for anyone — human or agent — picking up the `autonomi` skill. **Owner:** Jim. **Updated:** 2026-07-13. Read this first for where things stand and what's next.
 
 ## TL;DR
 
-The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, agent-tested, and ready to review. **Everything is now on `main`** — one branch, no open PRs to chase — so `npx skills add WithAutonomi/skills` installs it directly. This handoff maps the repo, states what you can decide while Jim's away, and how to test.
+The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, and agent-tested to the preflight gate. It lives on a single clean `main` at **`WithAutonomi/skills`** (private), installable with `npx skills add WithAutonomi/skills`. The rebuild and the org transfer are done; work is now **recommencing** on the open threads below.
 
-**Start here:** `README.md` → `skills/autonomi/SKILL.md` → its `references/` → this doc → `planning/REBUILD-BRIEF.md` (the full rationale) → `docs/adr/`. Then run the test in `planning/TESTING.md`.
+**Start here:** `README.md` → `skills/autonomi/SKILL.md` → its `references/` → this doc → `planning/REBUILD-BRIEF.md` (the full rationale) → `docs/adr/`. To test: `planning/TESTING.md`.
 
 ## What's in the repo (all on `main`)
 
 - **`skills/autonomi/`** — the installable skill: `SKILL.md` + `references/` (node provisioning, operating procedures, uninstall, wallet-and-tokens, troubleshooting).
-- **`docs/adr/`** — the architecture decisions, ADR-0001 to ADR-0012, all **Proposed**.
-- **`planning/`** — `REBUILD-BRIEF.md` (the rationale/contract), `node-resource-spec-brief.md` (for the dev team), `TESTING.md`, `NEXT-PHASE.md` (parked threads), `release-endpoint-accessibility.md` (an upstream flag), and the OpenCode packet.
+- **`docs/adr/`** — architecture decisions, ADR-0001 to ADR-0012, all **Proposed**.
+- **`planning/`** — `REBUILD-BRIEF.md` (rationale/contract), `node-resource-spec-brief.md` (for the dev team), `TESTING.md`, `NEXT-PHASE.md` (parked threads), `release-endpoint-accessibility.md` (an upstream flag), and the OpenCode packet.
 - **`source-bindings/`** — provenance: every command/figure bound to upstream code (drives the planned auto-update).
 - `README.md`, `CONTRIBUTING.md`.
 
-The repo is a single clean `main` — the earlier rebuild / brief / ADR branches have all been merged and removed, so there's nothing else to track down.
+Single clean `main` — all the earlier rebuild / brief / ADR branches were merged and removed.
 
-## Governance while Jim is away
+## Repo & operational facts
 
-Agreed model: **David + Hermes self-approve within bounds.**
+- **Home & owner:** `WithAutonomi/skills`, transferred from `JimCollinson/skills` (GitHub redirects the old URLs). Hermes signed off on the name/home (ADR-0007 / 0012).
+- **Visibility — private for now.** It will go **public at launch**: public is what enables unauthenticated `skills.sh` installs and true clean-context testing, and it's also what actually switches branch protection on (below). While private, installing via skills.sh needs the runner's own GitHub auth (an org member with access).
+- **Branch protection — configured but not enforced.** A `main-branch-protect` ruleset exists (require a PR, block force-push + deletion, require the ADR CI check, 0 required approvals), but GitHub only enforces rulesets on **private** repos under **GitHub Team+**, and this org is on the free plan. So it's currently **honour-system** — branch + PR by convention (`CONTRIBUTING.md`). It **auto-activates when the repo goes public** (or the org upgrades).
+- **Agent/integration access:** because the repo is private, an external integration (automation, or an agent's GitHub tooling) needs an explicit org grant to reach it — otherwise it can't read or write the repo.
+- **Install:** `npx skills add WithAutonomi/skills` (from `main`; while private, needs the runner's GitHub auth).
 
-- **Proceed freely (review + merge):** skill content and wording, `references/`, `docs/` prose, `README`, `planning/` notes, troubleshooting, tests, bug fixes, source-binding corrections. Use branch + PR; David approves Hermes's PRs and vice-versa.
-- **Hold for Jim (or take to the wider team):** **architecture / protocol / security** decisions and marking ADRs **Accepted**; **distribution-channel** changes; any further **repo/skill renaming**; anything touching **keys / custody / spend** (out of scope for the skill anyway). These aren't blockers for improving the skill — they're the few things to leave parked.
-- **Transferred to `WithAutonomi/skills`** (private), with Hermes's sign-off on the name/home (ADR-0007 / 0012). It'll go public when ready to distribute.
-- The **release-endpoint** item (below) is an upstream `ant-client` change — raise with the wider MaidSafe team, not gated on Jim.
+## Working model & gates
 
-ADR discipline holds: inspect `docs/adr/` before changing architecture; draft new decisions as **Proposed**; never edit an Accepted ADR (supersede instead).
+- **Branch + PR** for changes — don't commit straight to `main` (protection is convention-only for now, so this runs on trust).
+- **Proceed freely:** skill content and wording, `references/`, `docs/` prose, `README`, `planning/`, troubleshooting, tests, bug fixes, source-binding corrections.
+- **Gated (needs an ADR and/or Jim):** architecture / protocol / security decisions and **accepting ADRs**; distribution-channel changes; repo/skill renaming; the **public flip**; anything touching keys / custody / spend (out of scope for the skill anyway).
+- **ADR discipline:** inspect `docs/adr/` before changing architecture; draft new decisions as **Proposed**; never edit an Accepted ADR (supersede instead).
 
 ## State of the skill (what's done)
 
@@ -39,21 +42,21 @@ ADR discipline holds: inspect `docs/adr/` before changing architecture; draft ne
 - **Reviewed:** a fresh adversarial pass flagged three things as "invented" that are in fact source-bound + live-tested (`DELETE /api/v1/nodes/{id}`, daemon ordering, network defaults) — docs lag the code. Lesson logged: review against the source manifest, not just the docs.
 - **Agent-tested:** an OpenCode agent installed the skill and ran it to the preflight gate, correctly and safely (details in `planning/TESTING.md`).
 
-## Open items & Jim's guidance (so you're not blocked)
+## Open threads (what's next)
 
-1. **Org transfer + repo name — done.** Transferred to **`WithAutonomi/skills`** (private); Hermes confirmed the name/home (reasoning in ADR-0007 / 0012). Renamable later if needed.
-2. **The decision ADRs (0007 / 0008 / 0012)** — on `main`, **Proposed**. Review and comment freely, but leave them Proposed; Jim marks them Accepted on his return.
-3. **Release-endpoint accessibility** (`planning/release-endpoint-accessibility.md`). The `ant` binary serves from a CDN many agent sandboxes block. Directions + a PR-candidate are written up; raise with the wider team (likely Chris / the release process) — it's an `ant-client` change, not a skills-repo one.
-4. **Node-resource SOP brief → dev team** (`planning/node-resource-spec-brief.md`). What an operating agent needs to understand (resource numbers + the standing/shunning/reward model) and the *form* the answers must take (hard values where knowable, explicit principles where judgement). The dev team should author a single authoritative *Recommended Node Resource Document* the skill source-binds to. Being shared with the team.
-5. **Parked next-phase threads** (`planning/NEXT-PHASE.md`): UX/model tuning; the resource specs above; source-bound auto-update automation; consolidating the developer skill into this repo; and the **skill self-update mechanism** (§5 — how an installed copy learns it's stale across channels, not just skills.sh).
-6. **Voice/behaviour ADRs not yet written.** The brief (§10) plans three: "no autonomy tiers," "skill voice — no internal vocabulary," and a tightening of ADR-0010 (modes design-only; two-register voice). Captured as intent; the team can author them.
-7. **Keywords / discovery.** A supply-side keyword pass (`earn`, `spare-capacity`, etc.) and the `post-quantum` keyword call are open (brief §8).
-8. **Full live end-to-end run.** Not yet done — needs a host with ≥ ~20 GB free, full egress (binary CDN + Arbitrum RPC), ideally no pre-existing nodes. See `TESTING.md`.
+1. **Accept the decision ADRs (0007 / 0008 / 0012)** — Proposed; ready to be reviewed and **Accepted** now (this was gated on Jim's return).
+2. **Full live end-to-end run** — the big unproven bit: we only reached the preflight gate. Proving a node comes up + a balance reads needs a host with ≥ ~20 GB free, full egress (binary CDN + Arbitrum RPC), ideally no pre-existing nodes. See `TESTING.md`.
+3. **Node-resource SOP → dev team** (`planning/node-resource-spec-brief.md`) — the dev team to author a single authoritative *Recommended Node Resource Document* (resource numbers + the standing/shunning/reward model; hard values where knowable, explicit principles where judgement) that the skill source-binds to. Not yet picked up.
+4. **Release-endpoint accessibility** (`planning/release-endpoint-accessibility.md`) — `ant`'s binary serves from a CDN many agent sandboxes block; an upstream `ant-client` change (likely Chris / the release process).
+5. **Skill freshness & self-update** (`NEXT-PHASE.md` §3 & §5) — the source-bindings → regenerate → re-release automation (producing new versions), and how an installed copy learns it's stale and updates (consuming). Under active discussion; a candidate ADR.
+6. **Parked next-phase** (`NEXT-PHASE.md`): UX / model-interpretation tuning; consolidating the developer skill into this repo.
+7. **Deferred voice/behaviour ADRs** (brief §10): "no autonomy tiers," "skill voice — no internal vocabulary," and a tightening of ADR-0010 — captured as intent, not yet authored.
+8. **Keywords / discovery** (brief §8): a supply-side keyword pass + the `post-quantum` keyword call.
 
 ## How to test
 
-See **`planning/TESTING.md`** — it has the repeatable agent-run prompt, the evidence so far, and what a full pass needs.
+See **`planning/TESTING.md`** — the repeatable agent-run prompt, the evidence so far, and what a full pass needs.
 
-## Contact
+## Contacts
 
-Jim is away and unavailable for a period. **David is the point of contact** in his absence. Feedback that would otherwise go to Jim: leave it in PR comments / `planning/` notes for his return.
+Jim (owner); David and Hermes contribute. Raise decisions/questions via PR comments or `planning/` notes.
