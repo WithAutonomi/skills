@@ -28,13 +28,15 @@ The skill is authored **for an AI agent**, where technical precision is correct 
 
 ## Decision
 
-The skill defines how the agent **relates to and talks to** the operator, in three parts.
+The skill defines how the agent **relates to and talks to** the operator, in four parts.
 
 **1. Division of labour & disclosure.** The agent **shoulders the inner workings and the routine operational decisions itself** — using its judgement and the remit it has been granted (ADR-0004/0009). It surfaces to the operator **outcomes** and **the decisions that are genuinely theirs**, and otherwise stays out of the way. "How much to reveal" = as little as needed for the operator to stay informed and in control of what actually matters to them. Crucially, *minimise burden* applies to **operational mechanics and jargon, not to authority**: spend, risk, recovery, and consent decisions are always surfaced — quietly handling routine ops is good; quietly making a money/risk decision is not. Escalation is **by exception**, on the risk-based triggers already defined (authority/spend beyond remit, balance over threshold, backup/recovery, no safe substrate, explicit opt-in) — never for routine work, and never gated on "do you understand crypto?".
 
-**2. Persona-aware.** The operator is one of three personas (defined in DESIGN §13): a **human** operating directly, an **agent acting as a human's proxy**, or a **fully autonomous agent**. The agent adapts disclosure and register to which it is serving — full plain-language translation for a human; minimal-but-sufficient surfacing by a proxy agent to its principal; internal precision plus audit/escalation-only for a fully autonomous agent (which, absent a human, halts/defers at a gate rather than crossing it).
+**2. Persona-aware.** The operator is one of three personas (defined in DESIGN §13): a **human** operating directly, an **agent acting as a human's proxy**, or a **fully autonomous agent**. The agent adapts disclosure and register to which it is serving — full plain-language translation for a human; minimal-but-sufficient surfacing by a proxy agent to its principal; internal precision plus audit/escalation-only for a fully autonomous agent (which, absent a human, halts/defers at a gate rather than crossing it). The personas are a **design lens** for adapting disclosure — **not a tiering the skill surfaces**: the skill does not ask the agent to classify itself into an autonomy mode; its autonomy is an input it already has from its human/harness, and the safety/escalation line is universal and mode-free.
 
 **3. Plain-language register.** When addressing a human, the agent uses plain language — **assume intelligence, not knowledge** (plain, not patronising) — leads with meaning before naming a precise term, reports outcomes rather than commands/flags/hashes, keeps network/crypto internals out of view unless asked, and is **always ready to explain and expand on request** (progressive depth). A translation layer (technical → human; e.g. "a transaction fee for the payment", not "native Arbitrum gas") lives in DESIGN §13 and is applied across all human-facing copy. Accuracy is never sacrificed for simplicity.
+
+**4. Product voice — no internal vocabulary; two registers by judgement.** The shipped skill speaks plainly and self-containedly: no internal/build vocabulary — no "tier", "operator", "persona", "engine", "capture evidence", or process/TODO language — appears in product-facing text. The **two registers** are: skill→agent **precise** (`--rewards-address`, an EVM address, ERC-20); agent→human **translated** to that person. The translation is applied **by judgement and illustratively — never as a literal find-and-replace** of terms across the text (a mechanical swap once produced the "public wallet address" over-correction). Which register applies is the agent's judgement for its operator.
 
 Invariants:
 
@@ -43,6 +45,9 @@ Invariants:
 - **Plain, not patronising.** Human-facing language assumes intelligence, not specialist knowledge; precise terms are available, introduced in plain words first, and explained on request.
 - **Outcomes, not mechanics.** No CLI tables, flags, hashes, or raw addresses in human-facing output unless asked.
 - **Accuracy over simplicity.** Simplification never makes a claim wrong or implies a capability/safety property that doesn't exist.
+- **Personas are design-only — no surfaced autonomy tiers.** The skill doesn't make the agent self-classify into a mode; its autonomy is an input, and the non-custodial safety line is universal and mode-free.
+- **No internal vocabulary in the product.** Build/internal terms never appear in shipped, product-facing text.
+- **Two registers, applied by judgement.** Precise to the agent, translated to the human — illustratively, never a literal find-and-replace.
 - The translation map and personas live in DESIGN §13; exact word choices are a product/UX decision owned by Jim.
 
 ## Consequences
