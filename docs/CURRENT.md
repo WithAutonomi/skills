@@ -1,88 +1,78 @@
-# GSD Checkpoint — Autonomi Operator Skill (current state)
+# GSD Checkpoint — Autonomi skill (current state)
 
-Date: 2026-06-22
-Project: Autonomi Operator Skill (`JimCollinson/autonomi-skill`)
-Slice/question: Design phase (engine, personas, grounding) complete and merged to `main`; Tier-1 operate-and-earn skill authored and merged. Next: the build round (apply the design to the skill content) + the Tier-1 verification gauntlet.
-Prepared by: Cowork (Claude) orchestration, on Jim's behalf
-Agents/tools used: Cowork (Claude); deep source-research subagents against `WithAutonomi/*` and `saorsa-labs/*`; GitHub; Autonomi canonical docs (`autonomi.com/llms.txt`).
+Date: 2026-09-03
+Project: Autonomi Skills (`WithAutonomi/skills`)
+Slice/question: Retire the operator skill, land the task-routed `autonomi` prototype (0.1.0), and ready the repo to go public for the developers.autonomi.com launch (Sun 6 Sept 2026).
+Prepared by: Cowork (Claude Fable 5.1), on Jim's behalf
+Agents/tools used: Cowork (Claude); research subagents (distribution mechanics, sandbox egress, agent-wallet precedents, ANT acquisition, plugin manifests); GitHub; `ant` 0.3.5/0.3.6 in a Claude cloud container; docs.autonomi.com.
 
-> **Read this first if you are the incoming agent.** Fetch the real `main` (tip below) before doing anything — design and docs were updated via reviewed PRs, so a stale local clone may be missing files. Follow the coordination protocol in `CONTRIBUTING.md` (lanes; branch + PR, never commit to `main` directly; fetch/rebase before a session and after each merge). Reading order: `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (esp. §13) → `docs/adr/` → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `planning/ROADMAP.md`.
+> **Read this first if you are the incoming agent.** Reading order: `README.md` → `skills/autonomi/SKILL.md` → its `references/` → `planning/TESTING.md` → `planning/HANDOFF.md` → `source-bindings/autonomi.md` → the prototype note at the top of `docs/DESIGN.md` → `docs/adr/`. Follow the coordination protocol in `CONTRIBUTING.md` (lanes; branch + PR, never commit to `main` directly; fetch/rebase before a session and after each merge).
 
 ## Status
 
-**Continue.** The design phase is complete and fully in `main`; the Tier-1 skill is authored and merged. The next work is (a) verifying the merged Tier-1 via the gauntlet and (b) the build round that applies the design (doctrine, personas, grounding) to the skill content. ADRs remain **Proposed** (acceptance is a human gate). Tier 2/3 stay gated on two open team decisions.
+**Continue.** The prototype is authored, statically checked, and on the branch `autonomi-skill-prototype` as a PR into `main`. It is **not yet gauntlet-tested on a real host**. Merge, the public flip and the website's install tabs follow the gauntlet.
 
 ## What happened
 
-(since the 2026-06-18 checkpoint)
+(since the 2026-06-22 checkpoint and the July docs refresh, PR #12)
 
-- **Tier-1 operate-and-earn skill authored and merged** (PR #1): `SKILL.md` (frontmatter + `metadata.openclaw.install`), `references/` (node-operation, wallet-and-ant, operating-procedures, troubleshooting), `templates/`, and a thorough `source-bindings/tier1-operate-and-earn.md` resolving the spec's four open questions with file/line evidence and a live author self-test (ant 0.1.5 / ant-node 0.13.0; key-free balance read on Arbitrum One).
-- **Deep source research (5 strands)** against upstream code, grounding the operating model. Key findings: earnings come from storing *paid* PUTs (median-of-7 paid 3×; pricing quadratic in records stored); per-node storage auto-scales to disk (no fixed ceiling) but per-node *value* is gated by keyspace share + 3-day pruning, so **many right-sized nodes** beat one big one; **IP/subnet diversity is enforced in production** (~2/IP, ~5 per /24-/48); **close group = 7** (Kademlia K = 20); node health is known in-process but the CLI/daemon expose only process state, so **health is query-based, not logs** (ADR-0011); per-node disk cap only via a direct `--config` TOML.
-- **ADR-0011 added** (PR #3, Proposed): health observability is query-based, not log-based; logs off by default; v1 works within current CLI + OS host metrics + on-chain earnings; richer health deferred to upstream CLI commands.
-- **DESIGN §13 expanded** (PR #4): the three operator personas as a **concentric** model — fully-autonomous = the engine; **human-proxy** and **steered** inherit it — on a Surfaces/Asks/Controls/Register frame, with worked examples; persona 3 renamed **Steered operation**; fully-autonomous reframed to "no human in the *operational* loop" (distal delegator, async escalation).
-- **Operating doctrine + grounding landed** (PR #5): `docs/operating-doctrine.md` (the engine: network-health-first objective, good-citizen SOP, budgets→count→monitor→adjust resource strategy with graduated down-levers, shared-host default with dedicated-is-declared, honest spend boundary, query-based observability, stop/escalate); `docs/skill-grounding.md` (the SKILL.md opener — "what Autonomi is / why run a node," aligned to `autonomi.com/llms.txt` — plus an About/references section).
-- **Contributing process merged** (PR #2): `CONTRIBUTING.md`, `.github/pull_request_template.md`, `.github/SECURITY.md`, and a **coordination protocol** (lanes: design/ADRs vs skill files; branch+PR not direct-to-main; fetch/rebase before+after; review required for ADR/security/agent-authored changes).
-- **Operating-model note:** Cowork holds the design/ADR lane; the implementer (OpenCode + a coding model) authors the skill files; the GSD @pm/orchestrator owns sequencing + packet generation. Cowork + Jim review and steer.
+- **Decision (Jim, 2 Sept):** build one skill named `autonomi`, routed by task — read, store, set up, build, run nodes, uninstall — as a **prototype to test with the community**; revise the ADRs once it is proven; no new ADR now. Distribution: the public GitHub repo is canonical; `npx skills add WithAutonomi/skills` is the primary install; a Claude Code plugin manifest lives in the same repo; the CLI comes from GitHub releases via the existing installer; npm distribution of the CLI is post-launch (Chris agreed; ant-client #190 filed).
+- **Distribution unknowns verified from source** rather than assumed: skills CLI install mechanics (whole-directory copy; well-known index ships only `SKILL.md` unless an archive), plugin marketplaces, sandbox egress across harnesses (api.github.com 403 in Claude cloud while release downloads succeed; proxy-only sandboxes see `found 0 peers`), the skill-directory auditors (Snyk agent-scan, Socket).
+- **The prototype built and revised** through six rounds of Jim's feedback: audience line up top; permanence and private/public before any write; quote-show-wait with an explicit waiver allowed; fetch-and-relay rather than sending the person to links; the demonstration read only on request; a basic node route with the wallet conversation; plain-language principle rather than a prescriptive table; latest-by-default install with no pinned version outside dated history; the OpenClaw manifest removed.
+- **Key handling settled (Jim, 3 Sept):** the agent never sees a key; wallets are created by the person in a wallet app; `SECRET_KEY` is provisioned once by the person in the tool's environment, or the person runs the paid command; a composed wallet-generation procedure and a raw RPC balance read were withdrawn; the ANT contract address is baked into the *Verified against* table and the token is identified by it alone.
+- **This PR:** the skill replaced; the operator skill archived verbatim under `docs/archive/operator-skill-v0/`; `planning/TESTING.md` and `source-bindings/autonomi.md` replaced; README rewritten; `LICENSE-MIT` / `LICENSE-APACHE` added; `.claude-plugin/` manifests added; SECURITY, CONTRIBUTING and the PR template updated to the new key line; DESIGN given a prototype note; HANDOFF, NEXT-PHASE and the release-endpoint note refreshed.
 
 ## Evidence
 
-Files changed/artifacts produced (all on `main`):
+Files (branch `autonomi-skill-prototype`): `skills/autonomi/{SKILL.md,VERSION,references/install-and-verify.md,wallet-and-tokens.md,run-nodes.md,build-on-autonomi.md}`; `docs/archive/operator-skill-v0/*`; `planning/TESTING.md`; `source-bindings/autonomi.md`; `README.md`; `LICENSE-MIT`; `LICENSE-APACHE`; `.claude-plugin/marketplace.json`; `.claude-plugin/plugin.json`; `.github/SECURITY.md`; `CONTRIBUTING.md`; `.github/pull_request_template.md`; `docs/DESIGN.md` (note only); this file; `planning/HANDOFF.md`; `planning/NEXT-PHASE.md`; `planning/release-endpoint-accessibility.md`.
 
-- Design: `docs/DESIGN.md` (incl. expanded §13), `docs/adr/ADR-0001…0011`, `docs/operating-doctrine.md`, `docs/skill-grounding.md`, `docs/VISION.md`, `docs/FEATURES.md`, `docs/SOURCE-MAP.md`, `docs/SPEC-tier1-operate-and-earn.md`.
-- Skill: `SKILL.md`, `references/*`, `templates/*`, `source-bindings/tier1-operate-and-earn.md`.
-- Process: `CONTRIBUTING.md`, `.github/pull_request_template.md`, `.github/SECURITY.md`, `scripts/adr-governance.py`, `.github/workflows/`.
-- Planning: `planning/ROADMAP.md`, `planning/packets/PACKET-tier1-operate-and-earn.md`.
-- Merged PRs: #1 (Tier-1 skill), #2 (contributing), #3 (ADR-0011), #4 (DESIGN §13), #5 (doctrine + grounding). **Current `main` tip: `5178dee`** (plus this checkpoint).
+Checks run: see `planning/TESTING.md` “Evidence so far” — spec validation, skills.sh discovery, vocabulary lint, link check; installer and manual install paths on `ant` 0.3.6 in a container (version parsed from the latest `SHA256SUMS.txt`, checksum `OK`); offline address derivation; contract address matched to the docs page. The pushed skill files were verified byte-identical to the authored files, and the archived copies byte-identical to `main`, by git blob hash.
 
-Checks run:
-
-- `scripts/adr-governance.py` ran green at **9 ADRs** (2026-06-18); ADR-0010 and ADR-0011 have since been added via PRs — **re-run to confirm at 11** (governance runs in CI on PRs; not independently re-run this session).
-- Tier-1 source surface verified against ant-client / ant-node / evmlib at pinned commits (recorded in the source-binding manifest), incl. an author live self-test.
-
-Results: design complete and merged; Tier-1 authored and source-bound. The independent verification gauntlet has **not** yet run (see below).
+Results: prototype complete as authored; not yet proven on a real host.
 
 ## Review findings
 
 Clean-context test:
 
-- Reviewer/tool: `gsd-clean-context-tester`
-- Result: **Not run** — outstanding for the merged Tier-1 skill (a fresh agent, installed skill only, live network).
+- Reviewer/tool: `gsd-clean-context-tester` / a fresh agent on a real host
+- Result: **Not run.** Scenario A (free read) at minimum; B with a funded wallet; D for nodes.
 - Findings: —
 
 Adversarial review:
 
-- Reviewer/tool: David's Hermes ran two **documentation/ADR** passes earlier (resolved); the **code/skill** adversarial gauntlet by a fresh agent is **Not run**.
-- Result: Docs review — Concerns, resolved. Skill adversarial — Not run.
-- Findings: the earlier blocker (ADR-0004 antd overstatement) was fixed; the built skill has not been adversarially reviewed.
+- Reviewer/tool: `gsd-adversarial-reviewer`
+- Result: **Not run** on this branch. To dispatch before merge.
+- Findings: —
 
 ## Drift / scope concerns
 
-- ADRs are **Proposed, not Accepted** — acceptance is a human gate (Jim decision-owner, after review). Never mark Accepted autonomously; supersede, don't edit.
-- **Tier 2/3 are gated** on the custody (ADR-0004) and gas (ADR-0005) team decisions — do not start them; the build round stays in **ungated operate-and-earn**.
-- `docs/SOURCE-MAP.md` has minor stale bits: it still calls the close-group size "5 and 7" (resolved to **7**) and says "evmlib not needed for Tier-1" (the key-free balance read does use evmlib as provenance). Tidy in a later pass.
-- The full source-research synthesis is held in Cowork's working notes (not the repo); the repo carries the conclusions (doctrine, manifest, DESIGN).
+- The prototype runs ahead of ADR-0002/0003/0004/0005 and DESIGN §1–3, §7, §8. Deliberate, recorded in the DESIGN note; revise after proof, not before.
+- `source-bindings/autonomi.md` is provenance by document and observation, not symbol-level bindings — an ADR-0006 gap accepted for the prototype.
+- Two Further-reading links (`developers.autonomi.com/llms.txt`, `facts.json`) are held out until those surfaces are live.
+- The licence holder line (“MaidSafe.net Limited”) is for Jim to confirm.
+- The `.claude-plugin/` manifests are unverified on a real Claude Code.
+- The node route has never been exercised live on `ant` 0.3.x — the same gap the operator skill had.
 
 ## Open questions / decisions for Jim
 
-- **Two team decisions** still parked: the agent-wallet **custody substrate** (ADR-0004) and the **gas strategy** (ADR-0005). See the vault `Open Decisions Brief.md`.
-- **ADR acceptance** awaits review (Jim decision-owner; David + Hermes review).
-- Light carry-forward: a team glance at the SKILL.md opener framing (now canonical-aligned to `autonomi.com/llms.txt`).
+- Merge PR #12 first (recommended — this branch is based on it, so its diff shrinks to the prototype once #12 lands).
+- Confirm the licence holder line.
+- Who runs scenario A on a real host, and when.
+- The public flip: visibility; private vulnerability reporting switched on (SECURITY.md relies on it); About description, website and topics; delete the merged `docs/install-examples` branch.
 
 PR / upstream action gate:
 
-- PR ready to raise? **N/A right now** — PRs #1–#5 are already merged on Jim's own repo. The next build round will produce **agent-authored PRs**, which (per CONTRIBUTING) need an approving review before merge.
-- Jim confirmed PR may be opened? **N/A** — the live gates are **transfer to WithAutonomi** and **external publish**, neither pending.
-- Draft PR title/description prepared: N/A.
+- PR ready to raise? **Raised** — `autonomi-skill-prototype` → `main`, agent-authored, needs an approving review per CONTRIBUTING.
+- Jim confirmed PR may be opened? **Yes** (3 Sept 2026).
 
 ## Recommended next step
 
-Hand to the GSD @pm/orchestrator for two sequenced slices, **ungated operate-and-earn only**:
-
-1. **Verify first — the Tier-1 gauntlet** on the merged skill: a fresh `gsd-clean-context-tester` (installed skill only, live network, no key handled) plus a fresh `gsd-adversarial-reviewer`. Capture evidence; fix or flag findings.
-2. **Then the build round** — apply the design to the skill content: add the SKILL.md opener + About from `docs/skill-grounding.md`; weave the §13 personas/register through the routing; deepen `references/operating-procedures.md` and author `references/agent-autonomy-policy.md` from `docs/operating-doctrine.md`; source-bind any new claims in the manifest.
-
-Do not start Tier 2/3 (custody/gas gated).
+1. Adversarial review on the branch (can run in the cloud).
+2. Jim: test-install from the branch on his machine and run scenario A; B if a funded wallet is to hand.
+3. Fix or flag findings; approving review; merge.
+4. Public flip; website install tabs point at `main`; quickstart prompt loses “confirm 0.3.3”.
+5. Trigger eval and Snyk scan; open the community-testing call; revise the ADRs when the evidence is in.
 
 ## Handoff note
 
-Non-negotiables: **never generate, store, log, or pass a private key** (`SECRET_KEY`/`AUTONOMI_WALLET_KEY`) — nodes take a **public address only**; **no invented commands/figures** — everything source-bound (ADR-0006); **health from queries, not logs** (ADR-0011), logs off by default; **shared-host default**, dedicated only when declared; **removal/reset is health-only**, never an optimisation lever; **hands-off auto-upgrade**; don't edit Accepted ADRs (supersede); follow the `CONTRIBUTING.md` coordination protocol (lanes; branch+PR; fetch before/after); **PR-to-shared/upstream, transfer to WithAutonomi, and publish are Jim-approval gates.** The operating engine is `docs/operating-doctrine.md`; the personas are DESIGN §13; the opener/about source is `docs/skill-grounding.md`.
+Non-negotiables: the agent **never sees, requests, generates or handles a private key**; nodes take a public address only; spending is quote-show-wait unless the person explicitly waives it; the token is identified by contract address only; **no invented commands or figures** — trace everything, trust `--help` over the skill; the installed skill never modifies its own files; never edit an Accepted ADR (supersede); branch + PR, never direct to `main`; **PR creation on shared repos, marking ADRs Accepted, and the public flip are Jim-approval gates.**

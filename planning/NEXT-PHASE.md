@@ -1,10 +1,10 @@
 # Next phase — parked workstreams
 
-> Captured 2026-06-25 (Jim). The skill is intentionally at "usable shape." These are the threads that come next — **not** blockers for the current review.
+> Captured 2026-06-25 (Jim); §1, §4 and §5 updated 2026-09-03 for the prototype. The skill is intentionally at “usable shape.” These are the threads that come next — **not** blockers for the current review.
 
 ## 1. UX & model-interpretation tuning
 
-The skill is built to the quality bar, but it hasn't been tuned against **how different models read it** and how they translate it back to the human (the agent→human register). Next-phase work: run the skill across several models, observe where interpretation diverges or the human-facing translation misses, and tune wording/structure accordingly. A lightweight, repeatable eval harness (fixed prompts + a rubric, per model) would make this systematic rather than anecdotal. Not yet started.
+The skill is built to the quality bar, but it hasn't been tuned against **how different models read it** and how they translate it back to the human (the agent→human register). Next-phase work: run the skill across several models, observe where interpretation diverges or the human-facing translation misses, and tune wording/structure accordingly. The trigger eval and cold-run scenarios in `planning/TESTING.md` (Sept 2026) are the first version of the repeatable harness this needs — fixed prompts, named failure signals, a rubric per scenario. Not yet run.
 
 ## 2. Resource-sizing specifics — pending upstream spec
 
@@ -17,12 +17,12 @@ These belong in the **upstream repos** as the authoritative SOP, with the skill 
 
 ## 3. Skill auto-update automation (from source-bindings)
 
-Not started — deliberately deferred until the skill is usable and in the right shape. The foundation is already here: `source-bindings/` binds every command and figure to upstream code at a pinned commit. The automation (per the rebuild brief's freshness model) watches upstream vs. the manifest → regenerates `SKILL.md`/`references/` → re-releases a version-pinned snapshot. Jim has prior art from the Docs repo to draw on. Owner: TBD, after the skill settles. **See also #5 (the consumer-side update mechanism), which this produces versions *for*.**
+Not started — deliberately deferred until the skill is usable and in the right shape. The foundation for the node surface is in the archived Tier-1 manifest (`docs/archive/operator-skill-v0/source-bindings-tier1-operate-and-earn.md`), which binds every command and figure to upstream code at a pinned commit; the prototype's `source-bindings/autonomi.md` is looser (provenance by document and observation) and the symbol-level binding needs rebuilding on it first. The automation (per the rebuild brief's freshness model) watches upstream vs. the manifest → regenerates `SKILL.md`/`references/` → re-releases a version-pinned snapshot. Jim has prior art from the Docs repo to draw on. Owner: TBD, after the skill settles. **See also #5 (the consumer-side update mechanism), which this produces versions *for*.**
 
-## 4. Consolidate the developer skill into this repo
+## 4. The developer skill — folded in, not consolidated
 
-Move **`autonomi-developer`** (build *on* Autonomi) into `skills/` here, so the repo is the org's single first-party skills home. **Wait until the base `autonomi` skill is up on its feet.** It's non-trivial: the developer skill is draft/beta, carries its own automation, and pulls from the developer docs — a scheduled mini-project, not a copy. (The README lists it as Planned; the rebuild brief §2 has the reasoning.)
+**Done differently (Sept 2026).** Rather than moving a separate `autonomi-developer` skill into this repo, the build route lives inside the single `autonomi` skill (`references/build-on-autonomi.md`, read only when the task is building software), and `autonomi-developer` is no longer planned as a separate skill. This is the prototype's central bet — that readers, writers, builders and node operators can share one skill without feeling each other's weight. If the F3 (pollution) signal in `planning/TESTING.md` recurs after two rounds of rewording, the build route is what splits out.
 
-## 5. Skill self-update mechanism (consumer side) — decide the model
+## 5. Skill self-update mechanism (consumer side) — decided and implemented at the simplest level
 
-Distinct from #3 (which *produces* new skill versions). Question to settle: how does an installed copy of the skill **learn it's out of date and update**? Today the skill carries a frontmatter `version` and is installable via skills.sh, so `npx skills update` works — but there's no runtime "check on invocation" authored in the skill (x0x's `SKILL.md` doesn't author one either; its always-latest behaviour is binary-side + the skills.sh version field). Decide: rely on skills.sh's update flow, and/or add an explicit self-check instruction. Note the skill already has a *resilience* mechanism — it tells the agent to verify commands against the installed `ant --help` and trust the tool over the docs — so a stale skill self-corrects on facts even before a version update lands.
+**Decided in ADR-0013; the simplest mechanism shipped in the prototype (Sept 2026).** The skill carries a `VERSION` file and instructs a best-effort fetch of the published `VERSION` at first use in a session; if newer, it tells the person once and carries on; updating is theirs, through whichever channel they installed with (`npx skills update`, the plugin's update, or re-running the install); the agent never modifies its own files; a failed or slow check is silent. This needs the repo to be public to work unauthenticated. The skill also keeps the resilience mechanism from before — learn the tool from `ant --help` and trust the tool over the skill — so a stale copy self-corrects on facts before a version update lands. ADR-0013's bounded live advisory for volatile values (mechanism 4) is still a later spec.
