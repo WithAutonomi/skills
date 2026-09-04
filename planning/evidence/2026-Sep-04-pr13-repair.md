@@ -1,6 +1,6 @@
 # PR #13 repair evidence — 2026-Sep-04
 
-Implementation revision: `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`, followed by a narrow review-state correction.
+Implementation history: the binary-only repair landed at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; the current 0.1.4 candidate is based on pushed 0.1.3 revision `807e03cebe5b06886a42c6c013ed9797258122ac`.
 
 This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/gate.sh` or skill-specific CI arbiter exists, so local evidence is weaker than CI and independent clean-context evidence.
 
@@ -9,13 +9,13 @@ This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/g
 - `python3 scripts/adr-governance.py` — passed, 14 ADR files checked.
 - `npx skills add ./ --list` — passed, local path validated and one skill named `autonomi` discovered.
 - Equivalent frontmatter check — passed: name `autonomi`; description 1,021 characters; compatibility 332 characters.
-- Active version agreement — passed: `skills/autonomi/VERSION`, skill frontmatter, plugin manifest and marketplace manifest all report `0.1.3`.
+- Active version agreement — passed: `skills/autonomi/VERSION`, skill frontmatter, plugin manifest and marketplace manifest all report `0.1.4`.
 - Plugin JSON parsing — passed.
 - Relative Markdown links and anchors across the shipped skill — passed, five files checked.
 - Vocabulary scan — only the accepted product phrase `permanence tier` matched.
-- Lengths — passed: `SKILL.md` 261 lines; references 60, 107, 73 and 103 lines.
+- Lengths — passed: `SKILL.md` 261 lines; references 60, 112, 73 and 103 lines.
 - Forbidden shipped claims/commands — no `ant update --check`, ANT-and-ETH wallet-balance claim, or `rm -rf` found.
-- Changed-claim source-binding review — passed against ant-client 0.3.6 at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: CLI identity in `ant-cli/src/cli.rs`; update flags and behavior in `ant-cli/src/commands/update.rs` and `ant-core/src/update.rs`; ANT-only wallet output in `ant-cli/src/commands/data/wallet.rs`; reset safeguards and missing-path behavior in `ant-cli/src/commands/node/reset.rs` and `ant-core/src/node/mod.rs`.
+- Changed-claim source-binding review — passed against ant-client 0.3.6 at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: CLI identity in `ant-cli/src/cli.rs`; update flags and behavior in `ant-cli/src/commands/update.rs` and `ant-core/src/update.rs`; ANT-only wallet output in `ant-cli/src/commands/data/wallet.rs`; reset safeguards and missing-path behavior in `ant-cli/src/commands/node/reset.rs` and `ant-core/src/node/mod.rs`; Unix config paths and bootstrap preservation in `ant-core/src/config.rs` lines 27–45 and 60–80 plus `install.sh` platform/config handling.
 - `git diff --check` — passed.
 - New release-check URL — HTTP 200.
 - Skill `VERSION` URL — HTTP 404 while the repository is private, matching the documented best-effort failure path; an unauthenticated HTTP 200 remains a post-publication promotion check.
@@ -25,6 +25,77 @@ This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/g
 The first ad-hoc Node frontmatter command failed because its regular expression did not parse the indented version field. The corrected parser produced the passing result above; no repository or test-harness change was used to turn a product failure green. The repository-root commands were `python3 scripts/adr-governance.py`, `npx skills add ./ --list`, `python3 -m json.tool .claude-plugin/plugin.json`, `python3 -m json.tool .claude-plugin/marketplace.json`, `wc -l skills/autonomi/SKILL.md skills/autonomi/references/*.md`, `rg -n 'ant update --check|ANT and ETH balances|shows the ANT and ETH|rm -rf' skills/autonomi`, and `git diff --check e616b9f5e9724007ed56911cb94b479319227e45`. Frontmatter/version, links/anchors and changed-claim provenance were direct read-only inspections of the files and exact upstream sources named above, not committed verifier scripts.
 
 For 0.1.3, source inspection at ant-client commit `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616` confirmed that wallet dispatch unconditionally calls `require_secret_key()` before either wallet action (`ant-cli/src/main.rs` lines 133–138 and 393–400), while free reads and `file cost` build a data client without requiring a wallet (lines 140–159 and 191–211). No wallet command or key was used. The full local static set above passed with all active versions at 0.1.3, description 1,021 characters, compatibility 332 characters, five shipped Markdown files resolving their links/anchors, and only the accepted `permanence tier` vocabulary match.
+
+For 0.1.4, `python3 scripts/adr-governance.py` passed 14 ADRs; `npx skills add ./ --list` validated the local path and found only `autonomi`; the equivalent frontmatter check reported name `autonomi`, description 1,021 characters and compatibility 332; all four active version surfaces reported 0.1.4; both plugin files parsed as JSON; five shipped Markdown files resolved 27 relative links/anchors; lengths stayed within limits; vocabulary had only the accepted `permanence tier` match; forbidden claims/commands were absent; and `git diff --check 807e03cebe5b06886a42c6c013ed9797258122ac` passed. The first 0.1.4 frontmatter inspection command failed because its ad-hoc regular expression treated the apostrophe inside `network's` as a quote delimiter. A corrected read-only parser handled the double-quoted YAML field and produced the passing values above; no repository, harness, CI, gate or expectation changed.
+
+## Disposable 0.1.4 config-path proof
+
+No command used the real home directory or invoked `ant`. Four fresh fixtures under `${TMPDIR:-/tmp}` replaced `HOME`, `XDG_CONFIG_HOME` and `uname`; the install snippet itself was unchanged. On each platform, one run started without a destination file and compared the copied result with the source; another started with a sentinel destination, reran the snippet and compared its SHA-256 before and after. Wrong-platform and default paths were asserted absent.
+
+Reproduction shape, using only the snippet committed in `skills/autonomi/references/install-and-verify.md`:
+
+```bash
+set -euo pipefail
+for OS in Darwin Linux; do
+  FIXTURE=$(mktemp -d "${TMPDIR:-/tmp}/autonomi-config-${OS}.XXXXXX")
+  mkdir -p "$FIXTURE/fake-bin" "$FIXTURE/source"
+  printf '#!/bin/sh\nprintf "%s\\n"\n' "$OS" > "$FIXTURE/fake-bin/uname"
+  chmod 755 "$FIXTURE/fake-bin/uname"
+  printf 'new bootstrap\n' > "$FIXTURE/source/bootstrap_peers.toml"
+  run_snippet() {
+    HOME="$FIXTURE/home" XDG_CONFIG_HOME="$FIXTURE/xdg" SOURCE="$FIXTURE/source" PATH="$FIXTURE/fake-bin:/usr/bin:/bin" bash -c '
+      set -euo pipefail
+      if [ "$(uname -s)" = "Darwin" ]; then
+        ANT_CONFIG_DIR="$HOME/Library/Application Support/ant"
+      else
+        ANT_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ant"
+      fi
+      mkdir -p "$ANT_CONFIG_DIR"
+      test -e "$ANT_CONFIG_DIR/bootstrap_peers.toml" || cp "$SOURCE/bootstrap_peers.toml" "$ANT_CONFIG_DIR/"
+    '
+  }
+  if [ "$OS" = Darwin ]; then
+    EXPECTED="$FIXTURE/home/Library/Application Support/ant/bootstrap_peers.toml"
+    WRONG="$FIXTURE/home/.config/ant/bootstrap_peers.toml"
+    WRONG_ALSO=""
+  else
+    EXPECTED="$FIXTURE/xdg/ant/bootstrap_peers.toml"
+    WRONG="$FIXTURE/home/.config/ant/bootstrap_peers.toml"
+    WRONG_ALSO="$FIXTURE/home/Library/Application Support/ant/bootstrap_peers.toml"
+  fi
+  run_snippet
+  cmp "$FIXTURE/source/bootstrap_peers.toml" "$EXPECTED"
+  test ! -e "$WRONG"
+  test -z "$WRONG_ALSO" || test ! -e "$WRONG_ALSO"
+  printf 'existing bootstrap\n' > "$EXPECTED"
+  BEFORE=$(shasum -a 256 "$EXPECTED")
+  run_snippet
+  AFTER=$(shasum -a 256 "$EXPECTED")
+  test "$BEFORE" = "$AFTER"
+done
+```
+
+Results:
+
+```text
+macOS copy fixture: /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/autonomi-config-macos-copy.Q9Vwts
+macOS destination: $HOME/Library/Application Support/ant/bootstrap_peers.toml
+Copied when absent: yes
+Wrong Linux path untouched: yes
+
+XDG-Linux copy fixture: /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/autonomi-config-linux-copy.gnSpXP
+Linux destination: $XDG_CONFIG_HOME/ant/bootstrap_peers.toml
+Copied when absent: yes
+Wrong default/macOS paths untouched: yes
+
+macOS preservation fixture: /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/autonomi-config-macos.7X0u56
+Existing bootstrap preserved: yes
+SHA-256 before/after: 86ec6e75bf8665608d1a132e13a2ec4442bab3bc02a90591ea6f5f75a9a8f2d7
+
+XDG-Linux preservation fixture: /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/autonomi-config-linux.5GewYs
+Existing bootstrap preserved: yes
+SHA-256 before/after: 6f97aa921aca5df77a3224be3b66cd66412f0cfb73021574c83f5ea4c96c6ba0
+```
 
 ## Disposable uninstall proof
 

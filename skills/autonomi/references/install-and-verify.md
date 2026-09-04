@@ -46,8 +46,13 @@ Continue only if the line for the archive says `OK`. A mismatch means a corrupte
 ```bash
 tar xzf "ant-$V-$T.tar.gz"
 cp "ant-$V-$T/ant" ~/.local/bin/ant && chmod +x ~/.local/bin/ant
-mkdir -p ~/.config/ant                            # macOS: "$HOME/Library/Application Support/ant"
-cp "ant-$V-$T/bootstrap_peers.toml" ~/.config/ant/   # skip if one already exists
+if [ "$(uname -s)" = "Darwin" ]; then
+  ANT_CONFIG_DIR="$HOME/Library/Application Support/ant"
+else
+  ANT_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ant"
+fi
+mkdir -p "$ANT_CONFIG_DIR"
+test -e "$ANT_CONFIG_DIR/bootstrap_peers.toml" || cp "ant-$V-$T/bootstrap_peers.toml" "$ANT_CONFIG_DIR/"
 ant --version
 ```
 

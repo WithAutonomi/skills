@@ -4,7 +4,7 @@ description: "Build on, integrate with, and use the Autonomi network — permane
 license: MIT OR Apache-2.0
 compatibility: "Needs a shell with curl and tar (PowerShell on Windows), outbound HTTPS to github.com to fetch the ant CLI, and direct internet access for the network itself (the client talks to peers over UDP, so a proxy-only sandbox can install the tool but cannot reach the network). A paid write also needs a wallet the user funds and controls."
 metadata:
-  version: "0.1.3"
+  version: "0.1.4"
   author: Autonomi
   homepage: https://autonomi.com
   repository: https://github.com/WithAutonomi/skills
