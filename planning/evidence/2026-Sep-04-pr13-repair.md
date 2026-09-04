@@ -1,8 +1,8 @@
 # PR #13 repair evidence — 2026-Sep-04
 
-Revision under repair: `e616b9f5e9724007ed56911cb94b479319227e45` plus the uncommitted 0.1.2 working-tree diff.
+Implementation revision: `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`, followed by a narrow review-state correction.
 
-This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/gate.sh` or skill-specific CI arbiter exists, so the evidence is weaker until the repair is committed, pushed and reviewed at its exact revision.
+This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/gate.sh` or skill-specific CI arbiter exists, so local evidence is weaker than CI and independent clean-context evidence.
 
 ## Static checks
 
@@ -129,11 +129,11 @@ Initial Craft Review: no CONFORMANCE findings; one SIMPLICITY concern that the u
 
 Fresh adversarial re-reviews resolved the wrong-product and node-reset findings, then found no remaining CRITICAL/HIGH content defect. The final evidence recheck found no CRITICAL, HIGH or MEDIUM issue after the fail-fast rerun; its one LOW request was to identify the changed-claim source review and narrow an overbroad reproducibility sentence, both corrected above.
 
-The direct Craft passes found and then cleared the duplicated uninstall rule and a source-binding concern caused by naming Apache Ant in shipped prose; the shipped warning is now product-neutral. A final prompt-bounded Craft pass found no CONFORMANCE or SIMPLICITY issue in the supplied final text. Its only NIT was a misspelling in the review prompt itself; `Autreti` does not occur in the repository. Because the Craft agent could not access the isolated worktree or read-only mirrors, exact-revision Craft remains required after commit, when it can inspect the committed files through Git.
+The direct Craft passes found and then cleared the duplicated uninstall rule and a source-binding concern caused by naming Apache Ant in shipped prose; the shipped warning is now product-neutral. A final prompt-bounded Craft pass found no CONFORMANCE or SIMPLICITY issue in the supplied final text. Its only NIT was a misspelling in the review prompt itself; `Autreti` does not occur in the repository. Exact-commit Craft later inspected `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8` through Git and found stale pre-commit wording in `docs/CURRENT.md` and `planning/HANDOFF.md`; this follow-up corrects it.
 
-The first clean-context dispatch was blocked before inference because it lacked the required `gsd.cleancontext.dispatch.v1` envelope; no commands ran and no files changed. The official launcher also requires a clean committed project revision, so a valid Fable gate cannot run against this dirty working tree. It remains required after owner-authorized commit, before PR/merge readiness.
+The first clean-context dispatch was blocked before inference because it lacked the required `gsd.cleancontext.dispatch.v1` envelope; no commands ran and no files changed. A later validated dispatch is recorded below.
 
-Implementation and the OpenAI adversarial/Craft agents used `gpt-5.6-sol`; those reviews are not cross-model evidence. The required post-commit Fable clean-context lane supplies the independent provider/model boundary.
+Implementation and the OpenAI adversarial/Craft agents used `gpt-5.6-sol`; those reviews are not cross-model evidence. The official Fable clean-context lane remains required for the independent provider/model boundary.
 
 ## Honesty rules
 
@@ -141,3 +141,13 @@ Implementation and the OpenAI adversarial/Craft agents used `gpt-5.6-sol`; those
 - No failure was dismissed as environmental, flaky or pre-existing.
 - Static-check outcomes and the complete disposable fixture commands/outputs are documented above; the changed-claim source review names its exact upstream revision and files.
 - No paid, node, upload, update, installed-client or real-home action ran.
+
+## Failed clean-context dispatch — 2026-Sep-04
+
+**Result: Not run / deferred.** A validated `gsd.cleancontext.dispatch.v1` brief targeted the clean committed revision `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`. OpenCode rejected `cleancontext` as a primary agent and fell back to its default `gpt-5.6-terra-fast` build agent. No Claude/Fable authentication or model call occurred, so the fallback output is not clean-context evidence.
+
+- The fallback read the formal sources and ran only the brief's non-destructive static commands.
+- It did not run a fixture deletion, use shell redirection, access the real home, invoke `ant`, or access credentials.
+- Contrary to the read-only clean-context contract, it appended a report to this tracked file. That invalid report was replaced by this incident record before the branch advanced.
+- The preserved private launcher lock is `/var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/gsd-cleancontext/lock`; its brief is 4,361 bytes with SHA-256 `3b129e71e0d28f0f2f25a0514750787fda4197eb0b55e2b4d99ceade60d5a2a9`.
+- No retry is permitted in this session. The official Fable gate remains required before the work can be called PR/merge-ready.

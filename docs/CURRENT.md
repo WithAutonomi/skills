@@ -10,7 +10,7 @@ Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craf
 
 ## Status
 
-**Stop for commit/push approval.** The 0.1.2 repair passes its local static and fail-fast disposable-fixture checks in the isolated `autonomi-skill-prototype` worktree. Fresh adversarial review has no remaining CRITICAL/HIGH content finding and the final evidence recheck has no CRITICAL, HIGH or MEDIUM finding. Exact-revision Craft, Fable clean-context, CI and PR metadata require an owner-authorized commit/push. The prototype is **not yet gauntlet-tested on a real host**. Merge, the public flip and the website's install tabs remain later gates.
+The 0.1.2 implementation repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; this follow-up records the resulting review state. Exact-commit Craft found stale pre-commit wording in this file and `planning/HANDOFF.md`, which this follow-up corrects. The official Fable clean-context route did not run: OpenCode rejected `cleancontext` as a primary agent, fell back to a default build agent, and no Claude/Fable call occurred. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
 
 ## What happened
 
@@ -32,29 +32,29 @@ Checks run: see `planning/TESTING.md` “Evidence so far” — spec validation,
 
 For the 0.1.1 uninstall correction: ADR governance passed; `npx skills add ./ --list` discovered the skill; the documented equivalent frontmatter check passed because `skills-ref` is unavailable here (name match; description 1,019 characters; compatibility 332); version fields agree; length and vocabulary limits pass; `git diff --check` passes. GitHub's ADR Governance check passed for correction commit `bd6cf78`.
 
-For the uncommitted 0.1.2 repair: ADR governance, skill discovery, equivalent frontmatter (description 1,021 characters; compatibility 332), synchronized version fields, plugin JSON, relative links/anchors, vocabulary, lengths, forbidden-claim scan and `git diff --check` pass. Fail-fast disposable proofs removed only an identity-checked Autonomi-shaped fake binary, preserved eight retained-state sentinels by SHA-256, and rejected an Apache Ant-shaped collision without deletion. Exact commands and output are in `planning/evidence/2026-Sep-04-pr13-repair.md`. Snyk was not run because its token is unavailable. No skill-specific CI arbiter exists; evidence is weaker until the repair is committed, pushed and reviewed at its exact revision.
+For the 0.1.2 repair: ADR governance, skill discovery, equivalent frontmatter (description 1,021 characters; compatibility 332), synchronized version fields, plugin JSON, relative links/anchors, vocabulary, lengths, forbidden-claim scan and `git diff --check` pass. Fail-fast disposable proofs removed only an identity-checked Autonomi-shaped fake binary, preserved eight retained-state sentinels by SHA-256, and rejected an Apache Ant-shaped collision without deletion. Exact commands and output are in `planning/evidence/2026-Sep-04-pr13-repair.md`. Snyk was not run because its token is unavailable. No skill-specific CI arbiter exists; local evidence is weaker than CI and independent clean-context evidence.
 
-Results: 0.1.2 repair passes local static and deterministic disposable-fixture checks; not yet clean-context tested at a committed revision or proven on a real host.
+Results: 0.1.2 repair passes local static and deterministic disposable-fixture checks; not yet tested by the official Fable clean-context route or proven on a real host.
 
 ## Review findings
 
 Clean-context test:
 
-- Reviewer/tool: official GSD Fable clean-context launcher / a fresh agent on a real host
-- Result: **Not run.** The first dispatch was rejected before inference because it lacked the required validated envelope; the official launcher requires a clean committed project revision.
-- Findings: After commit, run G/G2/G3 for the uninstall repair. Scenario A (free read) remains the prototype's minimum real-host product gate; B needs a funded wallet and D needs a suitable node host.
+- Reviewer/tool: official GSD Fable clean-context launcher
+- Result: **Not run / deferred.** The validated retry did not invoke Fable: OpenCode rejected `cleancontext` as a primary agent and fell back to a default build agent. Its static trace is not clean-context evidence.
+- Findings: The fallback ran no destructive command, `ant`, real-home access or Claude/Fable call. Its tracked-file write was replaced by an incident record in `planning/evidence/2026-Sep-04-pr13-repair.md`, and the launcher lock remains preserved for inspection. Scenario A (free read) remains the prototype's minimum real-host product gate; B needs a funded wallet and D needs a suitable node host.
 
 Adversarial review:
 
-- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the uncommitted 0.1.2 repair
+- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair
 - Result: **0.1.2 content pass: no remaining CRITICAL/HIGH content finding. Final evidence recheck: no CRITICAL, HIGH or MEDIUM finding. Overall readiness blocked on immutable-revision gates.**
 - Findings: 0.1.2 corrected the nonexistent update flag, ANT-only wallet output, wrong-product deletion risk and false node-reset guarantee. A HIGH evidence-transcript defect was fixed by a fail-fast rerun with exact commands and output. The last LOW evidence request was resolved by naming the changed-claim source review and narrowing the reproducibility statement.
 
 Craft Review:
 
-- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews
-- Result: **Pre-commit content pass with access limitation; exact-revision Craft pending after commit.**
-- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. The final prompt-bounded review found no repository CONFORMANCE or SIMPLICITY issue; its apparent typo existed only in the supplied prompt. The agent could not directly access the isolated worktree or mirrors, so the committed revision still needs direct Craft inspection through Git.
+- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit archive review at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`
+- Result: **Implementation content pass; exact-commit CONFORMANCE concern in current-state prose corrected by this follow-up.**
+- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. Exact-commit Craft found that this file and `planning/HANDOFF.md` still said commit/push was pending after it had happened; those statements are corrected here.
 
 ## Drift / scope concerns
 
@@ -78,7 +78,7 @@ PR / upstream action gate:
 
 ## Recommended next step
 
-1. With Jim's authorization, commit and push the repair; obtain ADR CI, direct exact-revision Craft, and official clean-context G/G2/G3 at that revision; update PR #13 metadata.
+1. Use [PR #13](https://github.com/WithAutonomi/skills/pull/13) to verify exact-revision ADR CI and independent review, update its stale 0.1.0 metadata, and keep official Fable clean-context marked deferred rather than passed.
 2. Jim: test-install from the branch on his machine and run scenario A; B only if a funded wallet is to hand.
 3. Reconcile PR #12, obtain an approving review, and merge only after the declared gate is satisfied.
 4. Public flip; verify the freshness URL unauthenticated; point website install tabs at `main`; quickstart prompt loses “confirm 0.3.3”.
