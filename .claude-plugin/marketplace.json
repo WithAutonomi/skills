@@ -9,7 +9,7 @@
       "name": "autonomi",
       "source": "./",
       "description": "Read from, store on, build on and run the Autonomi network — permanent, accountless, encrypted data storage with free reads. The agent never sees a wallet key.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Autonomi",
         "url": "https://autonomi.com"

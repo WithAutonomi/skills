@@ -2,7 +2,7 @@
 
 Date: 2026-09-04
 Project: Autonomi Skills (`WithAutonomi/skills`)
-Slice/question: Retire the operator skill, land the task-routed `autonomi` prototype (0.1.2), and ready the repo to go public for the developers.autonomi.com launch (Sun 6 Sept 2026).
+Slice/question: Retire the operator skill, land the task-routed `autonomi` prototype (0.1.3), and ready the repo to go public for the developers.autonomi.com launch (Sun 6 Sept 2026).
 Prepared by: Cowork (Claude Fable 5.1), on Jim's behalf; updated by OpenCode for the PR #13 repair
 Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craft Reviewer; Hermes full-branch review; research subagents (distribution mechanics, sandbox egress, agent-wallet precedents, ANT acquisition, plugin manifests, uninstall practice); GitHub; `ant` 0.3.5/0.3.6 in a Claude cloud container; docs.autonomi.com.
 
@@ -10,7 +10,7 @@ Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craf
 
 ## Status
 
-The 0.1.2 implementation repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`. Exact-revision review of the first state follow-up at `1214aa87e5e68599ff4a02d2cb8a8c7e90f2fa5d` found no broad-delete route or corrected-command mismatch, and confirmed that stale pre-commit wording was fixed. It still marked the work not ready: the official Fable clean-context route did not run, Proposed ADR-0008 and DESIGN §6 still describe removing state, and required human approval is absent. The PR title/body now accurately describe 0.1.2 and those blockers. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
+The binary-only 0.1.2 repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`. Exact-revision review later found one pre-existing shipped fact to correct: `wallet address` and `wallet balance` require `SECRET_KEY` as well as paying operations. Version 0.1.3 makes that bounded source-backed correction. Jim chose not to change the documented same-file replacement race, and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 and DESIGN §6 while leaving formal merge-rule reconciliation open. The official Fable clean-context route still has not run, and required human approval is absent. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
 
 ## What happened
 
@@ -23,6 +23,7 @@ The 0.1.2 implementation repair was committed and pushed as `dcca31ed347a12e620e
 - **This PR:** the skill replaced; the operator skill archived verbatim under `docs/archive/operator-skill-v0/`; `planning/TESTING.md` and `source-bindings/autonomi.md` replaced; README rewritten; `LICENSE-MIT` / `LICENSE-APACHE` added; `.claude-plugin/` manifests added; SECURITY, CONTRIBUTING and the PR template updated to the new key line; DESIGN given a prototype note; HANDOFF, NEXT-PHASE and the release-endpoint note refreshed.
 - **Initial review correction (4 Sept):** version 0.1.1 expanded uninstall into a category-by-category teardown. Although its scoped reviews passed, a later real-host review cleanup deleted pre-existing application data. No key, payment, upload or node action occurred, but the incident disproved the safety of exhaustive teardown guidance.
 - **Repair decision (Jim, 4 Sept):** uninstall is binary-only by default, with all settings, application data, logs, nodes, payment receipts and user files retained. Stripe's first-party skills omit uninstall; among 14 first-party skills, none attempts exhaustive teardown; and X0X keeps a short separate page whose omissions and recursive deletion commands show why it is not a safe template. Version 0.1.2 implements the bounded rule and also corrects the tool-update and wallet-balance claims found by Hermes.
+- **0.1.3 correction and deferral (Jim, 4 Sept):** ant-client source showed that every wallet subcommand constructs a wallet from `SECRET_KEY`; 0.1.3 now says `wallet address`, `wallet balance` and paying operations require it, while free reads and `file cost` do not. Jim chose to leave the separately documented same-file replacement race unchanged and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 / DESIGN §6 rather than rewriting those formal sources in this slice.
 
 ## Evidence
 
@@ -34,7 +35,9 @@ For the 0.1.1 uninstall correction: ADR governance passed; `npx skills add ./ --
 
 For the 0.1.2 repair: ADR governance, skill discovery, equivalent frontmatter (description 1,021 characters; compatibility 332), synchronized version fields, plugin JSON, relative links/anchors, vocabulary, lengths, forbidden-claim scan and `git diff --check` pass. Fail-fast disposable proofs removed only an identity-checked Autonomi-shaped fake binary, preserved eight retained-state sentinels by SHA-256, and rejected an Apache Ant-shaped collision without deletion. Exact commands and output are in `planning/evidence/2026-Sep-04-pr13-repair.md`. Snyk was not run because its token is unavailable. No skill-specific CI arbiter exists; local evidence is weaker than CI and independent clean-context evidence.
 
-Results: 0.1.2 repair passes local static and deterministic disposable-fixture checks; not yet tested by the official Fable clean-context route or proven on a real host.
+For 0.1.3, the changed wallet claim traces directly to ant-client `ant-cli/src/main.rs` at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: wallet dispatch unconditionally calls `require_secret_key()`, while free reads and `file cost` construct a client without requiring a wallet. Active skill/plugin versions are synchronized at 0.1.3. Exact local and review evidence remains in `planning/evidence/2026-Sep-04-pr13-repair.md`.
+
+Results: the 0.1.2 safety repair and bounded 0.1.3 factual correction pass local static and deterministic disposable-fixture checks; not yet tested by the official Fable clean-context route or proven on a real host.
 
 ## Review findings
 
@@ -47,19 +50,19 @@ Clean-context test:
 Adversarial review:
 
 - Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair
-- Result: **0.1.2 content pass; exact-revision verdict at `1214aa87e5e68599ff4a02d2cb8a8c7e90f2fa5d`: NOT-READY.**
-- Findings: 0.1.2 corrected the nonexistent update flag, ANT-only wallet output, wrong-product deletion risk and false node-reset guarantee. Exact-revision review found no unsafe broad-delete route or mismatch in those corrected claims. Blocking gates are official Fable clean-context, the Proposed ADR-0008 / DESIGN §6 conflict, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The evidence fixture was rerun with `${TMPDIR:-/tmp}` rather than a machine-specific parent path; the same-file replacement race remains a non-blocking concern for Jim.
+- Result: **0.1.2 safety content pass; exact-revision verdict at `f05c241be42ae4ed14424517a904bcc58a64bc9d`: NOT-READY pending the 0.1.3 correction and external gates.**
+- Findings: 0.1.2 corrected the nonexistent update flag, ANT-only wallet output, wrong-product deletion risk and false node-reset guarantee. Exact-revision review found no unsafe broad-delete route or mismatch in those corrected claims, then found the narrower false `SECRET_KEY` applicability claim corrected in 0.1.3. Blocking gates remain official Fable clean-context, formal reconciliation of the Jim-approved Proposed ADR-0008 / DESIGN §6 prototype deferral, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The same-file replacement race remains a non-blocking concern by Jim's decision.
 
 Craft Review:
 
 - Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit archive review at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`
 - Result: **Implementation content pass; stale-state CONFORMANCE concern resolved; separate decision-record CONFORMANCE concern remains.**
-- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. Exact review confirmed that stale commit/push wording was corrected. It also found that the formal drift lists omit the new conflict with Proposed ADR-0008 and DESIGN §6; that conflict is now listed below but changing the Proposed decision remains outside this repair packet and requires Jim's checkpoint.
+- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. Exact review confirmed that stale commit/push wording was corrected. Jim explicitly approved the conflict with Proposed ADR-0008 and DESIGN §6 as a temporary prototype deferral; the prototype note and drift lists now record it, while formal merge-rule reconciliation remains open.
 
 ## Drift / scope concerns
 
 - The prototype runs ahead of ADR-0002/0003/0004/0005 and DESIGN §1–3, §7, §8. Deliberate, recorded in the DESIGN note; revise after proof, not before.
-- Binary-only uninstall also runs ahead of Proposed ADR-0008 and DESIGN §6, which still describe removing binaries and state. This newly identified conflict must be explicitly accepted as a prototype deferral or reconciled in a separately approved decision update before merge.
+- Binary-only uninstall also runs ahead of Proposed ADR-0008 and DESIGN §6, which still describe removing binaries and state. Jim explicitly approved this as a temporary prototype deferral on 4 September 2026; formal reconciliation remains required before merge.
 - `source-bindings/autonomi.md` is provenance by document and observation, not symbol-level bindings — an ADR-0006 gap accepted for the prototype.
 - Two Further-reading links (`developers.autonomi.com/llms.txt`, `facts.json`) are held out until those surfaces are live.
 - The skill-version URL is intentionally best-effort and returns 404 without authentication while the repository is private; verify an unauthenticated 200 response after the public flip and before promotion.
@@ -69,7 +72,7 @@ Craft Review:
 ## Open questions / decisions for Jim
 
 - Merge PR #12 first (recommended — this branch is based on it, so its diff shrinks to the prototype once #12 lands).
-- Decide whether binary-only uninstall should be recorded as a deliberate prototype divergence from Proposed ADR-0008 / DESIGN §6, or whether those Proposed sources should be updated before merge.
+- Decide the formal pre-merge reconciliation for the temporarily deferred Proposed ADR-0008 / DESIGN §6 conflict.
 - Who runs scenario A on a real host, and when.
 - The public flip: visibility; private vulnerability reporting switched on (SECURITY.md relies on it); About description, website and topics; delete the merged `docs/install-examples` branch.
 

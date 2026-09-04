@@ -6,7 +6,7 @@ First-party [Agent Skills](https://agentskills.io) for the **Autonomi** network 
 
 | Skill | What it does | Status |
 | --- | --- | --- |
-| **`autonomi`** | Read data by content address; store files publicly or privately and get a permanent address back; run nodes that contribute spare disk and earn ANT; wire the network into an application. One skill, routed by task. The agent never sees a wallet key. | **Prototype 0.1.2** — being tested with the community |
+| **`autonomi`** | Read data by content address; store files publicly or privately and get a permanent address back; run nodes that contribute spare disk and earn ANT; wire the network into an application. One skill, routed by task. The agent never sees a wallet key. | **Prototype 0.1.3** — being tested with the community |
 
 ## Install
 

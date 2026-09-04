@@ -76,9 +76,9 @@ Either way it's the balance of an address, not proof that any particular node ea
 
 ## Spending: paying for storage
 
-The `ant` tool reads the wallet's private key from the `SECRET_KEY` environment variable when — and only when — a command has to pay. Reads and cost quotes never need it. The key reaches the tool in one of two ways, and in neither do you handle it:
+The `ant` tool reads the wallet's private key from the `SECRET_KEY` environment variable for `wallet address`, `wallet balance`, and commands that pay. Reads and cost quotes never need it. The key reaches the tool in one of two ways, and in neither do you handle it:
 
-**Set up once, by the person, in the environment your tools run in.** Wherever your harness takes environment variables for its tools — a settings file, an MCP or tool configuration's `env` block, a profile for the account the agent runs under, or a per-process injector from a password manager — the person puts `SECRET_KEY` there once. After that, `ant file upload` simply works when you run it, and you never reference the key at all. Tell them the variable's name and where their harness keeps such settings; don't set it for them, and don't test whether it's set by printing anything — a failed upload says `SECRET_KEY environment variable required`, which is the only check you need.
+**Set up once, by the person, in the environment your tools run in.** Wherever your harness takes environment variables for its tools — a settings file, an MCP or tool configuration's `env` block, a profile for the account the agent runs under, or a per-process injector from a password manager — the person puts `SECRET_KEY` there once. After that, wallet checks and `ant file upload` simply work when you run them, and you never reference the key at all. Tell them the variable's name and where their harness keeps such settings; don't set it for them, and don't test whether it's set by printing anything — a wallet command or upload without it says `SECRET_KEY environment variable required`, which is the only check you need.
 
 **Or the person runs the paid command.** You do everything up to the quote, then hand them the exact `ant file upload …` line to run in their own terminal, and they paste back the address or datamap location. One copy-paste per upload; nothing for you to protect.
 
