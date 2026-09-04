@@ -1,6 +1,6 @@
 # PR #13 repair evidence — 2026-Sep-04
 
-Implementation history: the binary-only repair landed at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; the current 0.1.4 candidate is based on pushed 0.1.3 revision `807e03cebe5b06886a42c6c013ed9797258122ac`.
+Implementation history: the binary-only repair landed at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; the 0.1.4 install/freshness repair landed at `e4f5a9776ab45af0cd5a7392000ba80dd16fa660`, based on pushed 0.1.3 revision `807e03cebe5b06886a42c6c013ed9797258122ac`.
 
 This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/gate.sh` or skill-specific CI arbiter exists, so local evidence is weaker than CI and independent clean-context evidence.
 
@@ -32,7 +32,7 @@ For 0.1.4, `python3 scripts/adr-governance.py` passed 14 ADRs; `npx skills add .
 
 No command used the real home directory or invoked `ant`. Four fresh fixtures under `${TMPDIR:-/tmp}` replaced `HOME`, `XDG_CONFIG_HOME` and `uname`; the install snippet itself was unchanged. On each platform, one run started without a destination file and compared the copied result with the source; another started with a sentinel destination, reran the snippet and compared its SHA-256 before and after. Wrong-platform and default paths were asserted absent.
 
-Reproduction shape, using only the snippet committed in `skills/autonomi/references/install-and-verify.md`:
+Equivalent reproduction, using only the snippet committed in `skills/autonomi/references/install-and-verify.md` (the literal four original shell invocations were not retained):
 
 ```bash
 set -euo pipefail
@@ -222,6 +222,8 @@ Exact-revision Craft and adversarial review then inspected `1214aa87e5e68599ff4a
 
 Exact-revision review at `f05c241be42ae4ed14424517a904bcc58a64bc9d` found a separate pre-existing factual defect: the wallet reference said `SECRET_KEY` was read only for commands that pay, but ant-client 0.3.6 unconditionally calls `require_secret_key()` for every wallet subcommand. Jim approved a bounded 0.1.3 correction: `wallet address`, `wallet balance` and paying operations require the key; free reads and `file cost` do not. He chose not to change the documented same-file replacement race, and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 and DESIGN §6 while leaving formal pre-merge reconciliation open. The approved scope is in `planning/packets/PACKET-pr13-0.1.3-key-correction.md`.
 
+Exact-revision adversarial and Craft reviews inspected 0.1.4 implementation commit `e4f5a9776ab45af0cd5a7392000ba80dd16fa660`. Both confirmed the Unix config-path correction itself is sound and bounded. Adversarial review found one MEDIUM mismatch: Proposed ADR-0013 called the raw HTTP response a guaranteed bounded scalar even though the shipped `curl` displays any successful response body to the agent. The no-new-machinery resolution keeps the command and explicitly treats its complete response as untrusted, interpreting only one valid semantic version and ignoring all other text. Its LOW findings are resolved by identifying `VERSION` as part of the bundle, labelling the fixture block as an equivalent reproduction rather than literal commands/output, and correcting the DESIGN inventory. Craft's one CONFORMANCE finding was stale pre-commit wording in the current-state records; this follow-up names the immutable implementation revision and removes the completed commit/push step. Exact re-review of the follow-up remains required.
+
 The first clean-context dispatch was blocked before inference because it lacked the required `gsd.cleancontext.dispatch.v1` envelope; no commands ran and no files changed. A later validated dispatch is recorded below.
 
 Implementation and the OpenAI adversarial/Craft agents used `gpt-5.6-sol`; those reviews are not cross-model evidence. The official Fable clean-context lane remains required for the independent provider/model boundary.
@@ -230,7 +232,7 @@ Implementation and the OpenAI adversarial/Craft agents used `gpt-5.6-sol`; those
 
 - No harness, CI, gate, build invocation or environment setup was changed.
 - No failure was dismissed as environmental, flaky or pre-existing.
-- Static-check outcomes and the complete disposable fixture commands/outputs are documented above; the changed-claim source review names its exact upstream revision and files.
+- Static-check outcomes, an equivalent reproducible fixture procedure and the recorded original outputs are documented above; the changed-claim source review names its exact upstream revision and files.
 - No paid, node, upload, update, installed-client or real-home action ran.
 
 ## Failed clean-context dispatch — 2026-Sep-04

@@ -10,9 +10,9 @@
 
 ## Context
 
-The shipped skill is a **bundled, version-pinned snapshot** — `SKILL.md` plus bundled `references/` — deliberately self-contained so it installs and runs offline and on a fresh host (ADR-0008), with its facts bound to upstream code (ADR-0006).
+The shipped skill is a **bundled, version-pinned snapshot** — `SKILL.md`, `VERSION` and bundled `references/` — deliberately self-contained so it installs and runs offline and on a fresh host (ADR-0008), with its facts bound to upstream code (ADR-0006).
 
-A snapshot drifts from reality along **independent axes**: the underlying `ant` tool updates on its own lifecycle; the skill's own instructions get revised; and a *narrow subset* of the operational figures it carries (resource sizing, shunning/standing thresholds) change faster than the whole skill is re-released. Distribution is channel-agnostic (ADR-0008), so no single channel's update flow can be *the* freshness mechanism; and any runtime fetch is an instruction/injection surface that must be bounded.
+A snapshot drifts from reality along **independent axes**: the underlying `ant` tool updates on its own lifecycle; the skill's own instructions get revised; and a *narrow subset* of the operational figures it carries (resource sizing, shunning/standing thresholds) change faster than the whole skill is re-released. Distribution is channel-agnostic (ADR-0008), so no single channel's update flow can be *the* freshness mechanism; and any runtime fetch is an instruction/injection surface that must be treated as untrusted and prevented from authorising action.
 
 This ADR sets out how the skill stays current across those axes without sacrificing offline robustness, source-binding, or trust — by treating them as separate mechanisms rather than one.
 
@@ -24,7 +24,7 @@ This ADR sets out how the skill stays current across those axes without sacrific
 - Offline / fresh-host robustness (ADR-0008) — install and operate from the bundle with no hard runtime dependency.
 - Source-bound discipline (ADR-0006) — facts bind to upstream code; regenerate from the manifest, and keep the mechanical-vs-judgement review split.
 - A narrow set of operational values changes faster than whole-artifact releases.
-- Trust/security — a runtime fetch must not let unverified content steer the agent; live material must be typed *data*, not free-form instructions.
+- Trust/security — a freshness advisory is interpreted only when its complete response is one version scalar; live operational material must be verified, typed *data*, not free-form instructions.
 - Don't pester; degrade gracefully — freshness never blocks operation or nags.
 
 ## Considered Options
@@ -46,7 +46,7 @@ The `ant` tool and its binaries update on their own lifecycle (auto-upgrade chan
 Automation watches upstream against the source-bindings manifest and regenerates the artifact, respecting **ADR-0006's split**: **mechanical, source-bound content** (commands, flags, figures) may be regenerated automatically, while **judgement-derived content** (doctrine, prose, guidance) is **flagged for human review**, never silently rewritten. A regenerated candidate passes a **reviewed release/promotion gate** before it is published as a new version-pinned snapshot. Regeneration is from the manifest — not hand-patching to chase upstream.
 
 **3. Consuming skill updates — an installed copy staying current.**
-Every released skill carries the same semantic version in its frontmatter and bundled `VERSION` file. At first use in a session, the installed copy makes one best-effort, short-timeout fetch of the canonical published `VERSION` file. A valid higher version means **tell the person once and continue**; an equal, older, malformed, unavailable or slow response means carry on silently. The fetched value is a version scalar only, never executable content or instructions.
+Every released skill carries the same semantic version in its frontmatter and bundled `VERSION` file. At first use in a session, the installed copy makes one best-effort, short-timeout fetch of the canonical published `VERSION` file. The response body is untrusted remote input: it is interpreted only if the complete response is one valid semantic version, and every other body is ignored regardless of any instructions it appears to contain. A valid higher version means **tell the person once and continue**; an equal, older, malformed, unavailable or slow response means carry on silently. This is an advisory interpretation rule, not a trusted transport or an executable update channel.
 
 This is the channel-independent self-check required by ADR-0008. It does not identify how the copy was installed and does not apply an update. Updating remains **deliberate, surfaced and channel-owned**: the person uses skills.sh, their plugin manager or their manual install route. A copy installed from an immutable `ref` remains pinned unless the person deliberately chooses a newer source; the advisory never moves it automatically.
 

@@ -10,7 +10,7 @@ Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craf
 
 ## Status
 
-The binary-only 0.1.2 repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; version 0.1.3 then corrected the source-backed `SECRET_KEY` requirements. Version 0.1.4 corrects the Unix manual install's configuration destination and aligns Proposed ADR-0013 with the simple `VERSION` advisory that already ships. Jim chose not to change the documented same-file replacement race, and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 and DESIGN §6 while leaving formal merge-rule reconciliation open. The 0.1.4 local checks and disposable path proof pass; exact-revision review and CI are pending. The official Fable clean-context route still has not run, and required human approval is absent. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
+The binary-only 0.1.2 repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; version 0.1.3 then corrected the source-backed `SECRET_KEY` requirements. Version 0.1.4 implementation commit `e4f5a9776ab45af0cd5a7392000ba80dd16fa660` corrects the Unix manual install's configuration destination and aligns Proposed ADR-0013 with the simple `VERSION` advisory that already ships. Its initial exact reviews confirmed the path fix and found a freshness trust-boundary overstatement plus stale evidence wording; this follow-up resolves those findings without new runtime machinery. Jim chose not to change the documented same-file replacement race, and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 and DESIGN §6 while leaving formal merge-rule reconciliation open. Local checks, the disposable path proof and exact-head ADR CI pass; exact re-review of the follow-up is pending. The official Fable clean-context route still has not run, and required human approval is absent. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
 
 ## What happened
 
@@ -28,7 +28,7 @@ The binary-only 0.1.2 repair was committed and pushed as `dcca31ed347a12e620eaaa
 
 ## Evidence
 
-Files (branch `autonomi-skill-prototype`): `skills/autonomi/{SKILL.md,VERSION,references/install-and-verify.md,wallet-and-tokens.md,run-nodes.md,build-on-autonomi.md}`; `docs/archive/operator-skill-v0/*`; `planning/TESTING.md`; `source-bindings/autonomi.md`; `README.md`; `LICENSE-MIT`; `LICENSE-APACHE`; `.claude-plugin/marketplace.json`; `.claude-plugin/plugin.json`; `.github/SECURITY.md`; `CONTRIBUTING.md`; `.github/pull_request_template.md`; `docs/DESIGN.md` (note only); this file; `planning/HANDOFF.md`; `planning/NEXT-PHASE.md`; `planning/release-endpoint-accessibility.md`.
+Files (branch `autonomi-skill-prototype`): `skills/autonomi/{SKILL.md,VERSION,references/install-and-verify.md,wallet-and-tokens.md,run-nodes.md,build-on-autonomi.md}`; `docs/archive/operator-skill-v0/*`; `planning/TESTING.md`; `source-bindings/autonomi.md`; `README.md`; `LICENSE-MIT`; `LICENSE-APACHE`; `.claude-plugin/marketplace.json`; `.claude-plugin/plugin.json`; `.github/SECURITY.md`; `CONTRIBUTING.md`; `.github/pull_request_template.md`; `docs/DESIGN.md` (prototype note and freshness alignment); `docs/adr/ADR-0013-skill-freshness-and-self-update.md`; this file; `planning/HANDOFF.md`; `planning/NEXT-PHASE.md`; `planning/release-endpoint-accessibility.md`.
 
 Checks run: see `planning/TESTING.md` “Evidence so far” — spec validation, skills.sh discovery, vocabulary lint, link check; installer and manual install paths on `ant` 0.3.6 in a container (version parsed from the latest `SHA256SUMS.txt`, checksum `OK`); offline address derivation; contract address matched to the docs page. The pushed skill files were verified byte-identical to the authored files, and the archived copies byte-identical to `main`, by git blob hash.
 
@@ -38,7 +38,7 @@ For the 0.1.2 repair: ADR governance, skill discovery, equivalent frontmatter (d
 
 For 0.1.3, the changed wallet claim traces directly to ant-client `ant-cli/src/main.rs` at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: wallet dispatch unconditionally calls `require_secret_key()`, while free reads and `file cost` construct a client without requiring a wallet. Exact local and review evidence remains in `planning/evidence/2026-Sep-04-pr13-repair.md`.
 
-For 0.1.4, active skill/plugin versions are synchronized at 0.1.4. ADR governance, skill discovery, frontmatter, plugin JSON, relative links/anchors, vocabulary, lengths, forbidden-claim and exact-range whitespace checks pass. Disposable fixtures proved both the macOS and XDG-Linux config destinations, copying when absent and preserving existing bootstrap files byte-identically. Exact commands and output are in `planning/evidence/2026-Sep-04-pr13-repair.md`.
+For 0.1.4, active skill/plugin versions are synchronized at 0.1.4. ADR governance, skill discovery, frontmatter, plugin JSON, relative links/anchors, vocabulary, lengths, forbidden-claim and exact-range whitespace checks pass. Disposable fixtures proved both the macOS and XDG-Linux config destinations, copying when absent and preserving existing bootstrap files byte-identically. The equivalent reproduction and recorded original outputs are in `planning/evidence/2026-Sep-04-pr13-repair.md`.
 
 Results: the 0.1.2 safety repair, bounded 0.1.3 factual correction and 0.1.4 install/freshness repair pass local static and deterministic disposable-fixture checks; 0.1.4 exact-revision review/CI, the official Fable clean-context route and real-host proof remain outstanding.
 
@@ -52,15 +52,15 @@ Clean-context test:
 
 Adversarial review:
 
-- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair
-- Result: **0.1.3 bounded correction pass; full-branch review at `807e03cebe5b06886a42c6c013ed9797258122ac` remained NOT-READY pending the 0.1.4 repair and external gates. Exact 0.1.4 review is pending.**
-- Findings: 0.1.2 corrected the nonexistent update flag, ANT-only wallet output, wrong-product deletion risk and false node-reset guarantee; 0.1.3 corrected the narrower false `SECRET_KEY` applicability claim. Review of 0.1.3 then found the broken manual-install config destination and ADR-0013's contradictory identity/hash requirement, corrected in the local 0.1.4 candidate. Blocking external gates remain official Fable clean-context, formal reconciliation of the Jim-approved Proposed ADR-0008 / DESIGN §6 prototype deferral, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The same-file replacement race remains a non-blocking concern by Jim's decision.
+- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair and 0.1.4 implementation
+- Result: **0.1.4 implementation review at `e4f5a9776ab45af0cd5a7392000ba80dd16fa660`: path fix pass; one MEDIUM freshness-boundary mismatch and three LOW evidence/state findings, corrected in this follow-up. Exact re-review is pending.**
+- Findings: the revised ADR promised a scalar-only trust boundary while the unchanged `curl` exposes any successful response body. The no-new-machinery correction now tells the agent and Proposed ADR-0013 to treat the complete response as untrusted, interpret only one valid semantic version and ignore all other text. Evidence is now labelled as an equivalent reproduction, `VERSION` is named in the bundle definition, and the current-state inventory is accurate. Blocking external gates remain official Fable clean-context, formal reconciliation of the Jim-approved Proposed ADR-0008 / DESIGN §6 prototype deferral, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The same-file replacement race remains a non-blocking concern by Jim's decision.
 
 Craft Review:
 
-- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit archive review at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`
-- Result: **Implementation content pass; stale-state CONFORMANCE concern resolved; separate decision-record CONFORMANCE concern remains.**
-- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. Exact review confirmed that stale commit/push wording was corrected. Jim explicitly approved the conflict with Proposed ADR-0008 and DESIGN §6 as a temporary prototype deferral; the prototype note and drift lists now record it, while formal merge-rule reconciliation remains open.
+- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit reviews at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8` and `e4f5a9776ab45af0cd5a7392000ba80dd16fa660`
+- Result: **0.1.4 implementation is focused and simple; one CONFORMANCE finding for stale pre-commit state wording, corrected in this follow-up. Exact re-review is pending.**
+- CONFORMANCE disposition: current state now names immutable implementation commit `e4f5a9776ab45af0cd5a7392000ba80dd16fa660`, removes the completed commit/push action and accurately inventories the DESIGN and ADR-0013 changes. Jim explicitly approved the separate conflict with Proposed ADR-0008 and DESIGN §6 as a temporary prototype deferral; formal merge-rule reconciliation remains open.
 
 ## Drift / scope concerns
 
@@ -87,7 +87,7 @@ PR / upstream action gate:
 
 ## Recommended next step
 
-1. Commit and push the bounded 0.1.4 repair, then use [PR #13](https://github.com/WithAutonomi/skills/pull/13) to verify exact-revision ADR CI and independent review; keep official Fable clean-context marked deferred rather than passed.
+1. Use [PR #13](https://github.com/WithAutonomi/skills/pull/13) to verify exact-revision ADR CI and independent re-review of the 0.1.4 review follow-up; keep official Fable clean-context marked deferred rather than passed.
 2. Jim: test-install from the branch on his machine and run scenario A; B only if a funded wallet is to hand.
 3. Reconcile PR #12, obtain an approving review, and merge only after the declared gate is satisfied.
 4. Public flip; verify the freshness URL unauthenticated; point website install tabs at `main`; quickstart prompt loses “confirm 0.3.3”.
