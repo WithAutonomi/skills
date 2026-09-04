@@ -109,6 +109,7 @@ Scenarios A, B and D pass in at least two different harnesses (e.g. Claude Code 
 - `ant wallet address` derives the address from `SECRET_KEY` offline and prints only the address (run with a throwaway key, output redacted).
 - ANT contract address matched against the official import-token page, 3 Sept 2026.
 - Earlier, on a real host (31 Aug 2026, `ant` 0.3.3 / 0.3.4): `file cost`, `file upload`, `file download` and the demonstration read run live on the production network.
+- 0.1.1 uninstall correction (local, 4 Sept): ADR governance, skill discovery, equivalent frontmatter validation, vocabulary and length limits, version agreement and `git diff --check` pass. Scoped adversarial and Craft re-reviews pass after their findings were fixed. No CI run includes the uncommitted correction yet.
 
 **Not yet run:**
 
@@ -120,7 +121,7 @@ Scenarios A, B and D pass in at least two different harnesses (e.g. Claude Code 
 
 ## Known gaps (3 Sept 2026)
 
-- Two Further-reading links to `developers.autonomi.com` (`llms.txt`, `facts.json`) were held back from the skill because those surfaces weren't live at the time; add them in a `0.1.1` bump once they are.
+- Two Further-reading links to `developers.autonomi.com` (`llms.txt`, `facts.json`) were held back from the skill because those surfaces weren't live at the time; add them in a later version bump once they are.
 - `install.sh` and `install.ps1` verify neither checksum nor signature; the skill's manual path checks the checksum. A small ant-client change would close that.
 - Uniswap's pre-filled swap URL parameters are documented only in Uniswap's own agent skill and were once removed from the interface; the skill points at the token page rather than a pre-filled swap. If a pre-filled link is wanted, test it live first.
 - The OpenClaw install manifest was removed from the frontmatter (3 Sept): it was the only place the skill hard-coded a tool version, it goes stale on every release because ant-client's asset filenames carry the version and there are no unversioned aliases, and no installer we found executes it. If OpenClaw distribution is wanted later, it needs unversioned alias assets first — recorded as an ant-client ask.

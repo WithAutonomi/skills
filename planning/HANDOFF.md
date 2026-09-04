@@ -1,10 +1,10 @@
 # Current state & handoff
 
-> **Entry point** for anyone — human or agent — picking up the `autonomi` skill. **Owner:** Jim. **Updated:** 2026-09-03. Read this first for where things stand and what's next.
+> **Entry point** for anyone — human or agent — picking up the `autonomi` skill. **Owner:** Jim. **Updated:** 2026-09-04. Read this first for where things stand and what's next.
 
 ## TL;DR
 
-The `autonomi` skill is now **one task-routed skill** — read data by content address, store it publicly or privately, run nodes that earn ANT, build the network into an application — shipped as a **prototype (0.1.0)** for testing with the community. It replaces the June operator-only skill, which is archived verbatim under `docs/archive/operator-skill-v0/`. It lives at **`WithAutonomi/skills`** (private until the launch flip), installable with `npx skills add WithAutonomi/skills` from `main` or as a Claude Code plugin. It is authored and statically checked; it is **not yet proven on a real host**.
+The `autonomi` skill is now **one task-routed skill** — read data by content address, store it publicly or privately, run nodes that earn ANT, build the network into an application — shipped as a **prototype (0.1.1)** for testing with the community. It replaces the June operator-only skill, which is archived verbatim under `docs/archive/operator-skill-v0/`. It lives at **`WithAutonomi/skills`** (private until the launch flip), installable with `npx skills add WithAutonomi/skills` from `main` or as a Claude Code plugin. It is authored and statically checked; it is **not yet proven on a real host**.
 
 **Start here:** `README.md` → `skills/autonomi/SKILL.md` → its `references/` → `planning/TESTING.md` → this doc → `source-bindings/autonomi.md` → the prototype note at the top of `docs/DESIGN.md` → `docs/adr/`.
 
@@ -38,6 +38,7 @@ The `autonomi` skill is now **one task-routed skill** — read data by content a
 - **The key line.** The agent never sees a private key: wallets are created by the person in a wallet app; a paid write uses a `SECRET_KEY` the person provisions once in the tool's environment, or the person runs the paid command; any key appearing in context means stop, new wallet, move funds. Nodes take a public address only. The token is identified by its contract address, baked into the *Verified against* table.
 - **Spend.** Permanence and public/private established first; quote, show, wait by default; an explicit waiver within a limit is honoured and every spend still reported.
 - **Install.** Detect first; the official installer fetched and read before running, latest stable, no pinned version outside dated history; a checksum-verified manual path that reads the version from `releases/latest/download/SHA256SUMS.txt`; fallbacks for a blocked `api.github.com`; an honest `found 0 peers` explanation for proxy-only sandboxes; `--ipv4-only` for hosts without IPv6.
+- **Uninstall.** The executable, settings, application data, logs and node directories are separate choices. Deleting state needs explicit consent, with warnings for node loss and resumable paid-upload receipts; reset happens while the daemon can enforce its running-node check; unreachable custom paths stop teardown rather than being forgotten; Windows `PATH`, installer leftovers and preserved datamaps are covered. The scoped adversarial and Craft re-reviews pass.
 - **Freshness.** A `VERSION` self-check at first use (ADR-0013's simplest mechanism); `ant update --check` for the tool; the agent never modifies its own files.
 - **Verified / not verified.** `planning/TESTING.md` “Evidence so far” is the honest list: install and checksum paths on 0.3.6 in a container, offline address derivation, contract address; live read/write on 0.3.3/0.3.4 (31 Aug); **not** a live read or write on 0.3.6 on a real host, **not** the node route live, **not** the trigger eval, Snyk or Windows.
 
@@ -45,7 +46,7 @@ The `autonomi` skill is now **one task-routed skill** — read data by content a
 
 1. **Gauntlet the prototype.** Adversarial review of the branch; scenario A (free read) on a real host; B (paid write) and D (nodes) when a funded wallet and a host with room are available. Then merge.
 2. **Public flip and the site.** Visibility, private vulnerability reporting, About/topics; the website's install tabs point at `main`; the quickstart prompt loses “confirm 0.3.3”.
-3. **Developer-site surfaces.** Once `developers.autonomi.com/llms.txt` and `facts.json` are live, add them to Further reading in a `0.1.1` bump.
+3. **Developer-site surfaces.** Once `developers.autonomi.com/llms.txt` and `facts.json` are live, add them to Further reading in a later version bump.
 4. **Community testing.** Trigger eval; Snyk scan (needs a token); open the testing call; collect transcripts and score them against F1–F9 in `planning/TESTING.md`.
 5. **ADR revision after proof** (0002 / 0003 / 0004 / 0005 / 0007) — or split the skill if F3/F4 recur. Accepting the decision ADRs (0007 / 0008 / 0012 / 0013 / 0014) remains Jim's gate.
 6. **ant-client asks.** npm distribution of the CLI (#190, post-launch, agreed with Chris); unversioned release-asset aliases; checksum verification inside `install.sh` / `install.ps1`; a secrets mechanism so an agent can pay without a raw key in `SECRET_KEY`.

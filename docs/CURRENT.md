@@ -1,10 +1,10 @@
 # GSD Checkpoint — Autonomi skill (current state)
 
-Date: 2026-09-03
+Date: 2026-09-04
 Project: Autonomi Skills (`WithAutonomi/skills`)
-Slice/question: Retire the operator skill, land the task-routed `autonomi` prototype (0.1.0), and ready the repo to go public for the developers.autonomi.com launch (Sun 6 Sept 2026).
-Prepared by: Cowork (Claude Fable 5.1), on Jim's behalf
-Agents/tools used: Cowork (Claude); research subagents (distribution mechanics, sandbox egress, agent-wallet precedents, ANT acquisition, plugin manifests); GitHub; `ant` 0.3.5/0.3.6 in a Claude cloud container; docs.autonomi.com.
+Slice/question: Retire the operator skill, land the task-routed `autonomi` prototype (0.1.1), and ready the repo to go public for the developers.autonomi.com launch (Sun 6 Sept 2026).
+Prepared by: Cowork (Claude Fable 5.1), on Jim's behalf; updated by OpenCode for the uninstall correction
+Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craft Reviewer; research subagents (distribution mechanics, sandbox egress, agent-wallet precedents, ANT acquisition, plugin manifests); GitHub; `ant` 0.3.5/0.3.6 in a Claude cloud container; docs.autonomi.com.
 
 > **Read this first if you are the incoming agent.** Reading order: `README.md` → `skills/autonomi/SKILL.md` → its `references/` → `planning/TESTING.md` → `planning/HANDOFF.md` → `source-bindings/autonomi.md` → the prototype note at the top of `docs/DESIGN.md` → `docs/adr/`. Follow the coordination protocol in `CONTRIBUTING.md` (lanes; branch + PR, never commit to `main` directly; fetch/rebase before a session and after each merge).
 
@@ -21,12 +21,15 @@ Agents/tools used: Cowork (Claude); research subagents (distribution mechanics, 
 - **The prototype built and revised** through six rounds of Jim's feedback: audience line up top; permanence and private/public before any write; quote-show-wait with an explicit waiver allowed; fetch-and-relay rather than sending the person to links; the demonstration read only on request; a basic node route with the wallet conversation; plain-language principle rather than a prescriptive table; latest-by-default install with no pinned version outside dated history; the OpenClaw manifest removed.
 - **Key handling settled (Jim, 3 Sept):** the agent never sees a key; wallets are created by the person in a wallet app; `SECRET_KEY` is provisioned once by the person in the tool's environment, or the person runs the paid command; a composed wallet-generation procedure and a raw RPC balance read were withdrawn; the ANT contract address is baked into the *Verified against* table and the token is identified by it alone.
 - **This PR:** the skill replaced; the operator skill archived verbatim under `docs/archive/operator-skill-v0/`; `planning/TESTING.md` and `source-bindings/autonomi.md` replaced; README rewritten; `LICENSE-MIT` / `LICENSE-APACHE` added; `.claude-plugin/` manifests added; SECURITY, CONTRIBUTING and the PR template updated to the new key line; DESIGN given a prototype note; HANDOFF, NEXT-PHASE and the release-endpoint note refreshed.
+- **Review correction (4 Sept):** uninstall now distinguishes the executable, configuration, application data, logs and node directories; requires separate consent before deleting state; warns that removing resumable payment receipts can cause repayment; covers custom node paths, Windows `PATH` and installer leftovers; and preserves user files such as datamaps. Prototype version advanced to 0.1.1.
 
 ## Evidence
 
 Files (branch `autonomi-skill-prototype`): `skills/autonomi/{SKILL.md,VERSION,references/install-and-verify.md,wallet-and-tokens.md,run-nodes.md,build-on-autonomi.md}`; `docs/archive/operator-skill-v0/*`; `planning/TESTING.md`; `source-bindings/autonomi.md`; `README.md`; `LICENSE-MIT`; `LICENSE-APACHE`; `.claude-plugin/marketplace.json`; `.claude-plugin/plugin.json`; `.github/SECURITY.md`; `CONTRIBUTING.md`; `.github/pull_request_template.md`; `docs/DESIGN.md` (note only); this file; `planning/HANDOFF.md`; `planning/NEXT-PHASE.md`; `planning/release-endpoint-accessibility.md`.
 
 Checks run: see `planning/TESTING.md` “Evidence so far” — spec validation, skills.sh discovery, vocabulary lint, link check; installer and manual install paths on `ant` 0.3.6 in a container (version parsed from the latest `SHA256SUMS.txt`, checksum `OK`); offline address derivation; contract address matched to the docs page. The pushed skill files were verified byte-identical to the authored files, and the archived copies byte-identical to `main`, by git blob hash.
+
+For the local 0.1.1 uninstall correction: ADR governance passed; `npx skills add ./ --list` discovered the skill; the documented equivalent frontmatter check passed because `skills-ref` is unavailable here (name match; description 1,019 characters; compatibility 332); version fields agree; length and vocabulary limits pass; `git diff --check` passes. No CI run includes these uncommitted edits yet, so local evidence is not the green of record.
 
 Results: prototype complete as authored; not yet proven on a real host.
 
@@ -40,9 +43,15 @@ Clean-context test:
 
 Adversarial review:
 
-- Reviewer/tool: `gsd-adversarial-reviewer`
-- Result: **Not run** on this branch. To dispatch before merge.
-- Findings: —
+- Reviewer/tool: independent Code Reviewer for the 0.1.1 uninstall correction; full-branch `gsd-adversarial-reviewer` still to run before merge
+- Result: **Pass for the correction; not run for the full branch.**
+- Findings: the first pass blocked on reset after daemon shutdown and on unreachable custom paths being forgotten; it also flagged datamap consent, macOS path wording, missing exact-source bindings and empty installer directories. All were corrected; re-review found no blockers or other findings.
+
+Craft Review:
+
+- Reviewer/tool: two fresh Craft Review passes on the 0.1.1 uninstall correction
+- Result: **Pass for the correction; full-branch review not run.**
+- CONFORMANCE disposition: permission is now checked before starting or stopping anything; re-review confirmed the finding resolved. The Windows `PATH` wording nit was also resolved. No other findings.
 
 ## Drift / scope concerns
 

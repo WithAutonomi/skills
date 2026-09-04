@@ -4,15 +4,17 @@ Read this when the installer script isn't appropriate, when a download is blocke
 
 ## What gets installed
 
-One binary, `ant`, plus one config file, `bootstrap_peers.toml` (the list of peers the client uses to find the network). Nothing else. No service is started, no system directory is touched, and `sudo` is never needed when you install into the user's home directory.
+The installer places one binary, `ant`, plus one config file, `bootstrap_peers.toml` (the list of peers the client uses to find the network). On Windows, the installer script also adds the binary's folder to the user's `PATH`; the manual procedure does not. No service is started, no system directory is touched, and `sudo` is never needed when you install into the user's home directory. Running the tool can later create application data and logs in the locations below.
 
 Default locations:
 
-| | Binary | Config |
-|---|---|---|
-| Linux | `~/.local/bin/ant` | `~/.config/ant/bootstrap_peers.toml` |
-| macOS | `~/.local/bin/ant` (set `INSTALL_DIR`; the script's own default is `/usr/local/bin`) | `~/Library/Application Support/ant/bootstrap_peers.toml` |
-| Windows | `%LOCALAPPDATA%\ant\bin\ant.exe` (set `$env:INSTALL_DIR` to change); the installer adds this folder to the user PATH permanently | `%APPDATA%\ant\bootstrap_peers.toml` |
+| | Binary | Config | Application data | Logs |
+|---|---|---|---|---|
+| Linux | `~/.local/bin/ant` | `${XDG_CONFIG_HOME:-$HOME/.config}/ant/bootstrap_peers.toml` | `${XDG_DATA_HOME:-$HOME/.local/share}/ant` | `<application data>/logs` |
+| macOS | `~/.local/bin/ant` (set `INSTALL_DIR`; the script's own default is `/usr/local/bin`) | `~/Library/Application Support/ant/bootstrap_peers.toml` | `~/Library/Application Support/ant` | `~/Library/Logs/ant` |
+| Windows | `%LOCALAPPDATA%\ant\bin\ant.exe` (set `$env:INSTALL_DIR` to change); the installer adds this folder to the user PATH permanently | `%APPDATA%\ant\bootstrap_peers.toml` | `%APPDATA%\ant` | `%APPDATA%\ant\logs` |
+
+`INSTALL_DIR` can move the binary. Nodes can also be given custom data and log locations when they are added, so their files are not necessarily under the default application-data directory.
 
 ## Release layout
 
@@ -102,4 +104,15 @@ Several agent sandboxes allow the first three by default but not the last, which
 
 ## Removing the tool
 
-When and in what order is in the main skill under Uninstalling; nodes come first, and only with the person's say-so (see `run-nodes.md`). For the tool itself: delete the binary and the config directory listed at the top. On Windows, also remove the `%LOCALAPPDATA%\ant\bin` entry the installer script added to the user PATH (Settings → Environment Variables, or `[Environment]::SetEnvironmentVariable` in PowerShell). Nothing stored on the network is affected by uninstalling.
+When and in what order is in the main skill under Uninstalling. Treat each of these as a separate choice and get the person's agreement before deleting it:
+
+1. **Nodes.** Account for custom `--data-dir-path` and `--log-dir-path` locations used when the nodes were added; mount those volumes before reset, and stop if a possible location is unknown or unavailable. Before starting the daemon or stopping nodes, confirm that those actions are within the person's existing explicit permission; ask if not. Keep the daemon running, run `ant node stop`, inspect the output for failures, then use `ant node status` to confirm that every node reports `Stopped` or `Evicted`. If a stop failed or any status is uncertain, do not reset. After separate approval to destroy the node data, run `ant node reset --force` while the daemon is still running so it enforces its running-node check. Reset removes recorded directories only when it can reach them, then clears the registry: verify every expected path is gone before reporting success. Stop the daemon last. See `run-nodes.md` for normal node handling.
+2. **Binary.** Locate the executable actually in use with `command -v ant` on macOS/Linux or `(Get-Command ant).Source` in PowerShell, show the path, then delete that file. Do not assume it is in the default location when `INSTALL_DIR` may have been used. Offer to remove dedicated installer-created directories only when they are empty; never remove shared directories such as `~/.local/bin` or `/usr/local/bin`.
+3. **Config.** The installer-created file is `bootstrap_peers.toml` at the config path in the table. If the person enabled log forwarding, the same directory can contain `log_forward.json`, including its write-only API token. On macOS and Windows the config and application-data directories are the same, so remove only the config files they identified if other state is being kept.
+4. **Application data.** This may contain downloaded node binaries, default-location node data, the node registry and daemon files, peer and performance caches, temporary upload state, log-forwarding offsets, and payment receipts that let a failed paid upload resume without paying again. Explain that deleting the receipts can make a retry pay again. Never delete this directory while the person is keeping default-location nodes.
+5. **Logs.** Remove the platform log directory only if the person wants local logs removed. On Linux and Windows this is inside the application-data directory, so removing all application data removes these logs too. Registered nodes may have custom log directories; node reset handles those when node deletion was approved. A daemon started with a custom `--log-path` also leaves its dated log files there; remove that known log family only if approved.
+6. **Installer leftovers.** The scripted route leaves `ant-install.sh` or `ant-install.ps1` wherever it was downloaded. The manual route may leave the downloaded archive and extraction directory. Offer to remove known leftovers, but do not search broadly or guess.
+
+On Windows, remove the exact install-directory entry from the user's `PATH` if it was added for `ant`. The Windows installer adds that entry automatically; a manual installation has one only if the person chose to add it. On macOS/Linux the installer only warns when its directory is absent from `PATH`, so do not edit shell startup files unless the person asks you to reverse a change they made themselves.
+
+Downloads, source files and datamap files are the person's files, not installation state. Leave them alone unless explicitly asked. A datamap may be the only way to retrieve a private upload; before deleting one, explain that access may be lost permanently, recommend a backup, and get confirmation for that specific file. Nothing already stored on the network is affected by uninstalling.
