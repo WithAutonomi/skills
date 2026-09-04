@@ -10,7 +10,7 @@ Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craf
 
 ## Status
 
-The 0.1.2 implementation repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; this follow-up records the resulting review state. Exact-commit Craft found stale pre-commit wording in this file and `planning/HANDOFF.md`, which this follow-up corrects. The official Fable clean-context route did not run: OpenCode rejected `cleancontext` as a primary agent, fell back to a default build agent, and no Claude/Fable call occurred. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
+The 0.1.2 implementation repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`. Exact-revision review of the first state follow-up at `1214aa87e5e68599ff4a02d2cb8a8c7e90f2fa5d` found no broad-delete route or corrected-command mismatch, and confirmed that stale pre-commit wording was fixed. It still marked the work not ready: the official Fable clean-context route did not run, Proposed ADR-0008 and DESIGN §6 still describe removing state, and required human approval is absent. The PR title/body now accurately describe 0.1.2 and those blockers. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
 
 ## What happened
 
@@ -47,18 +47,19 @@ Clean-context test:
 Adversarial review:
 
 - Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair
-- Result: **0.1.2 content pass: no remaining CRITICAL/HIGH content finding. Final evidence recheck: no CRITICAL, HIGH or MEDIUM finding. Overall readiness blocked on immutable-revision gates.**
-- Findings: 0.1.2 corrected the nonexistent update flag, ANT-only wallet output, wrong-product deletion risk and false node-reset guarantee. A HIGH evidence-transcript defect was fixed by a fail-fast rerun with exact commands and output. The last LOW evidence request was resolved by naming the changed-claim source review and narrowing the reproducibility statement.
+- Result: **0.1.2 content pass; exact-revision verdict at `1214aa87e5e68599ff4a02d2cb8a8c7e90f2fa5d`: NOT-READY.**
+- Findings: 0.1.2 corrected the nonexistent update flag, ANT-only wallet output, wrong-product deletion risk and false node-reset guarantee. Exact-revision review found no unsafe broad-delete route or mismatch in those corrected claims. Blocking gates are official Fable clean-context, the Proposed ADR-0008 / DESIGN §6 conflict, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The evidence fixture was rerun with `${TMPDIR:-/tmp}` rather than a machine-specific parent path; the same-file replacement race remains a non-blocking concern for Jim.
 
 Craft Review:
 
 - Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit archive review at `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`
-- Result: **Implementation content pass; exact-commit CONFORMANCE concern in current-state prose corrected by this follow-up.**
-- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. Exact-commit Craft found that this file and `planning/HANDOFF.md` still said commit/push was pending after it had happened; those statements are corrected here.
+- Result: **Implementation content pass; stale-state CONFORMANCE concern resolved; separate decision-record CONFORMANCE concern remains.**
+- CONFORMANCE disposition: duplicated uninstall wording was reduced to one main rule plus a path-table clarification. Shipped Apache-specific wording was made product-neutral, leaving Apache only as a repository-side collision test. Exact review confirmed that stale commit/push wording was corrected. It also found that the formal drift lists omit the new conflict with Proposed ADR-0008 and DESIGN §6; that conflict is now listed below but changing the Proposed decision remains outside this repair packet and requires Jim's checkpoint.
 
 ## Drift / scope concerns
 
 - The prototype runs ahead of ADR-0002/0003/0004/0005 and DESIGN §1–3, §7, §8. Deliberate, recorded in the DESIGN note; revise after proof, not before.
+- Binary-only uninstall also runs ahead of Proposed ADR-0008 and DESIGN §6, which still describe removing binaries and state. This newly identified conflict must be explicitly accepted as a prototype deferral or reconciled in a separately approved decision update before merge.
 - `source-bindings/autonomi.md` is provenance by document and observation, not symbol-level bindings — an ADR-0006 gap accepted for the prototype.
 - Two Further-reading links (`developers.autonomi.com/llms.txt`, `facts.json`) are held out until those surfaces are live.
 - The skill-version URL is intentionally best-effort and returns 404 without authentication while the repository is private; verify an unauthenticated 200 response after the public flip and before promotion.
@@ -68,6 +69,7 @@ Craft Review:
 ## Open questions / decisions for Jim
 
 - Merge PR #12 first (recommended — this branch is based on it, so its diff shrinks to the prototype once #12 lands).
+- Decide whether binary-only uninstall should be recorded as a deliberate prototype divergence from Proposed ADR-0008 / DESIGN §6, or whether those Proposed sources should be updated before merge.
 - Who runs scenario A on a real host, and when.
 - The public flip: visibility; private vulnerability reporting switched on (SECURITY.md relies on it); About description, website and topics; delete the merged `docs/install-examples` branch.
 
@@ -78,7 +80,7 @@ PR / upstream action gate:
 
 ## Recommended next step
 
-1. Use [PR #13](https://github.com/WithAutonomi/skills/pull/13) to verify exact-revision ADR CI and independent review, update its stale 0.1.0 metadata, and keep official Fable clean-context marked deferred rather than passed.
+1. Use [PR #13](https://github.com/WithAutonomi/skills/pull/13) to verify exact-revision ADR CI and independent review, and keep official Fable clean-context marked deferred rather than passed.
 2. Jim: test-install from the branch on his machine and run scenario A; B only if a funded wallet is to hand.
 3. Reconcile PR #12, obtain an approving review, and merge only after the declared gate is satisfied.
 4. Public flip; verify the freshness URL unauthenticated; point website install tabs at `main`; quickstart prompt loses “confirm 0.3.3”.
