@@ -1,0 +1,143 @@
+# PR #13 repair evidence — 2026-Sep-04
+
+Revision under repair: `e616b9f5e9724007ed56911cb94b479319227e45` plus the uncommitted 0.1.2 working-tree diff.
+
+This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/gate.sh` or skill-specific CI arbiter exists, so the evidence is weaker until the repair is committed, pushed and reviewed at its exact revision.
+
+## Static checks
+
+- `python3 scripts/adr-governance.py` — passed, 14 ADR files checked.
+- `npx skills add ./ --list` — passed, local path validated and one skill named `autonomi` discovered.
+- Equivalent frontmatter check — passed: name `autonomi`; description 1,021 characters; compatibility 332 characters.
+- Active version agreement — passed: `skills/autonomi/VERSION`, skill frontmatter, plugin manifest and marketplace manifest all report `0.1.2`.
+- Plugin JSON parsing — passed.
+- Relative Markdown links and anchors across the shipped skill — passed, five files checked.
+- Vocabulary scan — only the accepted product phrase `permanence tier` matched.
+- Lengths — passed: `SKILL.md` 261 lines; references 60, 107, 73 and 103 lines.
+- Forbidden shipped claims/commands — no `ant update --check`, ANT-and-ETH wallet-balance claim, or `rm -rf` found.
+- Changed-claim source-binding review — passed against ant-client 0.3.6 at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: CLI identity in `ant-cli/src/cli.rs`; update flags and behavior in `ant-cli/src/commands/update.rs` and `ant-core/src/update.rs`; ANT-only wallet output in `ant-cli/src/commands/data/wallet.rs`; reset safeguards and missing-path behavior in `ant-cli/src/commands/node/reset.rs` and `ant-core/src/node/mod.rs`.
+- `git diff --check` — passed.
+- New release-check URL — HTTP 200.
+- Skill `VERSION` URL — HTTP 404 while the repository is private, matching the documented best-effort failure path; an unauthenticated HTTP 200 remains a post-publication promotion check.
+- `skills-ref` — unavailable; the documented equivalent frontmatter check was used.
+- Snyk agent scan — not run because `SNYK_TOKEN` is unavailable.
+
+The first ad-hoc Node frontmatter command failed because its regular expression did not parse the indented version field. The corrected parser produced the passing result above; no repository or test-harness change was used to turn a product failure green.
+
+## Disposable uninstall proof
+
+No command used the real home directory or invoked an installed `ant`. Fixtures lived under the approved OpenCode temporary root.
+
+The Autonomi-shaped fixture exposed a fake executable whose `--version` output was `ant 0.3.6` and whose `--help` output identified `Autonomi network client` with `wallet`, `file`, `node`, `chunk` and `update`. The check located that executable through a fixture-only `PATH`, verified both identity outputs, removed the exact file, asserted it was absent, and compared SHA-256 hashes for every retained sentinel before and after.
+
+Fixture setup and exercise commands:
+
+```bash
+set -euo pipefail
+FIXTURE=$(mktemp -d "/var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.XXXXXX")
+mkdir -p "$FIXTURE/bin" "$FIXTURE/state/settings" "$FIXTURE/state/application-data/nodes" "$FIXTURE/state/logs" "$FIXTURE/state/payment-receipts" "$FIXTURE/installer-downloads" "$FIXTURE/source-files" "$FIXTURE/user-files"
+printf '#!/bin/sh\nif [ "$1" = "--version" ]; then printf "ant 0.3.6\\n"; else printf "Autonomi network client\\nCommands: wallet file node chunk update\\n"; fi\n' > "$FIXTURE/bin/ant"
+chmod 755 "$FIXTURE/bin/ant"
+printf 'settings sentinel\n' > "$FIXTURE/state/settings/bootstrap_peers.toml"
+printf 'cache sentinel\n' > "$FIXTURE/state/application-data/cache-state"
+printf 'node sentinel\n' > "$FIXTURE/state/application-data/nodes/node-state"
+printf 'log sentinel\n' > "$FIXTURE/state/logs/ant.log"
+printf 'receipt sentinel\n' > "$FIXTURE/state/payment-receipts/upload-receipt"
+printf 'installer sentinel\n' > "$FIXTURE/installer-downloads/ant-install.sh"
+printf 'source sentinel\n' > "$FIXTURE/source-files/source.txt"
+printf 'datamap sentinel\n' > "$FIXTURE/user-files/private.datamap"
+BEFORE=$(shasum -a 256 "$FIXTURE/state/settings/bootstrap_peers.toml" "$FIXTURE/state/application-data/cache-state" "$FIXTURE/state/application-data/nodes/node-state" "$FIXTURE/state/logs/ant.log" "$FIXTURE/state/payment-receipts/upload-receipt" "$FIXTURE/installer-downloads/ant-install.sh" "$FIXTURE/source-files/source.txt" "$FIXTURE/user-files/private.datamap")
+ANT_PATH=$(PATH="$FIXTURE/bin:/usr/bin:/bin" command -v ant)
+test "$ANT_PATH" = "$FIXTURE/bin/ant"
+VERSION_OUTPUT=$("$ANT_PATH" --version)
+HELP_OUTPUT=$("$ANT_PATH" --help)
+test "${VERSION_OUTPUT#ant }" != "$VERSION_OUTPUT"
+printf '%s' "$HELP_OUTPUT" | rg -q 'Autonomi network client'
+printf '%s' "$HELP_OUTPUT" | rg -q 'wallet.*file.*node.*chunk.*update'
+rm "$ANT_PATH"
+test ! -e "$FIXTURE/bin/ant"
+AFTER=$(shasum -a 256 "$FIXTURE/state/settings/bootstrap_peers.toml" "$FIXTURE/state/application-data/cache-state" "$FIXTURE/state/application-data/nodes/node-state" "$FIXTURE/state/logs/ant.log" "$FIXTURE/state/payment-receipts/upload-receipt" "$FIXTURE/installer-downloads/ant-install.sh" "$FIXTURE/source-files/source.txt" "$FIXTURE/user-files/private.datamap")
+test "$BEFORE" = "$AFTER"
+printf 'Fixture: %s\nIdentity: Autonomi client\nBinary removed: yes\nBEFORE\n%s\nAFTER\n%s\n' "$FIXTURE" "$BEFORE" "$AFTER"
+```
+
+Result: binary removed; all retained hashes unchanged.
+
+```text
+Fixture: /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs
+Identity: Autonomi client
+Binary removed: yes
+BEFORE
+c2ac126d14720bf1dc67285f939569d18035c5d9967b39c1dfe5c8791c55ea48  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/settings/bootstrap_peers.toml
+6b6c43a00619ae67c407de895e4beca86c7b1a83a2dce9c57cdbce121f585a3e  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/application-data/cache-state
+0c42828cf9b5a176231ca6894df1d6a5f62239ef745c226a5b4f41fe45a79a76  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/application-data/nodes/node-state
+f2e25311ee176d8c12ee18989210d9a553ba5e7af43b557df71a5780dd6cac2d  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/logs/ant.log
+fa16da00a85217832ccec37a71b1e51b8303932b863a83ddcd805dfa0e5105fb  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/payment-receipts/upload-receipt
+3a6f409a5c2cecbabc1a9d47230845a027a80c199f8f6dfcf9ed25ab22bcd802  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/installer-downloads/ant-install.sh
+aa569e72c43489dfc9fb9ed63fc710464391ee8d9e6a57781c43c2ecaeebed29  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/source-files/source.txt
+f52336153111aecb145280f4c7357c94addf875781c7fa44459d1e2bdd320693  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/user-files/private.datamap
+AFTER
+c2ac126d14720bf1dc67285f939569d18035c5d9967b39c1dfe5c8791c55ea48  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/settings/bootstrap_peers.toml
+6b6c43a00619ae67c407de895e4beca86c7b1a83a2dce9c57cdbce121f585a3e  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/application-data/cache-state
+0c42828cf9b5a176231ca6894df1d6a5f62239ef745c226a5b4f41fe45a79a76  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/application-data/nodes/node-state
+f2e25311ee176d8c12ee18989210d9a553ba5e7af43b557df71a5780dd6cac2d  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/logs/ant.log
+fa16da00a85217832ccec37a71b1e51b8303932b863a83ddcd805dfa0e5105fb  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/state/payment-receipts/upload-receipt
+3a6f409a5c2cecbabc1a9d47230845a027a80c199f8f6dfcf9ed25ab22bcd802  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/installer-downloads/ant-install.sh
+aa569e72c43489dfc9fb9ed63fc710464391ee8d9e6a57781c43c2ecaeebed29  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/source-files/source.txt
+f52336153111aecb145280f4c7357c94addf875781c7fa44459d1e2bdd320693  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/autonomi-uninstall-failfast.EsjXWs/user-files/private.datamap
+```
+
+The collision fixture exposed a fake executable whose `--version` output began `Apache Ant(TM) version 1.10.14`. The Autonomi identity predicate rejected it. The executable and sentinel remained present with these hashes:
+
+```bash
+set -euo pipefail
+FIXTURE=$(mktemp -d "/var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/apache-ant-failfast.XXXXXX")
+mkdir -p "$FIXTURE/bin" "$FIXTURE/state"
+printf '#!/bin/sh\nif [ "$1" = "--version" ]; then printf "Apache Ant(TM) version 1.10.14 compiled on August 16 2023\\n"; else printf "ant [options] [target]\\n"; fi\n' > "$FIXTURE/bin/ant"
+chmod 755 "$FIXTURE/bin/ant"
+printf 'must survive\n' > "$FIXTURE/state/sentinel"
+BEFORE=$(shasum -a 256 "$FIXTURE/bin/ant" "$FIXTURE/state/sentinel")
+ANT_PATH=$(PATH="$FIXTURE/bin:/usr/bin:/bin" command -v ant)
+test "$ANT_PATH" = "$FIXTURE/bin/ant"
+VERSION_OUTPUT=$("$ANT_PATH" --version)
+! test "${VERSION_OUTPUT#ant }" != "$VERSION_OUTPUT"
+test -e "$FIXTURE/bin/ant"
+AFTER=$(shasum -a 256 "$FIXTURE/bin/ant" "$FIXTURE/state/sentinel")
+test "$BEFORE" = "$AFTER"
+printf 'Fixture: %s\nIdentity: rejected as non-Autonomi\nBinary retained: yes\nBEFORE\n%s\nAFTER\n%s\n' "$FIXTURE" "$BEFORE" "$AFTER"
+```
+
+```text
+Fixture: /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/apache-ant-failfast.spoj3h
+Identity: rejected as non-Autonomi
+Binary retained: yes
+BEFORE
+4972c5ece6c27c5d51e876abe534ef6ff1b625802500af5e997e6875a65b5c1d  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/apache-ant-failfast.spoj3h/bin/ant
+4885ac8169b7ccc51fd3b6af4dfbf8c097330aa64d8b8789ad4903da6779d4fc  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/apache-ant-failfast.spoj3h/state/sentinel
+AFTER
+4972c5ece6c27c5d51e876abe534ef6ff1b625802500af5e997e6875a65b5c1d  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/apache-ant-failfast.spoj3h/bin/ant
+4885ac8169b7ccc51fd3b6af4dfbf8c097330aa64d8b8789ad4903da6779d4fc  /var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/apache-ant-failfast.spoj3h/state/sentinel
+```
+
+These were direct deterministic shell proofs, not clean-context agent evidence.
+
+## Independent review
+
+Initial adversarial review: blocked with no CRITICAL findings and four HIGH findings. It found the Apache Ant collision, unsafe/false node-reset wording, stale live PR metadata and incomplete evidence/checkpoint state. The collision and node wording were repaired; metadata needs a committed and pushed 0.1.2 revision; current-state records are being reconciled here.
+
+Initial Craft Review: no CONFORMANCE findings; one SIMPLICITY concern that the uninstall rule was duplicated between the main skill and install reference. The reference now points to the main rule and adds only its path-table clarification.
+
+Fresh adversarial re-reviews resolved the wrong-product and node-reset findings, then found no remaining CRITICAL/HIGH content defect. The final evidence recheck found no CRITICAL, HIGH or MEDIUM issue after the fail-fast rerun; its one LOW request was to identify the changed-claim source review and narrow an overbroad reproducibility sentence, both corrected above.
+
+The direct Craft passes found and then cleared the duplicated uninstall rule and a source-binding concern caused by naming Apache Ant in shipped prose; the shipped warning is now product-neutral. A final prompt-bounded Craft pass found no CONFORMANCE or SIMPLICITY issue in the supplied final text. Its only NIT was a misspelling in the review prompt itself; `Autreti` does not occur in the repository. Because the Craft agent could not access the isolated worktree or read-only mirrors, exact-revision Craft remains required after commit, when it can inspect the committed files through Git.
+
+The first clean-context dispatch was blocked before inference because it lacked the required `gsd.cleancontext.dispatch.v1` envelope; no commands ran and no files changed. The official launcher also requires a clean committed project revision, so a valid Fable gate cannot run against this dirty working tree. It remains required after owner-authorized commit, before PR/merge readiness.
+
+Implementation and the OpenAI adversarial/Craft agents used `gpt-5.6-sol`; those reviews are not cross-model evidence. The required post-commit Fable clean-context lane supplies the independent provider/model boundary.
+
+## Honesty rules
+
+- No harness, CI, gate, build invocation or environment setup was changed.
+- No failure was dismissed as environmental, flaky or pre-existing.
+- Static-check outcomes and the complete disposable fixture commands/outputs are documented above; the changed-claim source review names its exact upstream revision and files.
+- No paid, node, upload, update, installed-client or real-home action ran.

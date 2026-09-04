@@ -61,9 +61,9 @@ Report outcomes, not tables: "your three nodes are running, one has been up sinc
 
 ## Stopping and removing nodes
 
-When the person wants fewer nodes, or none: `ant node stop` (all, or `--service-name` for one), then `ant node daemon stop`. That leaves the node data and registry in place, so nodes can be restarted later with their standing intact.
+When the person wants nodes stopped but recoverable: `ant node stop` (all, or `--service-name` for one), then `ant node daemon stop`. That leaves the node data and registry in place, so nodes can be restarted later with their standing intact.
 
-`ant node reset --force` deletes all node data and logs and clears the registry — every node has to be stopped first, and it is a last resort for a broken state, never routine. Confirm with the person before running it; there is no undo, and the nodes will start again from zero.
+Permanently removing node state is a separate destructive request, not the next step after stopping. Do not use `ant node reset` from memory: inspect the installed command's help and current upstream instructions first, account for every registered data and log path, and stop if a path or its volume is unknown or unavailable. Keep the daemon reachable, stop the nodes, inspect the stop result, and confirm through the daemon that every node is `Stopped` or `Evicted`; if the daemon cannot be reached or any result is uncertain, do not reset. Reset can skip a missing path and still clear its registry record, so never report data as removed unless the command names that path as removed and you verify the expected target is gone. Explain that destroyed node state and standing cannot be restored, then get confirmation for the exact reset and stop the daemon last.
 
 ## Common problems
 

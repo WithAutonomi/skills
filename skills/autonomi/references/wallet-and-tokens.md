@@ -69,8 +69,8 @@ A node is given the address with `ant node add --rewards-address 0x…` and hold
 
 How the person sees what they've earned depends on what the tool has:
 
-- If the wallet's key is provisioned to the tool (see Spending), `ant wallet balance` shows the ANT and ETH balances — that's the normal way, and the one to use.
-- If it isn't — the usual case for someone who only runs nodes — the balance is theirs to look at: in their wallet app (once the optional step above is done), or on the Arbitrum block explorer, which shows any address's ANT balance without a wallet at all. The documentation walks through the explorer: fetch and relay https://docs.autonomi.com/node/guides/how-to-guides/view-your-autonomi-tokens-with-the-block-explorer.md.
+- If the wallet's key is provisioned to the tool (see Spending), `ant wallet balance` shows its ANT balance.
+- ETH is checked in the person's wallet app or on the Arbitrum block explorer. If the key isn't provisioned — the usual case for someone who only runs nodes — use the same places for ANT too. The explorer shows any public address without a wallet at all; fetch and relay https://docs.autonomi.com/node/guides/how-to-guides/view-your-autonomi-tokens-with-the-block-explorer.md.
 
 Either way it's the balance of an address, not proof that any particular node earned it.
 
@@ -86,10 +86,10 @@ Either way, the standing rules: never print the environment (`env`, `printenv`, 
 
 ```bash
 ant wallet address     # the address the tool will pay from
-ant wallet balance     # ANT and ETH balances
+ant wallet balance     # ANT balance
 ```
 
-Run these *before* asking the person to approve an upload, so the approval is for something that will go through. A wallet with ANT but no ETH can't pay the fee; ETH on Ethereum mainnet rather than Arbitrum One doesn't count.
+Run these *before* asking the person to approve an upload, and have them confirm in their wallet app or the Arbitrum block explorer that the address also has enough ETH on Arbitrum One. A wallet with ANT but no ETH can't pay the fee; ETH on Ethereum mainnet doesn't count.
 
 `ant file upload` asks the network for a price, approves the token spend, pays, and stores the pieces. The transaction is on-chain and irreversible, and the data can't be deleted afterwards — that's the product. So the default is quote, show, wait; if the person has explicitly told you not to ask each time, stay within whatever limit they set and still tell them what each upload cost. And because a wallet the tool can spend from has no limits of its own, suggest the habit every careful setup uses: keep in it only what the next job or two needs, and top up on request.
 

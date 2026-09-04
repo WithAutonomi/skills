@@ -1,10 +1,10 @@
 ---
 name: autonomi
-description: "Build on, integrate with, and use the Autonomi network — permanent, accountless, encrypted data storage with free reads — for the user. Add durable storage to an app or stack; read and download data by content address; upload files or data, publicly or privately, and get a permanent address back; handle the keys and wallet a paid write needs, safely; run nodes that contribute spare disk and bandwidth and earn the network's token. Data is encrypted before it leaves the machine, content-addressed and immutable; paid once, never again; no sign-up, API key or server. Use it whenever the user is building something that must keep data permanently, wants decentralised or Autonomi storage in an app, wants to store or archive something for good, publish tamper-proof data, fetch data from a content address, keep data with no server behind it, or put a machine's spare capacity to work — or mentions Autonomi, ANT, ant, antd or datamaps. It installs and verifies the tools it needs. Not for request paths or databases."
+description: "Build on, integrate with, and use the Autonomi network — permanent, accountless, encrypted data storage with free reads — for the user. Add durable storage to an app or stack; read and download data by content address; upload data, publicly or privately, and get a permanent address back; handle the keys and wallet a paid write needs, safely; run nodes that contribute spare disk and bandwidth and earn the network's token. Data is encrypted before it leaves the machine, content-addressed and immutable; paid once, never again; no sign-up, API key or server. Use it whenever the user is building something that must keep data permanently, wants decentralised or Autonomi storage in an app, wants to store or archive something for good, publish tamper-proof data, fetch data from a content address, keep data with no server behind it, or put a machine's spare capacity to work — or mentions Autonomi, ANT, the ant client, antd or datamaps. It installs and verifies the tools it needs. Not for request paths or databases."
 license: MIT OR Apache-2.0
 compatibility: "Needs a shell with curl and tar (PowerShell on Windows), outbound HTTPS to github.com to fetch the ant CLI, and direct internet access for the network itself (the client talks to peers over UDP, so a proxy-only sandbox can install the tool but cannot reach the network). A paid write also needs a wallet the user funds and controls."
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
   author: Autonomi
   homepage: https://autonomi.com
   repository: https://github.com/WithAutonomi/skills
@@ -37,7 +37,7 @@ Made by the Autonomi team. Draws on [ant-client](https://github.com/WithAutonomi
 | Install, verify or check the `ant` tool | [Set up the tool](#set-up-the-tool) |
 | Build Autonomi into an application or service, or choose how it fits a stack | [references/build-on-autonomi.md](references/build-on-autonomi.md) — read it only when the task is building software |
 | Run nodes — put spare disk and bandwidth to work and earn ANT | [Run nodes](#run-nodes) |
-| Take the tool, or nodes, off a machine | [Uninstalling](#uninstalling) |
+| Remove the `ant` tool from a machine | [Removing the tool](#removing-the-tool) |
 
 Do what you were asked, and no more. Someone who asked you to fetch a file doesn't need to hear about wallets, nodes or building applications; someone who asked you to store a file doesn't need a demonstration first.
 
@@ -45,13 +45,14 @@ The `references/` files travel with this skill. If one you need isn't alongside 
 
 ## Set up the tool
 
-Detect first — never reinstall or upgrade something that is already working:
+Detect first — never reinstall or upgrade something that is already working, and do not confuse Autonomi's client with another program using the common name `ant`:
 
 ```bash
 ant --version
+ant --help
 ```
 
-If that prints a version, skip to the task. If not, install. Three ways, none needing administrator rights:
+Continue only if the version output starts with `ant ` and the help identifies it as the `Autonomi network client` with the `wallet`, `file`, `node`, `chunk` and `update` commands. If another program answers or the identity is unclear, stop and tell the person about the name collision; do not replace or remove it. If no `ant` command exists, install. Three ways, none needing administrator rights:
 
 **Installer script** (macOS / Linux). This is the official installer from the tool's own repository; it installs the newest stable release. The only difference from the one-liner in the README is that you save the script and read it before running it, rather than piping it straight into a shell — the security scanners that skill directories run flag piped installs, and reading first costs nothing.
 
@@ -73,7 +74,7 @@ powershell -ExecutionPolicy Bypass -File .\ant-install.ps1
 
 It installs to `%LOCALAPPDATA%\ant\bin` (override with `$env:INSTALL_DIR`) and **adds that folder to the user's PATH permanently** — tell the person that before running it, and that a new terminal is needed afterwards. Only an x86_64 build exists; on an ARM64 Windows machine it runs under emulation, which the script says itself.
 
-**Verified manual install** — for when the person or their environment prefers not to run a downloaded script, or when you want the checksum checked (the installer scripts don't check it yet). Download the archive for the platform plus the release's `SHA256SUMS.txt`, confirm the sum, then extract. Full per-platform steps, the hosts to allow if a download is blocked, and how to remove everything cleanly are in [references/install-and-verify.md](references/install-and-verify.md).
+**Verified manual install** — for when the person or their environment prefers not to run a downloaded script, or when you want the checksum checked (the installer scripts don't check it yet). Download the archive for the platform plus the release's `SHA256SUMS.txt`, confirm the sum, then extract. Full per-platform steps, the hosts to allow if a download is blocked, and how to remove the tool safely are in [references/install-and-verify.md](references/install-and-verify.md).
 
 Then confirm it runs and learn its surface — this needs no network:
 
@@ -132,10 +133,10 @@ This encrypts the file locally to count its pieces, then asks live network nodes
 
 ```bash
 ant wallet address     # the wallet the tool will pay from
-ant wallet balance     # ANT and ETH balances
+ant wallet balance     # ANT balance
 ```
 
-If the wallet isn't set up or funded, follow [Keys and money](#keys-and-money) and [references/wallet-and-tokens.md](references/wallet-and-tokens.md), and be honest that first-time setup takes longer than the storing itself.
+`ant wallet balance` does not report ETH. Have the person confirm in their wallet app or the Arbitrum block explorer that the same address also has enough ETH on Arbitrum One. If the wallet isn't set up or funded, follow [Keys and money](#keys-and-money) and [references/wallet-and-tokens.md](references/wallet-and-tokens.md), and be honest that first-time setup takes longer than the storing itself.
 
 **Upload.**
 
@@ -205,21 +206,15 @@ curl -fsSL --max-time 5 https://raw.githubusercontent.com/WithAutonomi/skills/ma
 
 If that returns a higher version than this file's, tell the person once and carry on; updating is theirs to do, through whichever way they installed it — `npx skills update` for skills.sh installs, the plugin's own update for a Claude Code plugin, or re-running the install command. Never modify this skill's files yourself. If the check fails or times out, say nothing and carry on; it never blocks the work.
 
-**The tool.** `ant update --check` reports whether a newer release exists without changing anything. `ant update` downloads it, verifies its post-quantum signature against a key built into the binary, and only then installs. Don't run it unasked on a working setup — mention it when a newer version matters for the task, and let the person decide.
+**The tool.** `ant --version` reports the installed version without changing anything. When its currency matters, compare that with the newest version named in the official [release checksum file](https://github.com/WithAutonomi/ant-client/releases/latest/download/SHA256SUMS.txt). `ant update` is not a check-only command: when an update is available it downloads and installs it after verifying its post-quantum signature against a key built into the binary. Tell the person what would change and run it only when they approve.
 
-## Uninstalling
+## Removing the tool
 
-Do this when the person asks for it, or when you installed the tool for a one-off task on a machine you were asked to leave as you found it. Never do it to fix a problem — reinstalling rarely is the fix, and removing nodes has consequences the person may not want: their data and standing are lost, and the network has to re-copy what they held. Explain that the tool, its settings, its working data and any nodes are separate things, then ask what they want removed. Do not turn "remove the tool" into permission to delete all of them.
+Only do this when the person asks to uninstall Autonomi's `ant`. Do not treat testing, troubleshooting, or a one-off installation as permission to clean up afterwards. An uninstall request means the executable only: find the one actually in use with `command -v ant` on macOS/Linux or `(Get-Command ant).Source` in PowerShell, then run that exact candidate with `--version` and `--help`. Continue only if it passes the Autonomi identity check in [Set up the tool](#set-up-the-tool). Tell the person its exact path, then remove that file and nothing else. If the result belongs to another product or is unknown, missing, ambiguous, a wrapper or not a regular file, stop rather than guessing. Never remove its parent directory, even if it looks dedicated; on Windows, leave `PATH` unchanged unless the person separately asks to edit it.
 
-In order:
+Keep settings, application data, logs, nodes, payment receipts, downloads, source files and datamaps. Do not offer to destroy them unprompted. If the person separately asks for retained state to be deleted, explain the consequence of each named category, inspect current upstream instructions and the actual target before acting, and confirm that exact destructive step. Node removal is a separate node-management task: follow [Run nodes](#run-nodes), never recursively delete application data, and do not assume reset removed an unavailable path. Datamaps are user files and may be the only way to retrieve private uploads. Removing local files does not affect anything already stored on the network.
 
-1. **Nodes, if any.** Account for any custom data or log locations used when the nodes were added, and mount those volumes before resetting; if a location may exist but is unknown or unavailable, stop rather than erase the registry's record of it. Before starting the daemon or stopping nodes, confirm that those actions are covered by the person's existing explicit permission; ask if not. Keep the daemon running (start it if needed), run `ant node stop`, inspect its output for failures, then run `ant node status`. Continue only when every node reports `Stopped` or `Evicted`; if a stop failed or any status is uncertain, do not reset. Only if the person separately confirms that the node data and logs should be destroyed, run `ant node reset --force` while the daemon is still running. Reset removes each recorded directory it can reach and then clears the registry, so verify every expected directory is gone. Stop the daemon last with `ant node daemon stop`, whether the node data was kept or reset.
-2. **The tool.** Find the executable actually in use (`command -v ant` on macOS/Linux; `(Get-Command ant).Source` in PowerShell), show the path, and delete that file only. The skill's documented macOS/Linux install sets `~/.local/bin/ant`; without that override the upstream script defaults to `~/.local/bin/ant` on Linux and `/usr/local/bin/ant` on macOS. Windows defaults to `%LOCALAPPDATA%\ant\bin\ant.exe`, but `INSTALL_DIR` can change any of these. Separately offer to remove dedicated installer-created directories if they are empty — never shared directories such as `~/.local/bin` or `/usr/local/bin`. On Windows, also offer to remove the exact install-directory entry from the user's `PATH` if it was added for `ant`. The Windows installer adds that entry automatically; a manual installation has one only if the person chose to add it.
-3. **Settings, working data and logs — ask separately before each.** The settings directory contains `bootstrap_peers.toml` and can contain `log_forward.json`, including the token for log forwarding if the person enabled it. The data directory can contain cached node programs, the node registry, peer and performance caches, temporary upload state, and paid-upload receipts used to resume a failed upload without paying again. Deleting those receipts can make a retry pay again. Default directories are Linux `${XDG_CONFIG_HOME:-$HOME/.config}/ant` for settings and `${XDG_DATA_HOME:-$HOME/.local/share}/ant` for data and logs; macOS `~/Library/Application Support/ant` for settings and data and `~/Library/Logs/ant` for logs; Windows `%APPDATA%\ant` for settings, data and logs. On Linux and Windows, removing the data directory also removes its default logs. On macOS and Windows, settings and data share a directory: if the person wants to keep working data, remove only the settings files they identified, not the whole directory. Never delete the data directory while they are keeping default-location nodes.
-4. **Installation leftovers.** Offer to delete `ant-install.sh` or `ant-install.ps1` from the directory where it was downloaded, and any archive or temporary extraction directory left by a manual install. Do not guess a location or remove unrelated files.
-5. **User files stay.** Downloads, source files and datamap files for private uploads belong to the person, not the installation; leave them alone unless explicitly asked. A datamap may be the only way to retrieve a private upload: if asked to delete one, explain that access may be lost permanently, recommend keeping a backup, and get confirmation for that specific file. Nothing already stored on the network is affected by uninstalling.
-
-The full path table and removal notes are in [references/install-and-verify.md](references/install-and-verify.md).
+The installation path table and the same conservative removal rule are in [references/install-and-verify.md](references/install-and-verify.md).
 
 ## Verified against
 
@@ -228,12 +223,12 @@ The one place this skill's version-specific facts live. Everything else on this 
 | Fact | Value | How it was checked |
 |---|---|---|
 | `ant` versions this skill has been checked against | 0.3.3 and 0.3.4 (commands run live on the production network, 31 Aug 2026); 0.3.5 and 0.3.6 (installed, checksums verified, 2–3 Sept 2026) | The installer fetches the newest stable release, so the installed version will usually be newer than the last one checked; the commands here are stable across these versions, and `ant file --help` settles any flag |
-| Command surface (`file cost` / `upload [--public] [--overwrite]` / `download` / `--datamap` / `wallet address` / `wallet balance` / `update` / `SECRET_KEY`) | as documented above | Read from ant-client source at 0.3.5; run live on 0.3.3 and 0.3.4 |
+| Command surface (`file cost` / `upload [--public] [--overwrite]` / `download` / `--datamap` / `wallet address` / `wallet balance` / `update` / `SECRET_KEY`) | as documented above | Read from ant-client source at 0.3.6; run live on 0.3.3 and 0.3.4 |
 | Demonstration address | `711c7e20006ff3e0ac6c1f3063286a0c1a3e4c409642e8c526173fa60bb7078a` → `lucky.jpg` | Live fetch from the production network, 27 Aug 2026 |
 | Release downloads | `https://github.com/WithAutonomi/ant-client/releases/download/ant-cli-v<version>/` — archives, `.sig` per archive, `SHA256SUMS.txt` | Fetched 2 Sept 2026 |
 | Payment network | Arbitrum One; ANT is an ERC-20; fees in ETH | ant-client source (`--evm-network` default) and the token documentation |
 | ANT token contract address on Arbitrum One | `0xa78d8321B20c4Ef90eCd72f2588AA985A4BDb684` | Matched against the official token page (import-the-autonomi-token) on 3 Sept 2026. A contract address doesn't change; if the network ever migrates to a new contract, this skill will be updated |
-| Node commands (`node add --rewards-address` / `--count` / `--upgrade-channel`, `node daemon start|stop|status`, `node start|stop [--service-name]`, `node status`, `node reset --force`) | as documented above | Read from ant-client source and README at 0.3.5; not yet exercised live — confirm with `ant node --help` |
+| Node commands (`node add --rewards-address` / `--count` / `--upgrade-channel`, `node daemon start|stop|status`, `node start|stop [--service-name]`, `node status`, `node reset --force`) | as documented above | Read from ant-client source and README at 0.3.6; not yet exercised live — confirm with `ant node --help` |
 | Documentation URLs below | all resolve, and serve Markdown | Checked 2 Sept 2026 |
 
 When `ant --version` reports something newer than the versions above — which it usually will — the commands here are expected to keep working; confirm any flag you rely on with `ant file --help` before using it, and trust the tool over this page if they differ.
