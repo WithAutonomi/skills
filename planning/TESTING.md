@@ -109,7 +109,7 @@ Scenarios A, B and D pass in at least two different harnesses (e.g. Claude Code 
 - `ant wallet address` derives the address from `SECRET_KEY` offline and prints only the address (run with a throwaway key, output redacted).
 - ANT contract address matched against the official import-token page, 3 Sept 2026.
 - Earlier, on a real host (31 Aug 2026, `ant` 0.3.3 / 0.3.4): `file cost`, `file upload`, `file download` and the demonstration read run live on the production network.
-- 0.1.1 uninstall correction (local, 4 Sept): ADR governance, skill discovery, equivalent frontmatter validation, vocabulary and length limits, version agreement and `git diff --check` pass. Scoped adversarial and Craft re-reviews pass after their findings were fixed. No CI run includes the uncommitted correction yet.
+- 0.1.1 uninstall correction (4 Sept): ADR governance, skill discovery, equivalent frontmatter validation, vocabulary and length limits, version agreement and `git diff --check` pass. Scoped adversarial and Craft re-reviews pass after their findings were fixed. GitHub's ADR Governance check passed for correction commit `bd6cf78`.
 
 **Not yet run:**
 

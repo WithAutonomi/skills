@@ -29,7 +29,7 @@ Files (branch `autonomi-skill-prototype`): `skills/autonomi/{SKILL.md,VERSION,re
 
 Checks run: see `planning/TESTING.md` “Evidence so far” — spec validation, skills.sh discovery, vocabulary lint, link check; installer and manual install paths on `ant` 0.3.6 in a container (version parsed from the latest `SHA256SUMS.txt`, checksum `OK`); offline address derivation; contract address matched to the docs page. The pushed skill files were verified byte-identical to the authored files, and the archived copies byte-identical to `main`, by git blob hash.
 
-For the local 0.1.1 uninstall correction: ADR governance passed; `npx skills add ./ --list` discovered the skill; the documented equivalent frontmatter check passed because `skills-ref` is unavailable here (name match; description 1,019 characters; compatibility 332); version fields agree; length and vocabulary limits pass; `git diff --check` passes. No CI run includes these uncommitted edits yet, so local evidence is not the green of record.
+For the 0.1.1 uninstall correction: ADR governance passed; `npx skills add ./ --list` discovered the skill; the documented equivalent frontmatter check passed because `skills-ref` is unavailable here (name match; description 1,019 characters; compatibility 332); version fields agree; length and vocabulary limits pass; `git diff --check` passes. GitHub's ADR Governance check passed for correction commit `bd6cf78`.
 
 Results: prototype complete as authored; not yet proven on a real host.
 
