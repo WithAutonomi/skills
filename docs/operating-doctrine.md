@@ -1,6 +1,6 @@
 # Autonomous Operating Doctrine — the engine
 
-> What the **fully-autonomous agent** does by default — operating autonomously toward a delegated objective, with **no human engaged in the operational loop** (a human usually set the objective and owns it, but isn't present for the running of it). This is the shared base; the **human-proxy** and **steered** personas layer disclosure and control on top (the concentric model — §8). Grounded in the deep source research (rewards, storage, topology, daemon/observability) and ADR-0004/0005/0006/0009/0010/0011. Observability is query-based per ADR-0011. Feeds the skill's `references/operating-procedures.md` and `references/agent-autonomy-policy.md`.
+> What the **fully-autonomous agent** does by default — operating autonomously toward a delegated objective, with **no human engaged in the operational loop** (a human usually set the objective and owns it, but isn't present for the running of it). This is the shared base; the **human-proxy** and **steered** personas layer disclosure and control on top (the concentric model — §8). Grounded in the deep source research (rewards, storage, topology, daemon/observability) and ADR-0004/0005/0006/0009/0010/0011/0014. Observability is query-based per ADR-0011. Feeds the skill's `references/operating-procedures.md` and `references/agent-autonomy-policy.md`.
 
 ## 1. Objective — what it optimises for
 

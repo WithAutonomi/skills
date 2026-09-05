@@ -5,7 +5,7 @@
 - Phase: PR #12 review remediation
 - Plan: resolve David Irvine's four findings and align ADR-0013 with Jim's channel-owned update decision
 - Task: implementation and verification
-- Status: final review-gap repair committed locally; push and exact-head evidence pending
+- Status source: live checks and review activity on [PR #12](https://github.com/WithAutonomi/skills/pull/12); the committed details below are a checkpoint, not a prediction of current GitHub state
 - Mode: attended; stop before merge or ADR acceptance
 
 ## Verification Context
@@ -21,8 +21,8 @@
 
 - Date: 2026-09-05
 - Agent: OpenCode
-- Outcome: Preserved the inherited authority/remit corrections, replaced the obsolete in-skill self-check proposal with channel-owned delivery, and reconciled active decision/planning documents without claiming PR #13's channel changes have already landed. Exact-head review of `bb447f5c156394004f4128ffefeb5d604b732b1b` found one remaining active-doctrine contradiction plus a provenance ambiguity and missing stale-values validation case; content commit `19526ac5944f0a67074bb30b9fd162b29ed9ae90` closes all three. Local ADR governance and diff checks pass; these do not substitute for final-head CI and independent review.
-- Review backlog: push the final head, then record exact-head verifier, adversarial, Craft, clean-context, and CI results in PR #12; any head change invalidates earlier exact-head evidence
+- Outcome: Exact-head CI and goal verification passed for `2a31be993ecdd5725c1cee6078639b2380b81c96`, but adversarial review found the ~20 GB team-confirmed value still missing from the provenance manifest; Craft Review also found under-specified channel-research evidence and this file's immediately stale status wording. The active-doctrine contradiction and ADR-0013 stale-values validation gap were confirmed closed. The dedicated clean-context launch was invalid because its required dispatch envelope was absent. Follow-up repairs now bind the team-confirmation record without presenting it as upstream authority, preserve the unresolved additive/shared semantics, distinguish skills.sh's global/project update paths, and make this file point to live PR state.
+- Review backlog at this checkpoint: the first pushed head containing the follow-up repairs needs exact-head verifier, adversarial, Craft, clean-context, and CI results recorded in PR #12; any later head invalidates that evidence
 - Forks: none
 - Parked units: none
-- Next: push the final head and update the live PR body with its exact SHA; if all required checks pass, request David's human re-review
+- Checkpoint handoff: push the follow-up head, update the live PR body with its exact SHA, and rerun every exact-head gate; if all required checks pass, request David's human re-review

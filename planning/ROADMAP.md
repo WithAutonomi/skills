@@ -22,7 +22,7 @@
 - [x] Operator scope, boundary, and interface stance set: existing `ant` CLI + node-management daemon, no new tooling, build frontier routes to the Developer skill — ADR-0003.
 - [x] Non-custodial node operation committed; wallet-address sourcing as a neutral menu (supplied / provisioned / agent-created); agent-created first-class for autonomous use via an out-of-context custody substrate (never LLM-created), secrets-out-of-context necessary-but-not-sufficient, declared recovery path at creation — ADR-0004.
 - [x] Spend-to-store understood and escalated: real path is ANT + native Arbitrum gas; **no upstream gasless path exists**; gas is a team strategy call, not an in-skill invention — ADR-0005.
-- [x] Source-binding decided: every claim source-bound to upstream, volatile facts single-sourced, mechanically-derived vs judgement-derived split, plus the cross-repo freshness contract — ADR-0006.
+- [x] Provenance decided: source-backed claims bind to upstream, temporary team-confirmed exceptions remain explicit and pending upstream authority, volatile facts stay single-sourced, and the mechanically-derived vs judgement-derived split plus cross-repo freshness contract are fixed in ADR-0006.
 - [x] Repo home and lifecycle decided: standalone repo, org-owned before public; independent lifecycle, no lockstep between skill / `ant` / `ant-node`; source bindings are provenance, not runtime pins — ADR-0007, ADR-0009.
 - [x] DESIGN substantially complete and realigned to ADR-0001…0009 (including the capability ladder, §12).
 - [x] Repo published and under review (`JimCollinson/autonomi-skill`, David a collaborator; Hermes/David review pass).

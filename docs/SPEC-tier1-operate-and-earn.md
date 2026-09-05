@@ -18,7 +18,7 @@
 - The node is configured with a **public `--rewards-address` only**.
 - No claim that agent-owned custody or spending is available; the sourcing menu names "agent-created" as first-class for autonomous use but routes its custody substrate onward to Tier 2 (gated; ADR-0004 Proposed).
 - Detect-first, install-only-when-missing; mutate an existing `ant` / `ant-node` setup only within granted remit (ADR-0008, ADR-0009).
-- Every command/flag/constant is source-bound (ADR-0006); no invented commands or fallbacks.
+- Every command/flag/constant has explicit provenance (normally an upstream source binding; any temporary team-confirmed exception is recorded and pending upstream authority) under ADR-0006; no invented commands or fallbacks.
 
 ## Command surface (source-bound; ant-client @ `84332e2d`, dev-docs verified 2026-06-10)
 

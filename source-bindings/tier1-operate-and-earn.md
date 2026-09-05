@@ -1,6 +1,6 @@
 # Source-binding manifest — Tier 1 operate-and-earn
 
-Purpose: bind every Tier 1 command, flag, volatile constant, and important factual claim to upstream source. `source_evidence` proves a claim; `tested_with`, `requires_min`, and `known_incompatible` are compatibility axes and are deliberately separate.
+Purpose: record provenance for every Tier 1 command, flag, volatile constant, and important factual claim. `source_evidence` binds a claim to upstream; a temporary `team-confirmed` exception records accountable provenance and remains pending upstream source. `tested_with`, `requires_min`, and `known_incompatible` are compatibility axes and are deliberately separate.
 
 ## Upstream revisions read
 
@@ -103,6 +103,13 @@ source_evidence:
 - ant-node `src/upgrade/signature.rs` documents ML-DSA-65 verification loading full binaries, typical 50-100 MB release builds, and minimum 512 MB RAM recommended. Lines 1-18 at commit `c53665bf4dda87cdbcf848606fa0182e822297d7`.
 - ant-client `ant-cli/src/main.rs` and ant-node `src/bin/ant-node/main.rs` both force at least 4 Tokio worker threads. ant-client lines 21-28 at commit `4d0448458ec302af68a5504c533d105b0991c93c`; ant-node lines 91-99 at commit `c53665bf4dda87cdbcf848606fa0182e822297d7`.
 - ant-client `ant-cli/src/commands/node/daemon.rs::BindArgs` says default daemon bind is `127.0.0.1` and binding to non-loopback exposes node management because the daemon has no authentication. Lines 9-25 at commit `4d0448458ec302af68a5504c533d105b0991c93c`.
+
+Team-confirmed exception pending upstream source:
+
+- **Claim:** provision approximately 20 GB free disk per node as a strong recommendation to reduce the risk of that individual node being shunned. This is not a network-enforced limit and is distinct from the source-backed 500 MiB write reserve.
+- **Accountable confirmation record:** Jim Collinson recorded the result of the 2026-06-24 team call in repository commit `25f7ebc07756418c210e6e83a0e3cfc8d14d4a1b`, `planning/REBUILD-BRIEF.md` section 7. Jim owns this repository record; the original team speaker was not named in the repository. That record, rather than an upstream code or documentation claim, is the present authority.
+- **Known uncertainty:** upstream has not yet published the value or its semantics. In particular, whether approximately 20 GB is additive per node or a shared pool remains unresolved; the current skill assumes additive sizing and labels the value team-recommended/pending source.
+- **Revalidation path:** the Autonomi team authors the versioned Recommended Node Resource Document specified by `planning/node-resource-spec-brief.md`; this entry is then replaced with an upstream repo / file / symbol-or-section / commit binding. Until then, regeneration and review must preserve the exception label and uncertainty.
 
 ## Command and flag bindings
 

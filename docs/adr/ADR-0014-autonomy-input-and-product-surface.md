@@ -72,7 +72,7 @@ Invariants:
 ## Validation
 
 - **Personas without self-classification:** exercised as all three personas, the skill never prompts the agent to declare a tier; the **authority/safety gates are identical** across them, while **disclosure and escalation *routing* are appropriate to the supplied context** — a present human, a proxy's principal, or an autonomous agent's asynchronous/deferred path (ADR-0010) — never keyed on a self-declared tier.
-- **Uncertain-remit default, by action class:** with missing/ambiguous/exceeded remit, **only necessary read-only status/balance checks are allowed** to establish state and authority; **install/upgrade, start/stop, delete/reset, external-volume selection, and spend are not performed without affirmative remit** — the agent asks/escalates/defers. Reversibility does not authorise a mutation.
+- **Uncertain-remit default, by action class:** with missing/ambiguous/exceeded remit, **only necessary read-only observation is allowed** to establish state and authority, including status/balance and host/resource checks when relevant; **install/upgrade, start/stop, delete/reset, external-volume selection, and spend are not performed without affirmative remit** — the agent asks/escalates/defers. Reversibility does not authorise a mutation.
 - **Product-surface boundary:** the shipped `SKILL.md` + `references/` contain none of the forbidden build/process vocabulary (a lint/grep + adversarial read); repo-side docs are not checked.
 
 ## Notes for AI-assisted work
