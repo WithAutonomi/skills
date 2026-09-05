@@ -1,6 +1,6 @@
 # GSD Checkpoint — Autonomi skill (current state)
 
-Date: 2026-09-04
+Date: 2026-09-05
 Project: Autonomi Skills (`WithAutonomi/skills`)
 Slice/question: Retire the operator skill, land the task-routed `autonomi` prototype (0.1.4), and ready the repo to go public for the developers.autonomi.com launch (Sun 6 Sept 2026).
 Prepared by: Cowork (Claude Fable 5.1), on Jim's behalf; updated by OpenCode for the PR #13 repair
@@ -10,7 +10,7 @@ Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craf
 
 ## Status
 
-The binary-only 0.1.2 repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; version 0.1.3 then corrected the source-backed `SECRET_KEY` requirements. Version 0.1.4 corrects the Unix manual install's configuration destination and now follows the first-party distribution pattern for skill freshness: the installed skill makes no version-check request, while skills.sh, Claude Code or a deliberate manual reinstall own delivery of updates. Exact re-review of `83f178847f8ca2377207d21afba2325db0e238b6` found no CRITICAL/HIGH issue and two MEDIUM concerns: the raw `VERSION` response reached agent context, and bootstrap creation has a narrow check-then-copy race. Jim accepted the bootstrap race rather than adding atomic machinery; after reviewing Stripe and seven other first-party collections, he chose to remove the self-version probe rather than filter it. The current follow-up implements and reconciles that decision; its exact review and CI are pending. Jim also chose not to change the documented same-file replacement race, and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 and DESIGN §6 while leaving formal merge-rule reconciliation open. The official Fable clean-context route still has not run, and required human approval is absent. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
+The binary-only 0.1.2 repair was committed and pushed as `dcca31ed347a12e620eaaaf784ec1e70ee26d6c8`; version 0.1.3 then corrected the source-backed `SECRET_KEY` requirements. Version 0.1.4 corrects the Unix manual install's configuration destination and now follows the first-party distribution pattern for skill freshness: the installed skill makes no version-check request, while skills.sh, Claude Code or a deliberate manual reinstall own delivery of updates. Exact re-review of `83f178847f8ca2377207d21afba2325db0e238b6` found no CRITICAL/HIGH issue and two MEDIUM concerns: the raw `VERSION` response reached agent context, and bootstrap creation has a narrow check-then-copy race. Jim accepted the bootstrap race rather than adding atomic machinery; after reviewing Stripe and seven other first-party collections, he chose to remove the self-version probe rather than filter it. Candidate `f1cf544bba349c08d2ce3c8be5a6dbcc7d47692b` implements that decision; exact review found no CRITICAL/HIGH content defect, one checklist correction now applied, and two openly deferred evidence gaps: project-specific channel-update execution and token-dependent Snyk. Jim also chose not to change the documented same-file replacement race, and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 and DESIGN §6 while leaving formal merge-rule reconciliation open. The official Fable clean-context route still has not run, and required human approval is absent. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the current branch revision and check results. The prototype is **not yet gauntlet-tested on a real host** or ready to merge. Merge, the public flip and the website's install tabs remain later gates.
 
 ## What happened
 
@@ -39,9 +39,9 @@ For the 0.1.2 repair: ADR governance, skill discovery, equivalent frontmatter (d
 
 For 0.1.3, the changed wallet claim traces directly to ant-client `ant-cli/src/main.rs` at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: wallet dispatch unconditionally calls `require_secret_key()`, while free reads and `file cost` construct a client without requiring a wallet. Exact local and review evidence remains in `planning/evidence/2026-Sep-04-pr13-repair.md`.
 
-For 0.1.4, active skill/plugin versions remain synchronized at 0.1.4. The install-path proof remains unchanged. The freshness follow-up removes the only first-use version request, documents `npx skills update autonomi`, Claude Code marketplace updates and manual reinstall accurately, and reconciles the active Proposed ADR/design/planning sources that required the removed probe. Updated local and exact-review results are recorded in `planning/evidence/2026-Sep-04-pr13-repair.md`.
+For 0.1.4, active skill/plugin versions remain synchronized at 0.1.4. The install-path proof remains unchanged. The freshness follow-up removes the only first-use version request, documents `npx skills update autonomi`, Claude Code marketplace updates and manual reinstall against their current published documentation, and reconciles the active Proposed ADR/design/planning sources that required the removed probe. Updated local and exact-review results are recorded in `planning/evidence/2026-Sep-04-pr13-repair.md`.
 
-Results: the 0.1.2 safety repair, bounded 0.1.3 factual correction and 0.1.4 install-path repair pass local static and deterministic disposable-fixture checks. Exact-revision review/CI of the channel-owned freshness follow-up, the official Fable clean-context route and real-host proof remain outstanding.
+Results: the 0.1.2 safety repair, bounded 0.1.3 factual correction and 0.1.4 install-path repair pass local static and deterministic disposable-fixture checks. The channel-owned freshness candidate passes the local static set and exact review found no CRITICAL/HIGH content defect. Project-specific channel-update execution, token-dependent Snyk, the official Fable clean-context route and real-host proof remain outstanding.
 
 ## Review findings
 
@@ -53,15 +53,15 @@ Clean-context test:
 
 Adversarial review:
 
-- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair and 0.1.4 revisions
-- Result: **Exact re-review at `83f178847f8ca2377207d21afba2325db0e238b6` found no CRITICAL/HIGH issue and two MEDIUM concerns. The raw freshness-response concern is removed by the current channel-owned update revision; Jim accepted the bootstrap check-then-copy race as a narrow prototype trade-off. Exact review of the new revision is pending.**
-- Findings: the earlier prose-only treatment could not stop a successful arbitrary `VERSION` response from reaching agent context. Rather than add a response filter, the skill now makes no request solely to check its own version. Blocking external gates remain official Fable clean-context, formal reconciliation of the Jim-approved Proposed ADR-0008 / DESIGN §6 uninstall deferral, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The same-file replacement race remains a non-blocking concern by Jim's decision.
+- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair and 0.1.4 revisions through candidate `f1cf544bba349c08d2ce3c8be5a6dbcc7d47692b`
+- Result: **Exact candidate review found no CRITICAL/HIGH content defect. It raised two MEDIUM evidence gaps: project-specific skills.sh/Claude Code update execution remains a Proposed ADR validation, and token-dependent Snyk did not run. One LOW stale-count finding is corrected in the evidence.**
+- Findings: the earlier prose-only treatment could not stop a successful arbitrary `VERSION` response from reaching agent context, so the skill now makes no request solely to check its own version. The channel operations trace to current source and documentation but are not misrepresented as project-specific execution. The approved parent repair packet made Snyk conditional on an existing token; none is available. Blocking external gates remain official Fable clean-context, formal reconciliation of the Jim-approved Proposed ADR-0008 / DESIGN §6 uninstall deferral, required human approval and dependency reconciliation with [PR #12](https://github.com/WithAutonomi/skills/pull/12). The same-file replacement race remains a non-blocking concern by Jim's decision.
 
 Craft Review:
 
-- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit reviews through `83f178847f8ca2377207d21afba2325db0e238b6`
-- Result: **The exact Craft re-review at `83f178847f8ca2377207d21afba2325db0e238b6` passed with no CONFORMANCE, SIMPLICITY or NIT findings. Exact Craft review of the new freshness revision is pending.**
-- CONFORMANCE disposition: none open from the prior head. Jim explicitly approved the separate conflict with Proposed ADR-0008 and DESIGN §6 as a temporary prototype deferral; formal merge-rule reconciliation remains open.
+- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit reviews through candidate `f1cf544bba349c08d2ce3c8be5a6dbcc7d47692b`
+- Result: **The exact candidate Craft Review found one CONFORMANCE mismatch: the reusable version checklist named only two of the four synchronized version surfaces. No SIMPLICITY or NIT finding was raised.**
+- CONFORMANCE disposition: fixed by naming all four version surfaces in `planning/TESTING.md`; Proposed ADR-0008's adjacent bundle inventory now also names `VERSION`. Jim explicitly approved the separate conflict with Proposed ADR-0008 and DESIGN §6 as a temporary prototype deferral; formal merge-rule reconciliation remains open.
 
 ## Drift / scope concerns
 

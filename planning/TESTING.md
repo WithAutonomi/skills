@@ -94,8 +94,8 @@ Run in a real harness on a real machine (not a proxy-only sandbox — see the en
 - **Fact check:** every command, flag, path, URL and figure in the shipped surface traces to `source-bindings/autonomi.md`. Anything new needs a line there before it merges.
 - **Security scan:** `uvx snyk-agent-scan@latest skills/autonomi --ci` (needs a free `SNYK_TOKEN` from app.snyk.io/account). Expected: no `curl | sh` finding (the skill downloads and reads the script first), no hardcoded secrets, no service modification. A W012 "external dependency" note for the GitHub release download is expected and accepted until a package-manager route exists (ant-client #190).
 - **Length:** `SKILL.md` under 500 lines; each reference under 200.
-- **Version:** `skills/autonomi/VERSION` and `metadata.version` in the frontmatter agree, and were bumped if any shipped file changed.
-- **Skill freshness:** no first-use self-version request ships; skills.sh, Claude Code and manual update instructions match their live channel behaviour.
+- **Version:** `skills/autonomi/VERSION`, frontmatter `metadata.version`, `.claude-plugin/plugin.json` and the plugin entry in `.claude-plugin/marketplace.json` agree, and were bumped if any shipped file changed.
+- **Skill freshness:** no first-use self-version request ships; skills.sh, Claude Code and manual update instructions match their current published channel documentation.
 
 ## 4. What "proven" means
 
@@ -123,6 +123,7 @@ Scenarios A, B and D pass in at least two different harnesses (e.g. Claude Code 
 
 **Not yet run:**
 
+- Updating an older released test copy through skills.sh and Claude Code, including reload/new-session behaviour. Source review confirms the documented channel operations; project-specific execution needs disposable install state and a released older copy.
 - Scenario A (free read) and B (paid write) on `ant` 0.3.6 on a real host — the container is proxy-only (`found 0 peers`).
 - Scenario D — the node route has not been exercised live on 0.3.x by anyone; it was written from ant-client source and README plus the archived operator skill.
 - Scenarios C, E, F; the trigger eval; the Snyk scan (no token); the Windows path (written from `install.ps1`, not run).
