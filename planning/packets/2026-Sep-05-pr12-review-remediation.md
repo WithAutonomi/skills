@@ -16,6 +16,13 @@ Current source of truth: PR #12 branch `docs/state-refresh` plus David Irvine's 
 
 Make PR #12 ready for renewed human review by resolving David's four outstanding findings and aligning Proposed ADR-0013 with Jim's later channel-owned update decision.
 
+The four findings are:
+
+1. Installed-skill updates belong to the installation channel; do not add an in-skill self-version request.
+2. Safety and authority gates are identical across contexts; only disclosure and escalation routing vary.
+3. Missing, ambiguous, or exceeded remit permits only necessary non-mutating observation, followed by asking, escalating, or deferring.
+4. Acting inside an affirmative existing envelope needs no per-action approval; granting or widening authority remains explicit.
+
 ## Read first
 
 - `CONTRIBUTING.md`

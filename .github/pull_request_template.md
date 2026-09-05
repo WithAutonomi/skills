@@ -30,7 +30,7 @@ The aim: a reviewer — human or agent — can understand this PR and sanity-che
 
 - [ ] No secrets in the diff — no private key, seed phrase, `SECRET_KEY`, or `AUTONOMI_WALLET_KEY` in code, examples, or logs.
 - [ ] Non-custodial boundary intact — nodes take a public wallet (rewards) address only; nothing instructs putting a key on a node or in the repo (ADR-0004).
-- [ ] Install stays detect-first and non-mutating; any download/verify step is documented and source-bound (ADR-0009).
+- [ ] Install stays detect-first and does not mutate an existing working setup by default; any download/verify step is documented and source-bound (ADR-0009).
 
 ## Quality & verification
 

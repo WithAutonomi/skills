@@ -27,14 +27,14 @@ npx skills add WithAutonomi/skills --skill autonomi
 
 Useful flags: `--skill <name>` (pick a specific skill), `--all` (install all), `-a <agent>` (target agent, e.g. `opencode`, `claude`, or `*` for all), `-g` (install globally), `-l` (list without installing), `-y` (no prompts). When the repo holds more than one skill, a bare `add` opens an interactive picker keyed on each skill's name + description.
 
-### ClawHub / OpenClaw (not yet verified as published)
+### ClawHub / OpenClaw (future; current installer metadata is unsupported)
 
 ```bash
-# Intended command once the skill is listed in ClawHub
+# Intended command once compatible metadata is shipped and the skill is listed
 openclaw skills install autonomi
 ```
 
-The skill carries an OpenClaw install manifest in its frontmatter (`metadata.openclaw`) describing the upstream installer and basic post-install checks. A public ClawHub listing has not been verified, and the current script path is not checksum/signature verification; secure-delivery hardening remains open work.
+The frontmatter contains a legacy `metadata.openclaw` block, but its `shell` and `powershell` installer kinds and its `command` / `verifies` fields are not supported by OpenClaw's current [installer contract](https://github.com/openclaw/openclaw/blob/de2c4b1768d9babd158c49d83aa91b67eff50dbc/src/skills/types.ts#L4-L19) and are ignored by the [parser](https://github.com/openclaw/openclaw/blob/de2c4b1768d9babd158c49d83aa91b67eff50dbc/src/skills/loading/frontmatter.ts#L108-L121). No working OpenClaw installer or public ClawHub listing is claimed. The current script path also lacks checksum/signature verification; compatible metadata, publication, and secure-delivery proof remain open work.
 
 ### What gets installed
 

@@ -1,6 +1,6 @@
 # SPEC — Tier 1: Operate and earn
 
-> Bounded build slice for the Autonomi Operator Skill. Defines what Tier 1 must do, the acceptance bar, the source-bound command surface, and the verification plan. Scope is fixed by the team go-ahead (2026-Jun-18): **author and agent-test Tier 1 only**; ADR-0004 (custody) and ADR-0005 (gas) stay **Proposed** and are not touched. Aligns to DESIGN §2–§6 and §12 and the ROADMAP capability ladder. This is a spec (what the chunk must do), not a plan (order) or an ADR (invariant).
+> **Historical build spec, not current implementation state.** This defines what Tier 1 must do, its acceptance bar, source-bound command surface, and verification plan. The current skill has not yet met every requirement here, notably verified delivery and the full live end-to-end run; read `planning/HANDOFF.md` and `README.md` for current state. Scope was fixed by the team go-ahead (2026-Jun-18): **author and agent-test Tier 1 only**; ADR-0004 (custody) and ADR-0005 (gas) stay **Proposed** and are not touched. Aligns to DESIGN §2–§6 and §12 and the ROADMAP capability ladder. This is a spec (what the chunk must do), not a plan (order) or an ADR (invariant).
 
 ## Scope
 

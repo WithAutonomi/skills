@@ -42,7 +42,7 @@ The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, n
 - **Reviewed:** a fresh adversarial pass flagged three things as "invented" that are in fact source-bound + live-tested (`DELETE /api/v1/nodes/{id}`, daemon ordering, network defaults) — docs lag the code. Lesson logged: review against the source manifest, not just the docs.
 - **Agent-tested:** an OpenCode agent installed the skill and ran it to the preflight gate, correctly and safely (details in `planning/TESTING.md`).
 - **Proposed policy is ahead of the installed skill:** PR #12 changes decisions and documentation only. The current skill's "smaller, reversible action" wording has not yet been reconciled with ADR-0014's stricter no-mutation rule, and its broad “every command and figure” provenance wording has not yet been narrowed to the Autonomi-specific binding surface. The decisions remain Proposed rather than implemented guarantees.
-- **Distribution is an internal preview:** skills.sh installation requires private-repository access. OpenClaw metadata is present, but a public ClawHub listing and checksum/signature verification through that route have not been proven.
+- **Distribution is an internal preview:** skills.sh installation requires private-repository access. A legacy OpenClaw metadata block is present, but OpenClaw's current parser ignores its unsupported `shell` / `powershell` installer entries and `command` / `verifies` fields. There is no working OpenClaw installer or proven public ClawHub listing, and checksum/signature verification through that route has not been implemented.
 
 ## Open threads (what's next)
 
