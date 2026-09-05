@@ -1,6 +1,6 @@
 # Autonomi Operator Skill — Design
 
-> Canonical design, realigned to ADR-0001…0009. This supersedes the original pre-decision scaffold (which framed the work as a single "loop" and assumed a gas-abstraction path — both removed). Loose thinking lives in the vault (`Projects/Autonomi Skill`); this is the formal design. Volatile specifics (flags, constants, addresses, URLs) are **source-bound** to upstream per ADR-0006, not hardcoded here.
+> Canonical design target, not an exact inventory of the currently shipped files. Read `planning/HANDOFF.md` and `README.md` for implementation state. This supersedes the original pre-decision scaffold and is aligned with the repository's Proposed ADRs; none is Accepted autonomously. Volatile specifics (flags, constants, addresses, URLs) are **source-bound** to upstream per ADR-0006, not hardcoded here.
 
 ## 1. Purpose and shape
 

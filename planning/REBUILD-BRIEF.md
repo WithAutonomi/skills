@@ -35,7 +35,7 @@ Autonomi runs **quietly in the background**; the **agent absorbs the complexity*
 
 - **Three layers (the install ergonomics):**
   1. **The skill bundle** = `skills/autonomi/` (`SKILL.md` + bundled `references/`) — the *only* thing that installs; agent-facing; self-contained.
-  2. **`references/`** = a subset of that bundle — agent-facing depth, loaded on demand; **bundled, not linked** (offline / fresh-host / version-locked).
+  2. **`references/`** = a subset of that bundle — agent-facing depth, loaded on demand; **bundled, not linked** (available without live docs after installation; version-locked).
   3. **Repo-side only, never ships** = `docs/`, `docs/adr/`, `planning/`, `source-bindings/` — human/maintainer/process-facing (`source-bindings` exists to drive autonomous regeneration, not for the running agent).
   - Install discovery scans root + `skills/`, so it pulls **only layer 1**. The `skills/<name>/` subdir does double duty: multi-skill layout **and** the wall that keeps internal scaffolding out of the installed product — the "no internal stuff in the product" principle at the file level.
 - **Install behaviour (verified by running the CLI):** it clones the repo and discovers skills (root + `skills/` one level deep → finds `skills/autonomi/`). **One skill → installs it; multiple → an interactive multi-select picker** ("Select skills to install (space to toggle)") listing each skill's **name + description** — so the `description` is also the picker copy (another reason it must be strong). Flags: `--skill autonomi` (explicit/deterministic — use in install docs), `--all` (all), `-y` (non-interactive), `--list` (preview). `metadata.internal: true` hides a skill from discovery during build.

@@ -4,11 +4,11 @@
 
 ## TL;DR
 
-The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, and agent-tested to the preflight gate. It lives on a single clean `main` at **`WithAutonomi/skills`** (private), installable with `npx skills add WithAutonomi/skills`. The rebuild and the org transfer are done; work is now **recommencing** on the open threads below.
+The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, and agent-tested to the preflight gate. The merged baseline lives at **`WithAutonomi/skills`** (private), installable by repository members with `npx skills add WithAutonomi/skills`; PR #12's `docs/state-refresh` branch is the current decision-review candidate. The rebuild and org transfer are done; work is now continuing on the open threads below.
 
 **Start here:** `README.md` → `skills/autonomi/SKILL.md` → its `references/` → this doc → `planning/REBUILD-BRIEF.md` (the full rationale) → `docs/adr/`. To test: `planning/TESTING.md`.
 
-## What's in the repo (all on `main`)
+## What's in the repository
 
 - **`skills/autonomi/`** — the installable skill: `SKILL.md` + `references/` (node provisioning, operating procedures, uninstall, wallet-and-tokens, troubleshooting).
 - **`docs/adr/`** — architecture decisions, ADR-0001 to ADR-0014, all **Proposed**.
@@ -16,7 +16,7 @@ The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, n
 - **`source-bindings/`** — provenance: commands and sourced figures bound to upstream code; explicitly labelled team-confirmed values remain pending upstream authority (drives planned release regeneration).
 - `README.md`, `CONTRIBUTING.md`.
 
-Single clean `main` — all the earlier rebuild / brief / ADR branches were merged and removed.
+`main` contains the earlier rebuild. Proposed ADR-0013/0014 and the accompanying authority/freshness corrections remain on PR #12 until human review and merge.
 
 ## Repo & operational facts
 
@@ -41,6 +41,8 @@ Single clean `main` — all the earlier rebuild / brief / ADR branches were merg
 - **Complete teardown:** `references/node-uninstall.md` covers nodes, daemon, CLI, custom/external data dirs, config paths, and a verification step. No OS service is involved (verified in source).
 - **Reviewed:** a fresh adversarial pass flagged three things as "invented" that are in fact source-bound + live-tested (`DELETE /api/v1/nodes/{id}`, daemon ordering, network defaults) — docs lag the code. Lesson logged: review against the source manifest, not just the docs.
 - **Agent-tested:** an OpenCode agent installed the skill and ran it to the preflight gate, correctly and safely (details in `planning/TESTING.md`).
+- **Proposed policy is ahead of the installed skill:** PR #12 changes decisions and documentation only. The current skill's "smaller, reversible action" wording has not yet been reconciled with ADR-0014's stricter no-mutation rule, and the decisions remain Proposed rather than implemented guarantees.
+- **Distribution is an internal preview:** skills.sh installation requires private-repository access. OpenClaw metadata is present, but a public ClawHub listing and checksum/signature verification through that route have not been proven.
 
 ## Open threads (what's next)
 

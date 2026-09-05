@@ -8,14 +8,14 @@ This is the home for Autonomi's first-party skills. It holds one or more skills 
 
 | Skill | What it's for | Status |
 | --- | --- | --- |
-| **`autonomi`** | Run and manage Autonomi nodes, and earn ANT (the Autonomi Network Token) for the storage they provide. Non-custodial. | **Available** |
+| **`autonomi`** | Run and manage Autonomi nodes, and earn ANT (the Autonomi Network Token) for the storage they provide. Non-custodial. | **Internal preview** |
 | `autonomi-developer` | Build applications *on* Autonomi (libraries, SDK). | Planned — currently at [`WithAutonomi/autonomi-developer-docs`](https://github.com/WithAutonomi/autonomi-developer-docs) |
 
 ## Install
 
 The skill is standards-compliant ([agentskills.io](https://agentskills.io)), so it isn't tied to one channel.
 
-### skills.sh (from GitHub)
+### skills.sh (from GitHub; repository access required while private)
 
 ```bash
 # Install the autonomi skill (it's the only one here, so a bare add installs it)
@@ -27,13 +27,14 @@ npx skills add WithAutonomi/skills --skill autonomi
 
 Useful flags: `--skill <name>` (pick a specific skill), `--all` (install all), `-a <agent>` (target agent, e.g. `opencode`, `claude`, or `*` for all), `-g` (install globally), `-l` (list without installing), `-y` (no prompts). When the repo holds more than one skill, a bare `add` opens an interactive picker keyed on each skill's name + description.
 
-### ClawHub / OpenClaw
+### ClawHub / OpenClaw (not yet verified as published)
 
 ```bash
+# Intended command once the skill is listed in ClawHub
 openclaw skills install autonomi
 ```
 
-The skill carries an OpenClaw install manifest in its frontmatter (`metadata.openclaw`) describing how to fetch and verify the upstream `ant` binary.
+The skill carries an OpenClaw install manifest in its frontmatter (`metadata.openclaw`) describing the upstream installer and basic post-install checks. A public ClawHub listing has not been verified, and the current script path is not checksum/signature verification; secure-delivery hardening remains open work.
 
 ### What gets installed
 
