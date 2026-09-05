@@ -10,7 +10,7 @@
 
 ## Context
 
-The shipped skill is a **bundled, versioned snapshot** — `SKILL.md` plus bundled `references/` — deliberately self-contained so its guidance can be loaded and used without contacting an update or freshness service (ADR-0008), with its facts bound to upstream code (ADR-0006). Autonomi operations still require whatever network access their task normally needs.
+The shipped skill is a **bundled, versioned snapshot** — `SKILL.md` plus bundled `references/` — deliberately self-contained so its guidance can be loaded and used without contacting an update or freshness service (ADR-0008). Source-backed facts are bound to upstream code; any temporary team-confirmed value that leads upstream is explicitly labelled pending source (ADR-0006). Autonomi operations still require whatever network access their task normally needs.
 
 A snapshot drifts from reality along **independent axes**: the underlying `ant` tool updates on its own lifecycle; the skill's own instructions get revised; and a *narrow subset* of the operational figures it carries (resource sizing, shunning/standing thresholds) change faster than the whole skill is re-released. Distribution is channel-agnostic (ADR-0008), but every installed copy still arrived through a channel with its own update semantics. Runtime fetching solely to check the skill's own version duplicates that layer while adding latency, failure, and an instruction/injection surface.
 
@@ -22,7 +22,7 @@ Research recorded in `planning/channel-update-research.md` found no ordinary fir
 
 - Multiple distribution channels, each with an update mechanism or an explicit manual-reinstall contract.
 - No freshness-service dependency (ADR-0008) — load and use the bundled guidance without contacting an update or live-values endpoint.
-- Source-bound discipline (ADR-0006) — facts bind to upstream code; regenerate from the manifest, and keep the mechanical-vs-judgement review split.
+- Source-bound discipline (ADR-0006) — source-backed facts bind to upstream code, temporary team-confirmed exceptions are explicit and pending source, regeneration follows the manifest, and the mechanical-vs-judgement review split remains clear.
 - A narrow set of operational values changes faster than whole-artifact releases.
 - Trust/security — a runtime fetch must not let unverified content steer the agent; live material must be typed *data*, not free-form instructions.
 - Don't pester; degrade gracefully — freshness failure never blocks access to bundled guidance or nags, but stale values must not authorise a first deployment or new consequential scaling.
@@ -97,6 +97,7 @@ Mechanism 4 requires an authoritative *Recommended Node Resource Document* (spec
 - The skill loads and provides its bundled guidance without contacting an update or live-values endpoint; no network request is made solely to check the installed skill's version. Tests do not misrepresent network-dependent Autonomi operations as offline.
 - **Mechanism 3:** each supported managed channel can update a released test copy through its documented operation; a manual copy is documented as non-updating; a pinned tag is not moved automatically; the skill does not inspect manager state or modify itself.
 - **Mechanism 4:** without affirmative network/egress remit, no fetch occurs and the bundled values are used; when authorised, only typed values are fetched (never prose); a malformed / unsigned / expired / downgraded / conflicting response, and any unanchored trust-root rotation, is rejected and falls back to the bundle; **every delta is gated as material unless on the bundled cosmetic allowlist**, materiality is judged against the bundled baseline using bundled criteria, and a material delta is never applied without human approval **even inside a granted envelope** — absent a human the consequential action is deferred while existing operation continues on bundled values.
+- **Stale-values boundary:** once mechanism 4 defines a maximum age, an expired bundled baseline may sustain existing operation but cannot authorise a first deployment or new consequential scaling; those actions wait for fresh verified values.
 - **Mechanism 2:** mechanical regeneration is automatic; judgement-derived changes are flagged for review; nothing releases without passing the review gate.
 
 ## Notes for AI-assisted work

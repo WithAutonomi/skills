@@ -49,7 +49,7 @@ A fully-autonomous agent **escalates asynchronously to whoever delegated the obj
 - the host reclaiming resources (back off / shed);
 - no safe substrate for a spend-shaped goal (defer that goal).
 
-It records just enough context **at the point of an escalation** for a human to pick up — not a standing log. When it can't observe enough to decide safely, it chooses the smaller, reversible action.
+It records just enough context **at the point of an escalation** for a human to pick up — not a standing log. When it can't observe enough to decide safely, it performs only the necessary non-mutating observation needed to establish state and authority, then asks, escalates, or defers. Reversibility does not grant authority to mutate.
 
 ## 8. What the personas layer on top
 
