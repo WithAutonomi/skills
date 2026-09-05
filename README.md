@@ -39,9 +39,9 @@ Copy `skills/autonomi/` — `SKILL.md`, `VERSION` and `references/` — into whe
 
 After an update, start a new agent session before relying on the new instructions. In Claude Code, `/reload-plugins` can activate an updated plugin without restarting when the client says a reload is available.
 
-### What gets installed, and what happens on first use
+### What the agent loads, and what happens on first use
 
-The skill bundle only: `skills/autonomi/`. On first use the agent detects or installs the upstream **`ant`** command-line client from its official GitHub releases — fetching and reading the installer before running it, or taking a checksum-verified manual path — and learns the tool from `ant --help`. Nothing in the skill holds keys or moves funds. A paid write uses a `SECRET_KEY` the person provisions to the tool's environment themselves, or the person runs the paid command; the agent only ever works with public addresses, and spending is quote-show-wait by default.
+The agent loads only the skill component in `skills/autonomi/`. skills.sh and manual installations copy that directory; Claude Code caches the repository-root plugin package declared in `.claude-plugin/marketplace.json`, then discovers `skills/autonomi/` within it as the skill component. Repo-side files are not loaded as skill instructions. On first use the agent detects or installs the upstream **`ant`** command-line client from its official GitHub releases — fetching and reading the installer before running it, or taking a checksum-verified manual path — and learns the tool from `ant --help`. Nothing in the skill holds keys or moves funds. A paid write uses a `SECRET_KEY` the person provisions to the tool's environment themselves, or the person runs the paid command; the agent only ever works with public addresses, and spending is quote-show-wait by default.
 
 > **Sandboxes.** Installing `ant` needs `github.com` and its release hosts reachable. The installer's version lookup uses `api.github.com`, which some agent sandboxes block while allowing the download itself; the skill then falls back to a manual path that reads the version from the release checksum file. The network is peer-to-peer over UDP, so a proxy-only sandbox can install the tool but will see `found 0 peers` — the skill says so rather than retrying. Distributing the CLI through npm, which every sandbox allows, is tracked in [ant-client #190](https://github.com/WithAutonomi/ant-client/issues/190).
 
@@ -52,19 +52,19 @@ A prototype, deliberately: one skill for readers, writers, builders and node ope
 ## Repo layout
 
 ```
-skills/autonomi/        # the installable skill — the ONLY thing that ships
+skills/autonomi/        # skill component; copied directly by skills.sh and manual installs
   SKILL.md              # entry: what Autonomi is, ground rules, task router, keys & money, verified-against, further reading
   VERSION               # release version, kept in sync with skill and plugin metadata
   references/           # on demand: install-and-verify, wallet-and-tokens, run-nodes, build-on-autonomi
 
 .claude-plugin/         # Claude Code marketplace + plugin manifests (repo root is the plugin root)
-docs/                   # repo-side, never ships: design, ADRs, archive of the retired operator skill
+docs/                   # repo-side, never loaded as skill instructions: design, ADRs, archive
 planning/               # current state, test protocol, briefs, parked threads
 source-bindings/        # provenance for every shipped claim
 scripts/                # ADR governance check (runs in CI)
 ```
 
-Only `skills/<name>/` is discovered and installed; everything else is for maintainers.
+Only `skills/<name>/` is discovered as an agent skill. Claude Code may cache the repository-root plugin package, but repo-side files remain maintainer material rather than skill instructions.
 
 ## Contributing
 
