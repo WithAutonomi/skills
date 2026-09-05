@@ -62,7 +62,7 @@ Three buckets the skill keeps distinct: **what the network enforces** (facts the
 
 ## 10. Staying current (ADR-0006)
 
-Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. An in-skill **version self-check** fetches the canonical published `VERSION` scalar and warns once if a higher version exists, continuing silently if the check fails. Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
+Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. New skill versions are delivered by the channel that installed them: source-hash updates for skills.sh, versioned plugin updates for Claude Code, and deliberate reinstall for manual copies (ADR-0013). The skill does not make a network request to check its own version. Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
 
 ## 11. Metadata, licensing, provenance (ADR-0008)
 
@@ -133,7 +133,7 @@ Plain, not patronising — assume intelligence, not specialist knowledge. Lead w
 
 ## 14. Open questions (carried; mostly David/maintainer)
 
-- GitHub home/org and clean install URL; published skill name; canonical `VERSION` hosting URL.
+- GitHub home/org and clean install/update routes; published skill name.
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
 - Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
 - Upstream watch-set and "material change" policy (for the deferred automation).

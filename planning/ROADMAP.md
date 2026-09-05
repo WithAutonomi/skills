@@ -31,7 +31,7 @@
 - [ ] **Gas strategy** decided — the route that lets earned ANT actually be spent (agent ETH float / pre-funded envelope / faucet-grant / paymaster / defer). Open team decision; gates Tier 3 — ADR-0005.
 - [ ] Source-binding manifest format pinned (the `source_evidence` vs `tested_with` / `requires_min` / `known_incompatible` shape) before authoring — ADR-0006, ADR-0009.
 - [ ] Close-group size resolved (read as both 5 and 7 in source) — pin or fetch-live before authoring runbooks.
-- [ ] Pre-publish housekeeping confirmed: org transfer (→ WithAutonomi), licence (likely MIT OR Apache-2.0 — TBC), and the clean install / version-manifest URL — ADR-0007, ADR-0008.
+- [ ] Pre-publish housekeeping confirmed: org transfer (→ WithAutonomi), licence (likely MIT OR Apache-2.0 — TBC), and clean install/update routes — ADR-0007, ADR-0008.
 
 **Definition of Done:**
 - DESIGN substantially complete and the load-bearing ADRs drafted as Proposed — **essentially met**. The phase closes when the ADRs are accepted (Jim as decision owner, after David's review) and the two open team decisions (custody substrate, gas strategy) are recorded, the manifest format and close-group size are pinned, and the pre-publish items are resolved. ADR acceptance is a human gate; the custody and gas calls are team decisions, not @pm/agent calls.
@@ -79,12 +79,12 @@
 **Goal:** Turn the regeneration-ready structure into a working pipeline so the skill is kept current mechanically rather than by hand — the deferred half of ADR-0006.
 
 **Milestones:**
-- [ ] Version self-check live: the skill fetches a manifest from an Autonomi-controlled URL and warns if stale, continues if offline — ADR-0006.
+- [ ] Versioned releases flow through supported install channels: source-hash updates for skills.sh, versioned plugin updates for marketplaces, and a documented reinstall path for manual copies — ADR-0013.
 - [ ] Upstream-sweep pipeline: analyses the enumerated upstream watch-set, regenerates mechanically-derived content, flags judgement-derived content for review — ADR-0006.
-- [ ] Cross-repo freshness contract operational: upstream repos signal operator-facing changes (issue/PR or release-note marker the freshness check consumes) — ADR-0006, ADR-0007.
+- [ ] Cross-repo freshness contract operational: upstream repos signal operator-facing changes (issue/PR or release-note marker the regeneration pipeline consumes) — ADR-0006, ADR-0007.
 
 **Definition of Done:**
-- An installed copy self-reports staleness, and an upstream change to a source-bound fact is detected and routed to regeneration-or-review without a manual rewrite. (Structure is mandatory from Phase 02; the pipeline itself is explicitly deferred per ADR-0006 and may begin only after the watch-set and "material change" policy are settled.)
+- A released update is discoverable through each supported installation channel, and an upstream change to a source-bound fact is detected and routed to regeneration-or-review without a manual rewrite. (Structure is mandatory from Phase 02; the pipeline itself is explicitly deferred per ADR-0006 and may begin only after the watch-set and "material change" policy are settled.)
 
 ---
 

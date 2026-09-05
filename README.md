@@ -18,7 +18,7 @@ The skill follows the [Agent Skills](https://agentskills.io) format, so it isn't
 npx skills add WithAutonomi/skills
 ```
 
-Useful flags: `-a claude`, `-a codex`, `-a opencode` or `-a '*'` to choose the agent; `-g` to install globally; `-y` to skip prompts. Update later with `npx skills update`.
+Useful flags: `-a claude`, `-a codex`, `-a opencode` or `-a '*'` to choose the agent; `-g` to install globally; `-y` to skip prompts. Update later with `npx skills update autonomi`.
 
 ### Claude Code plugin
 
@@ -27,9 +27,17 @@ Useful flags: `-a claude`, `-a codex`, `-a opencode` or `-a '*'` to choose the a
 /plugin install autonomi@withautonomi
 ```
 
+Custom Claude Code marketplaces do not auto-update by default. Enable auto-update for `withautonomi` in `/plugin` → **Marketplaces**, or update explicitly with:
+
+```
+/plugin update autonomi@withautonomi
+```
+
 ### By hand
 
-Copy `skills/autonomi/` — `SKILL.md`, `VERSION` and `references/` — into wherever your agent loads skills from (for Claude Code, `~/.claude/skills/autonomi/`). Keep the folder together: the references are loaded on demand.
+Copy `skills/autonomi/` — `SKILL.md`, `VERSION` and `references/` — into wherever your agent loads skills from (for Claude Code, `~/.claude/skills/autonomi/`). Keep the folder together: the references are loaded on demand. Copies installed by hand do not update automatically; repeat the installation to replace them with a newer release.
+
+After an update, start a new agent session before relying on the new instructions. In Claude Code, `/reload-plugins` can activate an updated plugin without restarting when the client says a reload is available.
 
 ### What gets installed, and what happens on first use
 
@@ -46,7 +54,7 @@ A prototype, deliberately: one skill for readers, writers, builders and node ope
 ```
 skills/autonomi/        # the installable skill — the ONLY thing that ships
   SKILL.md              # entry: what Autonomi is, ground rules, task router, keys & money, verified-against, further reading
-  VERSION               # the version an installed copy checks itself against
+  VERSION               # release version, kept in sync with skill and plugin metadata
   references/           # on demand: install-and-verify, wallet-and-tokens, run-nodes, build-on-autonomi
 
 .claude-plugin/         # Claude Code marketplace + plugin manifests (repo root is the plugin root)

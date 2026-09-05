@@ -25,6 +25,12 @@ Jim approved the minimal route live on 2026-09-04:
 - Update Proposed ADR-0013 to describe that check, remove the contradictory identity/hash requirement and remove implementation sequencing from the ADR.
 - Add no new checker, lock format, folder hash, update automation, or uninstall behavior.
 
+## Live scope change — 2026-09-05
+
+After reviewing the live first-party skill collections from Stripe, Anthropic, Vercel, Cloudflare, Sentry, Supabase, Hugging Face and Shopify, Jim chose the Stripe-style route: remove the skill's first-use `VERSION` probe and let each installation channel own updates. This supersedes only the earlier instruction to keep the semantic `VERSION` check. It does not add an updater, identity scheme, lock format or folder hash to the skill.
+
+The bounded reconciliation may update Proposed ADR-0006, Proposed ADR-0008, Proposed ADR-0013, DESIGN, VISION, FEATURES, ROADMAP, NEXT-PHASE, README, CONTRIBUTING, source binding, current-state/evidence records and PR metadata so no active source still requires the removed probe. `VERSION` remains release metadata, synchronized at the unreleased 0.1.4 candidate version.
+
 ## Scope
 
 - `skills/autonomi/references/install-and-verify.md`

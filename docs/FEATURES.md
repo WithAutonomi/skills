@@ -7,7 +7,7 @@
 - [ ] Install and run one or more nodes, referencing upstream binaries, per platform
 - [ ] Verify and monitor node health and earnings
 - [ ] Receive rewards to a non-custodial public wallet address (the node holds no key) and check balance
-- [ ] Channel-independent version self-check (manifest on an Autonomi-controlled URL)
+- [ ] Versioned releases and documented updates through each supported installation channel
 
 ## Should Have (V1)
 
