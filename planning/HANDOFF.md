@@ -6,13 +6,13 @@
 
 The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, non-custodially — is rebuilt, source-bound, and agent-tested to the preflight gate. The merged baseline lives at **`WithAutonomi/skills`** (private), installable by repository members with `npx skills add WithAutonomi/skills`; PR #12's `docs/state-refresh` branch is the current decision-review candidate. The rebuild and org transfer are done; work is now continuing on the open threads below.
 
-**Start here:** `README.md` → `skills/autonomi/SKILL.md` → its `references/` → this doc → `planning/REBUILD-BRIEF.md` (the full rationale) → `docs/adr/`. To test: `planning/TESTING.md`.
+**Start here:** `README.md` → this doc → `planning/STATE.md` → `planning/packets/2026-Sep-05-pr12-review-remediation.md` → `skills/autonomi/SKILL.md` + its `references/` → `docs/adr/`. Historical rationale: `planning/REBUILD-BRIEF.md`. To test: `planning/TESTING.md`.
 
 ## What's in the repository
 
 - **`skills/autonomi/`** — the installable skill: `SKILL.md` + `references/` (node provisioning, operating procedures, uninstall, wallet-and-tokens, troubleshooting).
 - **`docs/adr/`** — architecture decisions, ADR-0001 to ADR-0014, all **Proposed**.
-- **`planning/`** — `REBUILD-BRIEF.md` (rationale/contract), `node-resource-spec-brief.md` (for the dev team), `TESTING.md`, `NEXT-PHASE.md` (parked threads), `release-endpoint-accessibility.md` (an upstream flag), and the OpenCode packet.
+- **`planning/`** — `STATE.md` (committed checkpoints; live status stays on PR #12), `packets/2026-Sep-05-pr12-review-remediation.md` (current approved repair), `REBUILD-BRIEF.md` (historical rationale/contract), `node-resource-spec-brief.md` (for the dev team), `TESTING.md`, `NEXT-PHASE.md` (parked threads), and `release-endpoint-accessibility.md` (an upstream flag).
 - **`source-bindings/`** — provenance: commands and sourced figures bound to upstream code; explicitly labelled team-confirmed values remain pending upstream authority (drives planned release regeneration).
 - `README.md`, `CONTRIBUTING.md`.
 
@@ -35,7 +35,7 @@ The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, n
 
 ## State of the skill (what's done)
 
-- **Source-bound with explicit exceptions:** every Autonomi-specific command and flag is tied to upstream `ant-client` / `ant-node` code (see `source-bindings/`); ordinary shell/OS observation is checked for the relevant platform rather than misrepresented as an Autonomi claim. A figure that leads upstream documentation, such as the ~20 GB/node disk minimum, is labelled team-confirmed and pending source rather than presented as source-bound.
+- **Source-bound with explicit exceptions:** every Autonomi-specific command and flag is tied to upstream `ant-client` / `ant-node` code (see `source-bindings/`); ordinary shell/OS observation must be checked for each claimed platform rather than misrepresented as an Autonomi claim. A figure that leads upstream documentation, such as the ~20 GB/node disk minimum, is labelled team-confirmed and pending source rather than presented as source-bound.
 - **Safety doctrine:** non-custodial (nodes only ever get a public `--rewards-address`); spending/custody is out of scope and gated; daemon stays on loopback; no key handling anywhere.
 - **Deliberate capacity model:** the agent decides what to contribute and where (which volume, how many nodes) up front, can place node data on other volumes via `--data-dir-path` (with the human's consent for their media), and monitors capacity over time.
 - **Complete teardown:** `references/node-uninstall.md` covers nodes, daemon, CLI, custom/external data dirs, config paths, and a verification step. No OS service is involved (verified in source).
@@ -43,6 +43,7 @@ The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, n
 - **Agent-tested:** an OpenCode agent installed the skill and ran it to the preflight gate, correctly and safely (details in `planning/TESTING.md`).
 - **Proposed policy is ahead of the installed skill:** PR #12 changes decisions and documentation only. The current skill's "smaller, reversible action" wording has not yet been reconciled with ADR-0014's stricter no-mutation rule, and its broad “every command and figure” provenance wording has not yet been narrowed to the Autonomi-specific binding surface. The decisions remain Proposed rather than implemented guarantees.
 - **Distribution is an internal preview:** skills.sh installation requires private-repository access. A legacy OpenClaw metadata block is present, but OpenClaw's current parser ignores its unsupported `shell` / `powershell` installer entries and `command` / `verifies` fields. There is no working OpenClaw installer or proven public ClawHub listing, and checksum/signature verification through that route has not been implemented.
+- **Windows is unverified and currently inconsistent:** the unchanged skill names a Windows install path but uses Unix-only `df` / `export` guidance, and its troubleshooting claim that the installer does not edit `PATH` contradicts the source-bound Windows installer behaviour. PR #12 documents this current limitation rather than changing skill implementation; do not claim Windows support until a later implementation slice corrects and tests it.
 
 ## Open threads (what's next)
 

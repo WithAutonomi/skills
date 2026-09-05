@@ -30,7 +30,7 @@ It is an **operator skill** — about *doing and using*, not *building* — deli
 
 - **First pass:** a fresh agent, given only this skill, can explain why to run a node, check machine fit, install and run one and several nodes on the **live network**, monitor health, configure a non-custodial public wallet address, and check and secure earnings — without inventing commands — with clear onward pointers for using ANT (storing data) and acquiring more.
 - The skill grows by adding modules and routing, not new installs.
-- Installation channels can discover and deliver new versions; content traces to upstream sources.
+- Installation channels can discover and deliver new versions; Autonomi-specific content carries explicit provenance, normally upstream source bindings with visibly provisional team-confirmed exceptions where authority has not caught up.
 - Passes the security scan; structure and quality on par with the x0x skill.
 
 ## Target Users / Audience
