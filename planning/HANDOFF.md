@@ -1,6 +1,6 @@
 # Current state & handoff
 
-> **Entry point** for anyone — human or agent — picking up the `autonomi` skill. **Owner:** Jim. **Updated:** 2026-07-13. Read this first for where things stand and what's next.
+> **Entry point** for anyone — human or agent — picking up the `autonomi` skill. **Owner:** Jim. **Updated:** 2026-09-05. Read this first for where things stand and what's next.
 
 ## TL;DR
 
@@ -44,11 +44,11 @@ Single clean `main` — all the earlier rebuild / brief / ADR branches were merg
 
 ## Open threads (what's next)
 
-1. **Accept the decision ADRs (0007 / 0008 / 0012)** — Proposed; ready to be reviewed and **Accepted** now (this was gated on Jim's return).
+1. **Review the decision ADRs** — ADR-0007/0008/0010/0012/0013/0014 remain Proposed and need renewed human review before any acceptance decision.
 2. **Full live end-to-end run** — the big unproven bit: we only reached the preflight gate. Proving a node comes up + a balance reads needs a host with ≥ ~20 GB free, full egress (binary CDN + Arbitrum RPC), ideally no pre-existing nodes. See `TESTING.md`.
 3. **Node-resource SOP → dev team** (`planning/node-resource-spec-brief.md`) — the dev team to author a single authoritative *Recommended Node Resource Document* (resource numbers + the standing/shunning/reward model; hard values where knowable, explicit principles where judgement) that the skill source-binds to. Not yet picked up.
 4. **Release-endpoint accessibility** (`planning/release-endpoint-accessibility.md`) — `ant`'s binary serves from a CDN many agent sandboxes block; an upstream `ant-client` change (likely Chris / the release process).
-5. **Skill freshness & self-update — decided in ADR-0013 (Proposed).** Four mechanisms: documented tool-update context; reviewed source-bound regeneration; a channel-independent installed-copy self-check; and a bounded, data-only, best-effort live check for volatile values. Implementation is staged (`NEXT-PHASE.md` §3 & §5); mechanism 4's wire protocol is a later spec.
+5. **Skill freshness & channel-owned updates — decided in ADR-0013 (Proposed).** Four mechanisms: documented tool-update context; reviewed source-bound regeneration; installation-channel delivery with no in-skill version probe; and a bounded, data-only, best-effort live check for volatile values. Release automation is staged in `NEXT-PHASE.md` §3; mechanism 4 depends on the resource document and a later protocol/spec.
 6. **Parked next-phase** (`NEXT-PHASE.md`): UX / model-interpretation tuning; consolidating the developer skill into this repo.
 7. **Voice/behaviour decisions — authored.** ADR-0010 amended (register runs two directions; translate by judgement, not find-and-replace); new **ADR-0014 (Proposed)** — autonomy is an input (no surfaced tiers), default-deny under uncertain remit, and a clean product surface (no internal vocabulary). Both Proposed, pending review.
 8. **Keywords / discovery** (brief §8): a supply-side keyword pass + the `post-quantum` keyword call.

@@ -6,7 +6,7 @@
 - **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0002 (internal modularity); vault `spec/DECISIONS.md` (channel-independent version check + upstream-sweep)
+- **Related:** ADR-0002 (internal modularity); ADR-0013 (channel-owned skill updates); vault `spec/DECISIONS.md` (freshness + upstream-sweep)
 
 ## Context
 
@@ -40,7 +40,7 @@ Invariants:
 - The mechanical-vs-judgement split is explicit in the structure.
 - Nothing is hand-asserted that cannot be traced to upstream.
 - Source bindings are **documentation provenance, not runtime pins** (see ADR-0009): the manifest separates `source_evidence` (proves a claim) from `tested_with` / `requires_min` / `known_incompatible` (which express tool compatibility). A source-evidence commit is never a runtime version requirement.
-- **Cross-repo freshness contract:** upstream repos that change operator-facing surfaces (commands, flags, daemon endpoints, config, install paths, APIs, or reward/payment behaviour) should open an issue/PR against the skill repo, or emit a release-note marker the skill's freshness check consumes — so the skill is kept current from both ends, not only by its own sweep (relates to ADR-0007 and ADR-0009).
+- **Cross-repo freshness contract:** upstream repos that change operator-facing surfaces (commands, flags, daemon endpoints, config, install paths, APIs, or reward/payment behaviour) should open an issue/PR against the skill repo, or emit a release-note marker the regeneration pipeline consumes — so the skill is kept current from both ends, not only by its own sweep (relates to ADR-0007 and ADR-0009).
 - The automation pipeline is out of scope here; the regeneration-ready structure is mandatory.
 
 ## Consequences
@@ -56,7 +56,7 @@ Invariants:
 
 ### Neutral / Operational
 
-- Companion concerns — an in-skill version self-check and a manifest hosting URL — are tracked separately; the sweep itself is a later build.
+- Companion concerns — versioned releases and install-channel update behaviour — are tracked separately in ADR-0013; the sweep itself is a later build.
 
 ## Validation
 

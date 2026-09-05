@@ -60,7 +60,7 @@ Three buckets the skill keeps distinct: **what the network enforces** (facts the
 
 ## 10. Staying current (ADR-0006)
 
-Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. An in-skill **version self-check** fetches a manifest from an Autonomi-controlled URL and warns if stale, continues if offline. Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
+Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. New skill versions are delivered by the channel that installed them, or by deliberate reinstall for a manual copy (ADR-0013). The skill does not make a network request to check its own version. A separate, optional live check may fetch only signed, typed volatile values within granted network/egress remit, falling back to the bundle otherwise (ADR-0013). Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
 
 ## 11. Metadata, licensing, provenance (ADR-0008)
 
@@ -113,7 +113,7 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 
 ### Disclosure & division of labour
 
-Default to doing the work; surface outcomes and genuinely-human choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — spend / risk / recovery / consent are always surfaced (ADR-0004/0009 risk-based escalation). Escalate by exception, not for routine ops, and never on crypto-literacy.
+Default to doing the work; surface outcomes and genuinely authority-gated choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — but "authority" means **granting or widening an envelope**, not acting within one. A spend / risk / recovery / consent envelope is explicitly granted by, or its widening escalated to, the **authorised principal/delegator**; it is never inferred. **Acting within a granted envelope** needs no per-action approval (ADR-0004/0009), and reporting adapts to the available channel. Human-only gates remain human: in particular, ADR acceptance and ADR-0013's material live-value approval cannot be delegated to the running agent. Escalate by exception, not for routine ops, and never on crypto-literacy; where the authorised decision-maker can't be reached, **halt/defer** rather than cross the gate.
 
 ### Language register
 
@@ -131,7 +131,7 @@ Plain, not patronising — assume intelligence, not specialist knowledge. Lead w
 
 ## 14. Open questions (carried; mostly David/maintainer)
 
-- GitHub home/org and clean install URL; published skill name; version-manifest hosting URL.
+- Release/promotion mechanics and clean install/update verification for each supported channel.
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
 - Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
 - Upstream watch-set and "material change" policy (for the deferred automation).

@@ -1,4 +1,4 @@
-# ADR-0013: Skill freshness and self-update
+# ADR-0013: Skill freshness and channel-owned updates
 
 - **Status:** Proposed
 - **Date:** 2026-07-13
@@ -6,33 +6,34 @@
 - **Reviewers:** David Irvine, Hermes
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0006 (source-bound; mechanical-vs-judgement review split), ADR-0008 (distribution — channel-agnostic; requires a channel-independent self-check), ADR-0009 (independent lifecycle); `planning/NEXT-PHASE.md` §3 & §5; `planning/node-resource-spec-brief.md`; `planning/REBUILD-BRIEF.md` (freshness section — revised here, see Context)
+- **Related:** ADR-0006 (source-bound; mechanical-vs-judgement review split), ADR-0008 (channel-agnostic distribution), ADR-0009 (independent lifecycle); `planning/channel-update-research.md`; `planning/NEXT-PHASE.md` §3 & §5; `planning/node-resource-spec-brief.md`; `planning/REBUILD-BRIEF.md` (freshness / source-bindings section)
 
 ## Context
 
-The shipped skill is a **bundled, version-pinned snapshot** — `SKILL.md` plus bundled `references/` — deliberately self-contained so it installs and runs offline and on a fresh host (ADR-0008), with its facts bound to upstream code (ADR-0006).
+The shipped skill is a **bundled, versioned snapshot** — `SKILL.md` plus bundled `references/` — deliberately self-contained so it installs and runs offline and on a fresh host (ADR-0008), with its facts bound to upstream code (ADR-0006).
 
-A snapshot drifts from reality along **independent axes**: the underlying `ant` tool updates on its own lifecycle; the skill's own instructions get revised; and a *narrow subset* of the operational figures it carries (resource sizing, shunning/standing thresholds) change faster than the whole skill is re-released. Distribution is channel-agnostic (ADR-0008), so no single channel's update flow can be *the* freshness mechanism; and any runtime fetch is an instruction/injection surface that must be bounded.
+A snapshot drifts from reality along **independent axes**: the underlying `ant` tool updates on its own lifecycle; the skill's own instructions get revised; and a *narrow subset* of the operational figures it carries (resource sizing, shunning/standing thresholds) change faster than the whole skill is re-released. Distribution is channel-agnostic (ADR-0008), but every installed copy still arrived through a channel with its own update semantics. Runtime fetching solely to check the skill's own version duplicates that layer while adding latency, failure, and an instruction/injection surface.
 
 This ADR sets out how the skill stays current across those axes without sacrificing offline robustness, source-binding, or trust — by treating them as separate mechanisms rather than one.
 
-**Reversal recorded.** An earlier proposal (`REBUILD-BRIEF.md`, freshness section) stated the skill would perform **no runtime live-fetch** — freshness by bundled snapshot only. Mechanism 4 below **revises that**: it introduces a *bounded, best-effort, data-only* runtime check for a narrow class of volatile values. Where the two conflict, this ADR governs; the brief's "no live-fetch" line is superseded by mechanism 4's constrained model.
+Research recorded in `planning/channel-update-research.md` found no ordinary first-party `SKILL.md` that checked its own version on load. Installed-skill freshness was owned by marketplaces, installers, or a product CLI; live fetching inside skills was reserved for task-specific documentation and data. This ADR adopts that model. Mechanism 3 has no runtime self-check; mechanism 4 retains the separately bounded, data-only runtime design for a narrow class of volatile operational values.
 
 ## Decision Drivers
 
-- Multiple distribution channels — no single channel's update flow can be the freshness mechanism.
+- Multiple distribution channels, each with an update mechanism or an explicit manual-reinstall contract.
 - Offline / fresh-host robustness (ADR-0008) — install and operate from the bundle with no hard runtime dependency.
 - Source-bound discipline (ADR-0006) — facts bind to upstream code; regenerate from the manifest, and keep the mechanical-vs-judgement review split.
 - A narrow set of operational values changes faster than whole-artifact releases.
 - Trust/security — a runtime fetch must not let unverified content steer the agent; live material must be typed *data*, not free-form instructions.
-- Don't pester; degrade gracefully — freshness never blocks operation or nags.
+- Don't pester; degrade gracefully — freshness never blocks **core or existing operation** or nags, but stale values must not authorise new consequential scaling.
 
 ## Considered Options
 
-1. **Treat freshness as one mechanism — rely on the install channel's update.** Rejected: channel-specific; ignores other channels; does nothing for tool-behaviour drift or for values that move faster than releases.
-2. **Bundle everything; refresh only via full re-releases.** Rejected: can't keep fast-moving values current between releases, and gives an installed copy no cross-channel way to notice it's stale.
-3. **Live-fetch everything at runtime (no bundling).** Rejected: breaks offline/fresh-host robustness (ADR-0008), maximises the trust surface, and would fetch judgement-derived prose — unsafe to inject.
-4. **Separate the concerns into distinct mechanisms** — document tool behaviour as source-bound content; regenerate and version the artifact under a reviewed gate; a channel-independent self-check for installed-copy currency; and a bounded, data-only, best-effort live check for a narrow set of volatile values. Chosen.
+1. **Let each install channel own installed-skill updates, while handling other kinds of drift separately.** Chosen: this uses each channel's established delivery mechanism and keeps update code out of the instructions it replaces.
+2. **Bundle everything; refresh only via full re-releases.** Rejected as a complete freshness model: releases are right for skill prose, but cannot keep fast-moving operational values current between releases.
+3. **Fetch a published skill version whenever the skill is first used.** Rejected: duplicates install-channel update discovery, adds a network request to ordinary skill loading, and exposes remote input to the agent for no task-specific benefit.
+4. **Live-fetch everything at runtime (no bundling).** Rejected: breaks offline/fresh-host robustness (ADR-0008), maximises the trust surface, and would fetch judgement-derived prose — unsafe to inject.
+5. **Make install-manager identity and folder hashes a contract implemented by the skill.** Rejected: managers may use those mechanisms internally, but reproducing them in the skill would be channel-specific machinery without a clear user benefit.
 
 ## Decision
 
@@ -44,38 +45,38 @@ The `ant` tool and its binaries update on their own lifecycle (auto-upgrade chan
 **2. Producing skill versions — reviewed, source-bound regeneration.**
 Automation watches upstream against the source-bindings manifest and regenerates the artifact, respecting **ADR-0006's split**: **mechanical, source-bound content** (commands, flags, figures) may be regenerated automatically, while **judgement-derived content** (doctrine, prose, guidance) is **flagged for human review**, never silently rewritten. A regenerated candidate passes a **reviewed release/promotion gate** before it is published as a new version-pinned snapshot. Regeneration is from the manifest — not hand-patching to chase upstream.
 
-**3. Consuming skill updates — an installed copy staying current.**
-An installed copy's currency is defined by its **stored install identity** — source (owner/repo), source type, source URL, `ref`, and skill sub-path — together with a **folder content hash** (skills.sh records the GitHub *tree SHA* of the skill folder in the global lock, or a SHA-256 over the folder's file contents in the project lock). Update = **re-fetch by that stored identity and re-install when the folder hash differs**; there is **no semantic-version comparison or published-version lookup** in the current channel. *(Source-bound to `vercel-labs/skills`: `src/skill-lock.ts` / `src/local-lock.ts` — lock-entry fields and folder hash; `src/update.ts` — the re-fetch/re-install path.)*
+**3. Consuming skill updates — the installation channel owns delivery.**
+Every released skill carries synchronized version metadata across the surfaces used by its supported channels. The installed skill makes no network request solely to check its own version and does not inspect install-manager state or modify its own files.
 
-Because distribution is channel-agnostic, the skill **provides a channel-independent self-check (required by ADR-0008)**: it compares its installed identity/hash against the published source and **surfaces** staleness. Applying an update is **deliberate and surfaced — never silent or automatic**; the copy operates from what it has until an update is applied. A copy pinned to an immutable `ref`/tag **stays pinned** unless update discovery *deliberately* targets a newer release. *(If a cross-channel currency key based on the skill's frontmatter `version` is wanted, that is a **new self-check contract to be built** — it is not how the current channel decides currency.)*
+The channel that installed a copy owns update discovery and delivery through its documented mechanism. A manually copied bundle is explicitly non-updating and is replaced by repeating the installation. A copy installed from an immutable `ref` remains pinned unless the person deliberately chooses a newer source. Channel-specific commands, metadata, and reload behaviour belong in source-bound implementation documentation, not this decision record.
 
 **4. Volatile-value freshness — a bounded, data-only, best-effort live check.**
-A narrow class of operational **values** (resource figures, shunning/standing thresholds) changes faster than the artifact is re-released. For these, the skill MAY consult a single authoritative source at runtime, under strict bounds:
+A narrow class of operational **values** (resource figures, shunning/standing thresholds) changes faster than the artifact is re-released. For these, the skill MAY consult a single authoritative source at runtime. The fetch is **non-mutating observation**, but that does **not** itself grant network/egress authority: the bounded call runs only within affirmative network/egress remit. If that remit is missing or ambiguous, the agent skips the fetch and uses the offline bundle. Even when authorised, the call is limited to the one authoritative source — never an open egress right. It runs under strict bounds:
 
-- **Data-only, typed.** Only the structured, machine-readable **values block** is fetched (the parameters in `planning/node-resource-spec-brief.md`) — schema-typed numbers with units, never free-form prose. **Judgement-derived guidance/principles are never fetched**; they remain reviewed bundle content. (This mirrors the two-register split in the resource brief: *values* are source-bound data; *principles* are bundled doctrine.)
-- **Trust protocol — not merely "pinned."** The check requires: a **signed, versioned envelope**; a **bundled trust root** (the publisher's public key shipped in the skill); a **canonical encoding and fixed schema**; **key rotation and revocation** support; **monotonic ordering and an expiry** (reject anything older than what's installed, or expired); **replay/downgrade rejection**; **authorised rollback only**; and explicit handling of **malformed, unverifiable, or conflicting** responses (treat as *unavailable* → fall back to the bundle).
-- **Best-effort, offline-safe.** Reachable and verified → the value updates the agent's **awareness** and may inform observation/reporting. Unreachable, unverifiable, expired, or conflicting → **fall back to the bundled, team-confirmed values and carry on**.
-- **Apply policy — materiality-gated.** A verified live value does **not** silently change behaviour. **Applying a material change** — one that would authorise consequential action (adding/removing nodes, moving data, crossing the disk/spread thresholds) — **requires human approval**. **Materiality** = any delta that crosses a safety or consequence threshold in the values (e.g. the per-node disk minimum, the address-spread caps, or anything that changes node count or placement). If a material delta is verified but **no human is available**, the agent **defers the consequential action** and continues existing operation on bundled values. **Stale bundled values may sustain existing operation but must never authorise new consequential scaling.**
+- **Data-only, typed.** Only the structured, machine-readable **values block** is fetched (the parameters specified in `planning/node-resource-spec-brief.md`, once published as the Recommended Node Resource Document) — schema-typed numbers with units, never free-form prose. **Judgement-derived guidance/principles are never fetched**; they remain reviewed bundle content. (This mirrors the two-register split in the resource brief: *values* are source-bound data; *principles* are bundled doctrine.)
+- **Trust protocol — not merely "pinned."** The check requires: a **signed, versioned envelope**; a **bundled trust root** (the publisher's public key shipped in the skill); a **canonical encoding and fixed schema**; **key rotation and revocation valid only when chained to the currently-trusted bundled root (or delivered by a reviewed bundle re-release)** — an unanchored rotation/revocation asserted over the runtime channel is rejected; **monotonic ordering and an expiry** (reject anything older than what's installed, or expired); **replay/downgrade rejection**; **authorised rollback only** — a rollback is a *forward*, higher-sequence signed instruction that lowers a value, never acceptance of an older/lower-sequence envelope (which stays rejected as a downgrade); and explicit handling of **malformed, unverifiable, or conflicting** responses (treat as *unavailable* → fall back to the bundle).
+- **Best-effort, offline-safe.** Reachable and verified → the value informs **observation and reporting**, and reaches behaviour only through the apply policy below. Unreachable, unverifiable, expired, or conflicting → **fall back to the bundled, team-confirmed values and carry on**. Sustaining on bundled values is a **safety-line** guarantee, not a guarantee of operational optimality; **prolonged** unreachability is itself an escalation trigger.
+- **Apply policy — default-material, fail-safe.** A verified live value does **not** silently change behaviour. **Every verified live delta is treated as material and gated unless it matches a fixed, bundled allowlist of cosmetic values** — materiality is default-on, not a denylist of named thresholds. Materiality is judged **against the reviewed, team-confirmed bundled baseline** (never against the last-applied live value, so a source cannot walk a safety value across the line in sub-threshold steps), and the **materiality criteria are themselves bundled and reviewed, never read from the fetched payload** (so a source cannot declare its own change immaterial). **Applying a material change** — anything that would authorise or expand consequential action (adding/removing nodes, moving data, changing node count or placement, crossing the disk/spread thresholds) — **requires human approval**; absent a human, the agent **defers the consequential action** and continues existing operation on bundled values. This gate holds **even inside a granted operational envelope**: a granted envelope authorises action computed from approved/bundled values, but a live delta that would expand consequential action beyond what those values authorised is still gated — verified-source is never self-authorising (reconciles ADR-0010's within-envelope autonomy). A verified **immaterial** value informs **monitoring and reporting only** and never becomes the basis of a consequential computation until approved. **Stale bundled values** (past their declared max-age, or superseded by a verified newer value that has not been applied) **may sustain existing operation but must never authorise new consequential scaling.**
 
 Checks run at **meaningful moments** (session start; before a consequential resource/scaling decision), not on every action, and surface only what is genuinely the human's to decide.
 
 Invariants:
-- **Offline-first.** The skill installs and operates fully from the bundle with no network; mechanisms 3 and 4 are best-effort and never hard dependencies.
+- **Offline-first.** The skill installs and operates fully from the bundle with no network; mechanism 3 is external to skill execution and mechanism 4 is best-effort, never a hard dependency.
 - **Source-bound, reviewed regeneration.** Facts bind to upstream (ADR-0006); mechanical content may auto-regenerate, judgement-derived content is flagged for review, and a reviewed gate precedes any release.
-- **Currency by install identity + folder hash** (mechanism 3), not an assumed SemVer/published-version lookup; a channel-independent self-check surfaces staleness (ADR-0008); applying an update is always deliberate; a pinned `ref` is never moved without deliberate discovery.
+- **Installed-skill updates are channel-owned** (mechanism 3); the skill performs no self-version fetch, managers use their native version/source records, manual copies state that they do not auto-update, and a pinned `ref` is never moved automatically.
 - **Live material is typed data, never prose** (mechanism 4); judgement guidance stays bundled and reviewed.
-- **Verified-source ≠ authorised-to-act.** A material live delta needs human approval; absent a human, defer the consequential action; stale bundled values sustain existing operation but never authorise new scaling.
-- **Trust is explicit** (mechanism 4): signed/versioned envelope, bundled trust root, schema, rotation/revocation, ordering/expiry, replay/downgrade rejection, defined failure handling.
+- **Verified-source ≠ authorised-to-act.** A material live delta needs human approval — **even inside a granted envelope**; absent a human, defer the consequential action; stale bundled values sustain existing operation but never authorise new scaling.
+- **Trust is explicit** (mechanism 4): signed/versioned envelope, bundled trust root, **root rotation/revocation only when chained to the bundled root**, schema, monotonic ordering/expiry, replay/downgrade rejection, forward-only authorised rollback, defined failure handling.
 - **No pestering.** Checks run at meaningful moments and surface only genuinely-human decisions.
 
-Mechanism 4's authoritative source (the *Recommended Node Resource Document*, `planning/node-resource-spec-brief.md`), and whether mechanism 3's self-check is realised via a frontmatter-version contract or via the install-identity/hash, are **implementation choices deferred** to the build (NEXT-PHASE §3 & §5). This ADR fixes the model, the trust and apply requirements, and the invariants; **mechanism 4's wire protocol may warrant its own detailed protocol ADR when it is built.**
+Mechanism 4 requires an authoritative *Recommended Node Resource Document* (specified by `planning/node-resource-spec-brief.md`, which currently lists the parameters it must quantify but is not yet a fetchable values block) and a detailed protocol/spec before implementation. This ADR fixes the model, trust and apply requirements, and invariants; the protocol/spec must fix mechanism 4's wire details before it is built.
 
 ## Consequences
 
 ### Positive
 
 - Four mechanisms that can be built, reasoned about, and secured independently.
-- Freshness is channel-independent (mechanism 3's self-check), not tied to one install channel.
+- Installed-skill update discovery and delivery use established channel machinery rather than a second mechanism embedded in the skill.
 - A narrow set of values can update without re-shipping the artifact; structural change goes through the reviewed regenerate/release path.
 - Offline / fresh-host robustness is preserved by construction.
 - The runtime trust boundary is explicit and data-only, and "verified" is cleanly separated from "authorised to act."
@@ -85,18 +86,17 @@ Mechanism 4's authoritative source (the *Recommended Node Resource Document*, `p
 - Mechanism 4 is a real security surface — it needs a genuine signing/verification protocol and careful failure handling; it is deliberately constrained (data-only, materiality-gated, offline-safe) but non-trivial to build correctly.
 - Mechanism 2 is engineering plus an ongoing review gate.
 - Mechanism 4 is blocked on the authoritative values document existing and being published under the trust protocol.
+- Manually copied skills have no automatic update notification, and some channels require the user to enable or request updates explicitly.
 
 ### Neutral / Operational
 
-- Reverses the brief's "no runtime live-fetch" (recorded in Context).
-- Ties to NEXT-PHASE §3 (mechanism 2), the node-resource SOP (mechanism 4's source), ADR-0008's required self-check (mechanism 3), and the skills.sh lock/update code (mechanism 3, source-bound).
-- Sequencing: mechanism 1 satisfied; 2 and 3 staged; 4 waits on its source and a protocol spec.
+- Ties to NEXT-PHASE §3 (mechanism 2), supported installation channels (mechanism 3), and the node-resource SOP (mechanism 4's source). Implementation progress belongs in planning, not this decision record.
 
 ## Validation
 
-- The skill installs and operates **fully from the bundle with no network**; disabling every freshness check changes nothing about core operation.
-- **Mechanism 3:** currency is determined by stored install identity + folder hash (matching the CLI's lock/update behaviour); the self-check surfaces staleness across channels; a pinned tag is not moved without deliberate discovery.
-- **Mechanism 4:** only typed values are fetched (never prose); a malformed / unsigned / expired / downgraded / conflicting response is rejected and falls back to the bundle; a material delta is never applied without human approval, and absent a human the consequential action is deferred while existing operation continues on bundled values.
+- The skill installs and operates **fully from the bundle with no network**; no network request is made solely to check the installed skill's version.
+- **Mechanism 3:** each supported managed channel can update a released test copy through its documented operation; a manual copy is documented as non-updating; a pinned tag is not moved automatically; the skill does not inspect manager state or modify itself.
+- **Mechanism 4:** without affirmative network/egress remit, no fetch occurs and the offline bundle is used; when authorised, only typed values are fetched (never prose); a malformed / unsigned / expired / downgraded / conflicting response, and any unanchored trust-root rotation, is rejected and falls back to the bundle; **every delta is gated as material unless on the bundled cosmetic allowlist**, materiality is judged against the bundled baseline using bundled criteria, and a material delta is never applied without human approval **even inside a granted envelope** — absent a human the consequential action is deferred while existing operation continues on bundled values.
 - **Mechanism 2:** mechanical regeneration is automatic; judgement-derived changes are flagged for review; nothing releases without passing the review gate.
 
 ## Notes for AI-assisted work
