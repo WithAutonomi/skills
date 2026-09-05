@@ -21,7 +21,7 @@ Autonomi also already has **more than one** first-party skill: the operator skil
 - Installation ergonomics: one clean install surface; selection is description-driven; a README menu of available skills.
 - A single *primary* skill for the everyday journey (use nodes to earn + store data) — users/agents should not install several skills for basic use — while leaving room for distinct, niche skills (e.g. developer) chosen by need.
 - Independent lifecycle and release cadence, decoupled from any docs site or code repo (ADR-0009).
-- Each skill self-contained; only the skill bundle ships, internal provenance/process stays repo-side.
+- Each skill self-contained; only the skill component enters agent context, while internal provenance/process stays repo-side even if a channel package contains it.
 - Cross-repository ADR/governance consistency with the Autonomi/Saorsa portfolio.
 
 ## Considered Options

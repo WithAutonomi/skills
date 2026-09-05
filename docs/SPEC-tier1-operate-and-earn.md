@@ -1,5 +1,7 @@
 # SPEC — Tier 1: Operate and earn
 
+> **Prototype status (5 September 2026):** retained as the June operator-skill build contract. The current task-routed 0.1.4 prototype supersedes its OpenClaw manifest requirement: no OpenClaw channel is supported now; current channels are skills.sh, Claude Code and direct/manual installation (Proposed ADR-0008; `README.md`).
+
 > Bounded build slice for the Autonomi Operator Skill. Defines what Tier 1 must do, the acceptance bar, the source-bound command surface, and the verification plan. Scope is fixed by the team go-ahead (2026-Jun-18): **author and agent-test Tier 1 only**; ADR-0004 (custody) and ADR-0005 (gas) stay **Proposed** and are not touched. Aligns to DESIGN §2–§6 and §12 and the ROADMAP capability ladder. This is a spec (what the chunk must do), not a plan (order) or an ADR (invariant).
 
 ## Scope
