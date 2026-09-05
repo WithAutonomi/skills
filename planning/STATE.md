@@ -5,7 +5,7 @@
 - Phase: PR #12 review remediation
 - Plan: resolve David Irvine's four findings and align ADR-0013 with Jim's channel-owned update decision
 - Task: implementation and verification
-- Status: pushed review candidate; automated evidence must match the live PR head before human re-review
+- Status: final review-gap repair committed locally; push and exact-head evidence pending
 - Mode: attended; stop before merge or ADR acceptance
 
 ## Verification Context
@@ -21,8 +21,8 @@
 
 - Date: 2026-09-05
 - Agent: OpenCode
-- Outcome: Preserved the inherited authority/remit corrections, replaced the obsolete in-skill self-check proposal with channel-owned delivery, and reconciled active decision/planning documents without claiming PR #13's channel changes have already landed. Internal pre-commit reads found and corrected distribution, evidence, remit-observation, and freshness-boundary inconsistencies; these were diagnostic checks, not the required exact-head review gates.
-- Review backlog: record exact-head verifier, adversarial, Craft, clean-context, and CI results in PR #12; any head change invalidates earlier exact-head evidence
+- Outcome: Preserved the inherited authority/remit corrections, replaced the obsolete in-skill self-check proposal with channel-owned delivery, and reconciled active decision/planning documents without claiming PR #13's channel changes have already landed. Exact-head review of `bb447f5c156394004f4128ffefeb5d604b732b1b` found one remaining active-doctrine contradiction plus a provenance ambiguity and missing stale-values validation case; content commit `19526ac5944f0a67074bb30b9fd162b29ed9ae90` closes all three. Local ADR governance and diff checks pass; these do not substitute for final-head CI and independent review.
+- Review backlog: push the final head, then record exact-head verifier, adversarial, Craft, clean-context, and CI results in PR #12; any head change invalidates earlier exact-head evidence
 - Forks: none
 - Parked units: none
-- Next: update the live PR title/body with exact-head evidence; if all required checks pass, request David's human re-review
+- Next: push the final head and update the live PR body with its exact SHA; if all required checks pass, request David's human re-review
