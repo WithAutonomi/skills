@@ -35,13 +35,13 @@ The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, n
 
 ## State of the skill (what's done)
 
-- **Source-bound with explicit exceptions:** every command and flag is tied to upstream `ant-client` / `ant-node` code (see `source-bindings/`). A figure that leads upstream documentation, such as the ~20 GB/node disk minimum, is labelled team-confirmed and pending source rather than presented as source-bound.
+- **Source-bound with explicit exceptions:** every Autonomi-specific command and flag is tied to upstream `ant-client` / `ant-node` code (see `source-bindings/`); ordinary shell/OS observation is checked for the relevant platform rather than misrepresented as an Autonomi claim. A figure that leads upstream documentation, such as the ~20 GB/node disk minimum, is labelled team-confirmed and pending source rather than presented as source-bound.
 - **Safety doctrine:** non-custodial (nodes only ever get a public `--rewards-address`); spending/custody is out of scope and gated; daemon stays on loopback; no key handling anywhere.
 - **Deliberate capacity model:** the agent decides what to contribute and where (which volume, how many nodes) up front, can place node data on other volumes via `--data-dir-path` (with the human's consent for their media), and monitors capacity over time.
 - **Complete teardown:** `references/node-uninstall.md` covers nodes, daemon, CLI, custom/external data dirs, config paths, and a verification step. No OS service is involved (verified in source).
 - **Reviewed:** a fresh adversarial pass flagged three things as "invented" that are in fact source-bound + live-tested (`DELETE /api/v1/nodes/{id}`, daemon ordering, network defaults) — docs lag the code. Lesson logged: review against the source manifest, not just the docs.
 - **Agent-tested:** an OpenCode agent installed the skill and ran it to the preflight gate, correctly and safely (details in `planning/TESTING.md`).
-- **Proposed policy is ahead of the installed skill:** PR #12 changes decisions and documentation only. The current skill's "smaller, reversible action" wording has not yet been reconciled with ADR-0014's stricter no-mutation rule, and the decisions remain Proposed rather than implemented guarantees.
+- **Proposed policy is ahead of the installed skill:** PR #12 changes decisions and documentation only. The current skill's "smaller, reversible action" wording has not yet been reconciled with ADR-0014's stricter no-mutation rule, and its broad “every command and figure” provenance wording has not yet been narrowed to the Autonomi-specific binding surface. The decisions remain Proposed rather than implemented guarantees.
 - **Distribution is an internal preview:** skills.sh installation requires private-repository access. OpenClaw metadata is present, but a public ClawHub listing and checksum/signature verification through that route have not been proven.
 
 ## Open threads (what's next)

@@ -1,6 +1,6 @@
 # Source-binding manifest — Tier 1 operate-and-earn
 
-Purpose: record provenance for every Tier 1 command, flag, volatile constant, and important factual claim. `source_evidence` binds a claim to upstream; a temporary `team-confirmed` exception records accountable provenance and remains pending upstream source. `tested_with`, `requires_min`, and `known_incompatible` are compatibility axes and are deliberately separate.
+Purpose: record provenance for every Tier 1 Autonomi-specific command, flag, volatile constant, install behaviour, and important factual claim. `source_evidence` binds a claim to upstream; a temporary `team-confirmed` exception records accountable provenance and remains pending upstream source. Ordinary operating-system/shell observation commands are outside the Autonomi binding surface but require platform-aware review. `tested_with`, `requires_min`, and `known_incompatible` are compatibility axes and are deliberately separate.
 
 ## Upstream revisions read
 

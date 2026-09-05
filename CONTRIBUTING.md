@@ -7,12 +7,12 @@ Contributors are humans and AI agents alike; these conventions keep the trail re
 ## Ground rules
 
 - **Never commit a secret.** No private key, seed phrase, `SECRET_KEY`, or `AUTONOMI_WALLET_KEY` in code, examples, or logs — nodes use a **public** wallet (rewards) address only (ADR-0004). See [`.github/SECURITY.md`](.github/SECURITY.md).
-- **Source-bind every claim.** Commands, flags, constants, and figures are pinned to upstream source (repo / file / symbol / commit). Don't invent — if it isn't confirmable in source, flag it rather than guess (ADR-0006).
+- **Bind every Autonomi claim to provenance.** Autonomi-specific commands, flags, constants, figures, and install behaviour normally pin to upstream source (repo / file / symbol / commit). Temporary team-confirmed exceptions are explicit and pending upstream authority. Ordinary operating-system/shell observation commands are not Autonomi claims, but platform-specific behaviour must still be checked rather than guessed (ADR-0006).
 - **Decisions go through ADRs.** Architectural, protocol, security, or storage changes add or update a **Proposed** ADR before merge; Accepted ADRs are immutable (supersede, don't edit). See [`docs/adr/README.md`](docs/adr/README.md).
 
 ## Branch & PR flow
 
-- `main` is protected and always stable. Do all work on a short-lived branch off `main`.
+- Project policy treats `main` as protected and stable: do all work on a short-lived branch off `main`. GitHub's configured ruleset is not technically enforced while this private repository is on the organisation's free plan; see `planning/HANDOFF.md` for the current enforcement state.
 - Branch names: `feat/…`, `fix/…`, `docs/…`, `chore/…` (or `name/topic` for personal / WIP branches).
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org): `feat`, `fix`, `docs`, `chore`, `refactor`, `test` — e.g. `feat(tier1): add node preflight checklist`.
 - Open a PR into `main` using the [pull request template](.github/pull_request_template.md). Fill in what's relevant; delete what isn't.

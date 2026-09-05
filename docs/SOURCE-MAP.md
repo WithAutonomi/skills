@@ -9,7 +9,7 @@
 ### `ant-node` (Rust) — the node binary
 - **Public wallet address (non-custodial):** `--rewards-address`; `src/payment/wallet.rs` — node holds no key, only verifies inbound payments name the address.
 - **Node flags / behaviour:** `src/bin/ant-node/cli.rs` *(confirm exact path against the repo)*.
-- **Releases:** ML-DSA-65 (FIPS-204) signatures + `SHA256SUMS` — verify before use.
+- **Releases:** upstream artifacts provide ML-DSA-65 (FIPS-204) signatures + `SHA256SUMS`; verification before use is the required target, but the current script install route does not perform it.
 - **Operating-procedure constants:** IP/subnet diversity limits; storage auto-scales (no fixed per-node ceiling); close-group size (**resolved to 7 in the completed deep-source research; retain an exact manifest binding wherever generated content uses it**).
 
 ### `ant-client` (Rust) — the `ant` CLI + core + node-management daemon (the core operator surface)
@@ -31,7 +31,7 @@ These are build dependencies the node/client/SDK link against. An operator agent
 
 ## Out of scope — named so the exclusion is deliberate
 
-- **`ant-keygen`** — *verified*: a **release-signing** utility (ML-DSA-65 signing/verifying release binaries; context `ant-node-release-v1`). Not the EVM wallet, not custody, not an operator tool; only the scheme behind the release signatures the install step verifies. Does **not** change ADR-0004 (no EVM-wallet keygen/keystore upstream).
+- **`ant-keygen`** — *verified*: a **release-signing** utility (ML-DSA-65 signing/verifying release binaries; context `ant-node-release-v1`). Not the EVM wallet, not custody, not an operator tool; it provides the scheme the future verified-install path must use, but the current script route does not verify signatures. Does **not** change ADR-0004 (no EVM-wallet keygen/keystore upstream).
 - **`ant-android`, `ant-swift`, `ant-sdk` language bindings** — developer/build surface → Developer skill.
 - **`saorsa-core`, `saorsa-transport`, `saorsa-pqc`, `saorsa-mls`, `ant-quic`, `saorsa-gossip`** — network/transport/crypto internals; the operator does not touch them.
 - **`ant-ui`** (GUI), **`self_encryption`**, **`ant-merkle`** (libraries), **`indelible`** (a Go consumer app).
