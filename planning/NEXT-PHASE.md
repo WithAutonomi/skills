@@ -17,7 +17,7 @@ These belong in the **upstream repos** as the authoritative SOP, with the skill 
 
 ## 3. Skill release automation (from source-bindings)
 
-Not started — deliberately deferred until the skill is usable and in the right shape. The foundation is already here: `source-bindings/` binds every command and figure to upstream code at a pinned commit. The automation (per the rebuild brief's freshness model) watches upstream vs. the manifest → regenerates `SKILL.md`/`references/` → re-releases a versioned snapshot. Jim has prior art from the Docs repo to draw on. Owner: TBD, after the skill settles. **See also #5 (consumer-side delivery), which this produces versions *for*.**
+Not started — deliberately deferred until the skill is usable and in the right shape. The foundation is already here: `source-bindings/` binds commands and sourced figures to upstream code at pinned commits; team-confirmed exceptions remain explicitly labelled pending upstream authority. The automation (per the rebuild brief's freshness model) watches upstream vs. the manifest → regenerates `SKILL.md`/`references/` → re-releases a versioned snapshot. Jim has prior art from the Docs repo to draw on. Owner: TBD, after the skill settles. **See also #5 (consumer-side delivery), which this produces versions *for*.**
 
 ## 4. Consolidate the developer skill into this repo
 

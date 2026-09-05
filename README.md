@@ -52,7 +52,7 @@ skills/<name>/          # the installable skill bundle(s) — the ONLY thing tha
 docs/                   # repo-side, never ships
   adr/                  # architecture decision records
 planning/               # briefs, handoff, open threads
-source-bindings/        # provenance: every command/figure bound to upstream code (drives auto-update)
+source-bindings/        # provenance for commands/sourced figures; drives release regeneration
 scripts/                # maintenance / freshness automation
 ```
 

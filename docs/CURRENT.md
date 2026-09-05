@@ -1,4 +1,6 @@
-# GSD Checkpoint — Autonomi Operator Skill (current state)
+# GSD Checkpoint — Autonomi Operator Skill (2026-Jun-22 snapshot)
+
+> **Historical checkpoint.** This file preserves the state recorded on 22 June 2026 and is not the current entry point. Read `planning/HANDOFF.md` for current state and next actions.
 
 Date: 2026-06-22
 Project: Autonomi Operator Skill (`JimCollinson/autonomi-skill`)
@@ -6,7 +8,7 @@ Slice/question: Design phase (engine, personas, grounding) complete and merged t
 Prepared by: Cowork (Claude) orchestration, on Jim's behalf
 Agents/tools used: Cowork (Claude); deep source-research subagents against `WithAutonomi/*` and `saorsa-labs/*`; GitHub; Autonomi canonical docs (`autonomi.com/llms.txt`).
 
-> **Read this first if you are the incoming agent.** Fetch the real `main` (tip below) before doing anything — design and docs were updated via reviewed PRs, so a stale local clone may be missing files. Follow the coordination protocol in `CONTRIBUTING.md` (lanes; branch + PR, never commit to `main` directly; fetch/rebase before a session and after each merge). Reading order: `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (esp. §13) → `docs/adr/` → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `planning/ROADMAP.md`.
+> At this checkpoint, the reading order was: `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (esp. §13) → `docs/adr/` → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `planning/ROADMAP.md`.
 
 ## Status
 

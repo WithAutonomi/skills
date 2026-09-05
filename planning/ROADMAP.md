@@ -1,6 +1,6 @@
 # Autonomi Operator Skill — Roadmap
 
-> Canonical roadmap (the vault holds only a pointer). It sequences the work; it does not restate VISION, amend the ADRs, or write DESIGN. Two axes run through it: **build phases** (*how* we build — design → author → automate) and the **delivery scope ladder** (*what the skill does*, per capability tier). Phase 02 authors the ladder tiers in order. ADRs are referenced, not redefined; ADR **acceptance** is a human gate held by the decision owner (Jim) after the named reviewer's review (David Irvine), and any PR / merge / publish is a maintainer-approval gate.
+> **Historical June sequencing baseline.** This preserves the original build phases and capability ladder; its checkbox statuses are not the current project state. Read `planning/HANDOFF.md` for current state and `planning/NEXT-PHASE.md` for active parked work. ADRs own decisions; ADR **acceptance** remains a human gate held by Jim after David Irvine's review, and any PR / merge / publish remains a maintainer-approval gate.
 
 ## Overview
 
@@ -30,7 +30,7 @@
 - [ ] **Agent wallet custody substrate** decided — where keygen / storage / recovery / signing live (assumed-host / signposted / skill-provided wrapper / upstream `ant` / staged). Open team decision; gates Tier 2/3 — ADR-0004.
 - [ ] **Gas strategy** decided — the route that lets earned ANT actually be spent (agent ETH float / pre-funded envelope / faucet-grant / paymaster / defer). Open team decision; gates Tier 3 — ADR-0005.
 - [ ] Source-binding manifest format pinned (the `source_evidence` vs `tested_with` / `requires_min` / `known_incompatible` shape) before authoring — ADR-0006, ADR-0009.
-- [ ] Close-group size resolved (read as both 5 and 7 in source) — pin or fetch-live before authoring runbooks.
+- [ ] Close-group size resolved (read as both 5 and 7 in source) — pin it or define an approved, bounded fetch-live contract before authoring runbooks.
 - [ ] Pre-publish housekeeping confirmed: org transfer (→ WithAutonomi), licence (likely MIT OR Apache-2.0 — TBC), and clean install/update routes — ADR-0007, ADR-0008.
 
 **Definition of Done:**
@@ -49,7 +49,7 @@
 *Foundation (spans all tiers):*
 - [ ] Lean, routing-first SKILL.md authored (opener, task routing, core concepts, safety boundaries, routing table) per DESIGN §2; metadata/frontmatter, provenance/attribution, and install manifest on x0x's `metadata.openclaw.install` pattern — ADR-0008.
 - [ ] Skill-led, non-mutating install + verified delivery: detect/install the existing `ant` only when missing, confirm checksums + ML-DSA-65 signatures before use, clean uninstall path — ADR-0008, ADR-0009.
-- [ ] Source-binding manifest populated as content lands (provenance per claim; volatile facts single-sourced; bake-with-pin vs fetch-live per fact) — ADR-0006.
+- [ ] Source-binding manifest populated as content lands (provenance per claim; volatile facts single-sourced; bake-with-pin vs approved, bounded fetch-live per fact) — ADR-0006.
 
 *Tier 1 — Operate and earn (authored first; unblocked now):*
 - [ ] `node-operation.md`: install, run one/many, configure, monitor (`ant node status`, daemon `/api/v1/events` SSE), upgrade/stop, clean uninstall.

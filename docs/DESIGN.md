@@ -60,7 +60,7 @@ Three buckets the skill keeps distinct: **what the network enforces** (facts the
 
 ## 10. Staying current (ADR-0006)
 
-Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. New skill versions are delivered by the channel that installed them, or by deliberate reinstall for a manual copy (ADR-0013). The skill does not make a network request to check its own version. A separate, optional live check may fetch only signed, typed volatile values within granted network/egress remit, falling back to the bundle otherwise (ADR-0013). Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
+Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs approved, bounded fetch-live choice. New skill versions are delivered by the channel that installed them, or by deliberate reinstall for a manual copy (ADR-0013). The skill does not make a network request to check its own version. A separate, optional live check may fetch only signed, typed volatile values within granted network/egress remit, falling back to the bundle otherwise (ADR-0013). Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
 
 ## 11. Metadata, licensing, provenance (ADR-0008)
 
@@ -135,7 +135,7 @@ Plain, not patronising — assume intelligence, not specialist knowledge. Lead w
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
 - Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
 - Upstream watch-set and "material change" policy (for the deferred automation).
-- Pin volatile constants or fetch-live (e.g. the close-group size — read as both 5 and 7; resolve before authoring).
+- Pin volatile constants or define an approved, bounded fetch-live contract (e.g. the close-group size — read as both 5 and 7; resolve before authoring).
 
 ## Design History
 

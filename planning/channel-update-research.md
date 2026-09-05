@@ -19,10 +19,10 @@ Eight current first-party skill collections were inspected at fixed revisions:
 - [Hugging Face skills](https://github.com/huggingface/skills/tree/97862b0fcc89c850fdd00c82ede1e62d3c930a6d)
 - [Shopify AI Toolkit](https://github.com/Shopify/Shopify-AI-Toolkit/tree/2619755e4f4e908fb205e889bac769de1767d40f)
 
-No ordinary `SKILL.md` in those revisions checked its own version when loaded. Installed-skill updates were owned by the installation channel or a product CLI; runtime fetching inside a skill was reserved for task-specific documentation or data.
+Method: enumerate the 174 `SKILL.md` files at those revisions; search their instructions for version, update, manifest, and remote-fetch behaviour; inspect every match in context; then inspect collection-level installation/update documentation where present. No ordinary `SKILL.md` checked its own version when loaded. The collections that documented update behaviour assigned it to an installation channel or product CLI; runtime fetching described inside skills was task-specific rather than self-version checking.
 
 The skills.sh implementation was separately checked at [`vercel-labs/skills@5527c09adc367612b0bffd9c80e3bc28a6b01b6d`](https://github.com/vercel-labs/skills/tree/5527c09adc367612b0bffd9c80e3bc28a6b01b6d). Its updater uses stored source/ref/path identity plus folder hashes and reinstalls changed content; it does not use skill frontmatter as a semantic-version comparison contract.
 
 ## Decision Input
 
-Jim chose the channel-owned pattern for Autonomi: the installed skill performs no request solely to check its own version and never updates itself. Managed installation channels use their own update mechanism; manually copied bundles require deliberate reinstall. Proposed ADR-0013 records the durable decision.
+Jim chose the channel-owned pattern for Autonomi: the installed skill performs no request solely to check its own version and never updates itself. Managed installation channels use their own update mechanism; manually copied bundles require deliberate reinstall. Proposed ADR-0013 records the durable decision. Channel-specific implementation commands and reload behaviour remain source-bound implementation documentation rather than ADR content.

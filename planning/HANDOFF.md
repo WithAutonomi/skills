@@ -13,7 +13,7 @@ The `autonomi` skill — teaching an agent to run Autonomi nodes and earn ANT, n
 - **`skills/autonomi/`** — the installable skill: `SKILL.md` + `references/` (node provisioning, operating procedures, uninstall, wallet-and-tokens, troubleshooting).
 - **`docs/adr/`** — architecture decisions, ADR-0001 to ADR-0014, all **Proposed**.
 - **`planning/`** — `REBUILD-BRIEF.md` (rationale/contract), `node-resource-spec-brief.md` (for the dev team), `TESTING.md`, `NEXT-PHASE.md` (parked threads), `release-endpoint-accessibility.md` (an upstream flag), and the OpenCode packet.
-- **`source-bindings/`** — provenance: every command/figure bound to upstream code (drives the planned auto-update).
+- **`source-bindings/`** — provenance: commands and sourced figures bound to upstream code; explicitly labelled team-confirmed values remain pending upstream authority (drives planned release regeneration).
 - `README.md`, `CONTRIBUTING.md`.
 
 Single clean `main` — all the earlier rebuild / brief / ADR branches were merged and removed.
@@ -35,7 +35,7 @@ Single clean `main` — all the earlier rebuild / brief / ADR branches were merg
 
 ## State of the skill (what's done)
 
-- **Source-bound:** every command, flag, and figure is tied to upstream `ant-client` / `ant-node` code (see `source-bindings/`). Where a figure leads the docs (the ~20 GB/node disk minimum), it's flagged inline as team-confirmed, pending source.
+- **Source-bound with explicit exceptions:** every command and flag is tied to upstream `ant-client` / `ant-node` code (see `source-bindings/`). A figure that leads upstream documentation, such as the ~20 GB/node disk minimum, is labelled team-confirmed and pending source rather than presented as source-bound.
 - **Safety doctrine:** non-custodial (nodes only ever get a public `--rewards-address`); spending/custody is out of scope and gated; daemon stays on loopback; no key handling anywhere.
 - **Deliberate capacity model:** the agent decides what to contribute and where (which volume, how many nodes) up front, can place node data on other volumes via `--data-dir-path` (with the human's consent for their media), and monitors capacity over time.
 - **Complete teardown:** `references/node-uninstall.md` covers nodes, daemon, CLI, custom/external data dirs, config paths, and a verification step. No OS service is involved (verified in source).

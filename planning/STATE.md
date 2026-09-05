@@ -21,7 +21,7 @@
 
 - Date: 2026-09-05
 - Agent: OpenCode
-- Outcome: Preserved the inherited authority/remit corrections, replaced the obsolete in-skill self-check proposal with channel-owned delivery, reconciled active decision/planning documents without claiming PR #13's channel changes have already landed, and cleared focused pre-commit ADR/code review.
+- Outcome: Preserved the inherited authority/remit corrections, replaced the obsolete in-skill self-check proposal with channel-owned delivery, and reconciled active decision/planning documents without claiming PR #13's channel changes have already landed. Internal pre-commit reads found and corrected distribution, evidence, remit-observation, and freshness-boundary inconsistencies; these were diagnostic checks, not the required exact-head review gates.
 - Review backlog: exact-head verifier, adversarial, Craft, clean-context, and CI evidence must be recorded on PR #12 before requesting David's human re-review
 - Forks: none
 - Parked units: none
