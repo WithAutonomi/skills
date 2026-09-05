@@ -1,6 +1,6 @@
 # Autonomi Operator Skill — Design
 
-> Canonical design target, not an exact inventory of the currently shipped files. Read `planning/HANDOFF.md` and `README.md` for implementation state. This supersedes the original pre-decision scaffold and is aligned with the repository's Proposed ADRs; none is Accepted autonomously. Volatile specifics (flags, constants, addresses, URLs) are **source-bound** to upstream per ADR-0006, not hardcoded here.
+> Canonical design target, not an exact inventory of the currently shipped files. Read `planning/HANDOFF.md` and `README.md` for implementation state. This supersedes the original pre-decision scaffold and is aligned with the repository's Proposed ADRs; none is Accepted autonomously. Volatile specifics (flags, constants, addresses, URLs) carry explicit provenance per ADR-0006: normally an upstream source binding, or a visibly provisional team-confirmed record pending upstream authority.
 
 ## 1. Purpose and shape
 
@@ -135,7 +135,7 @@ Plain, not patronising — assume intelligence, not specialist knowledge. Lead w
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
 - Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
 - Upstream watch-set and "material change" policy (for the deferred automation).
-- Pin volatile constants or define an approved, bounded fetch-live contract (e.g. the close-group size — read as both 5 and 7; resolve before authoring).
+- Publish the authoritative Recommended Node Resource Document and define ADR-0013 mechanism 4's detailed protocol/spec before implementing any bounded live-values fetch.
 
 ## Design History
 

@@ -61,7 +61,7 @@ Adversarial review:
 
 - ADRs are **Proposed, not Accepted** — acceptance is a human gate (Jim decision-owner, after review). Never mark Accepted autonomously; supersede, don't edit.
 - **Tier 2/3 are gated** on the custody (ADR-0004) and gas (ADR-0005) team decisions — do not start them; the build round stays in **ungated operate-and-earn**.
-- `docs/SOURCE-MAP.md` has minor stale bits: it still calls the close-group size "5 and 7" (resolved to **7**) and says "evmlib not needed for Tier-1" (the key-free balance read does use evmlib as provenance). Tidy in a later pass.
+- The stale SOURCE-MAP orientation noted at this checkpoint (close-group size and Tier-1 `evmlib` provenance) is corrected in PR #12's current-state reconciliation.
 - The full source-research synthesis is held in Cowork's working notes (not the repo); the repo carries the conclusions (doctrine, manifest, DESIGN).
 
 ## Open questions / decisions for Jim

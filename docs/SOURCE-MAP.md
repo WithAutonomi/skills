@@ -10,13 +10,13 @@
 - **Public wallet address (non-custodial):** `--rewards-address`; `src/payment/wallet.rs` — node holds no key, only verifies inbound payments name the address.
 - **Node flags / behaviour:** `src/bin/ant-node/cli.rs` *(confirm exact path against the repo)*.
 - **Releases:** ML-DSA-65 (FIPS-204) signatures + `SHA256SUMS` — verify before use.
-- **Operating-procedure constants (later tiers):** IP/subnet diversity limits; storage auto-scales (no fixed per-node ceiling); close-group size (**read as both 5 and 7 — resolve against code before authoring runbooks**).
+- **Operating-procedure constants:** IP/subnet diversity limits; storage auto-scales (no fixed per-node ceiling); close-group size (**resolved to 7 in the completed deep-source research; retain an exact manifest binding wherever generated content uses it**).
 
 ### `ant-client` (Rust) — the `ant` CLI + core + node-management daemon (the core operator surface)
 - **Command tree:** `ant-cli/src/cli.rs` (+ the node command module under `ant-cli/src/commands/`). **Confirm the Tier-1 command tree directly against this code** — the SPEC's tree currently leans on the dev-docs reference; the binding target is the CLI source.
 - **Node lifecycle:** `ant node add | start | stop | status | reset`; `ant node daemon start | stop | status | info` (the node-management daemon — this is the operator "daemon").
 - **Install:** `install.sh` / `install.ps1` (repo root; `curl … | bash` / `irm … | iex`) or `cargo build --release --bin ant`.
-- **No-key boundary:** `ant-cli/src/main.rs` `require_secret_key()` — `SECRET_KEY` is a private key; `ant wallet address | balance` derive from it, so they are **not** used on the no-key operate-and-earn path. (Balance-without-a-key is the open Tier-1 question.)
+- **No-key boundary:** `ant-cli/src/main.rs` `require_secret_key()` — `SECRET_KEY` is a private key; `ant wallet address | balance` derive from it, so they are **not** used on the no-key operate-and-earn path. The resolved key-free balance path is the manifest-bound read-only ERC-20 `balanceOf(address)` call through the public Arbitrum RPC.
 
 ## Secondary / later-tier source — pointer, not a Tier-1 binding
 
@@ -26,7 +26,7 @@
 
 These are build dependencies the node/client/SDK link against. An operator agent never calls them; at most they are *provenance* for specific constants, only when a claim needs one.
 
-- **`evmlib`** (Rust + Foundry: `src/`, `contracts/`, `abi/`) — the EVM library plus the Solidity payment-vault and ANT-token contracts. **Development, not an operator interface.** Operator relevance is **only** as the provenance for EVM constants (ANT token address, payment-vault address, Arbitrum network config) *if* a later-tier claim needs them (e.g. a read-only on-chain balance check). **Not needed for Tier-1; never a binding target for operator commands.**
+- **`evmlib`** (Rust + Foundry: `src/`, `contracts/`, `abi/`) — the EVM library plus the Solidity payment-vault and ANT-token contracts. **Development, not an operator interface.** Tier-1 uses it only as provenance for the ANT token address, Arbitrum public RPC, and read-only `balanceOf(address)` path; it is never a binding target for operator commands.
 - **`ant-protocol`** (Rust) — wire-protocol crate; a library, reference only, no operator commands.
 
 ## Out of scope — named so the exclusion is deliberate
