@@ -35,13 +35,13 @@ The skill serves operators across an autonomy spectrum (a human operating direct
 
 **2. Mode-free default-deny under uncertain remit.** When remit is **missing, ambiguous, or would be exceeded**, the agent — regardless of persona — takes only the **least-authority, safe, reversible** action, and otherwise **asks, escalates, or defers**. It never assumes broader authority to close a gap. This is the default behaviour ADR-0004/0009 imply, made explicit and mode-independent.
 
-**3. A clean product surface — no internal vocabulary.** The **product surface** — everything shipped/installed: `SKILL.md` and `references/` — carries **none of the internal/build/process vocabulary** used to design the skill. The forbidden set (illustrative, not exhaustive): "tier", "persona", "operator" as a label, "engine", "capture evidence", "gauntlet", "packet", "source-binding" as user-facing jargon, ADR/spec/PR references, TODO / process markers, and internal mode names. Repo-side material (`docs/`, `docs/adr/`, `planning/`, `source-bindings/`) is **exempt** — it is not shipped.
+**3. A clean product surface — no internal vocabulary.** The **product surface** — the skill instructions loaded into agent context from `SKILL.md` and `references/` — carries **none of the internal/build/process vocabulary** used to design the skill. The forbidden set (illustrative, not exhaustive): "tier", "persona", "operator" as a label, "engine", "capture evidence", "gauntlet", "packet", "source-binding" as user-facing jargon, ADR/spec/PR references, TODO / process markers, and internal mode names. Repo-side material (`docs/`, `docs/adr/`, `planning/`, `source-bindings/`) is **exempt**: a channel package may contain it, but it is not loaded as skill instructions.
 
 Invariants:
 - **Autonomy is an input; the skill never makes the agent self-classify into a tier.**
 - **The non-custodial safety line is universal and mode-free** — no autonomy level relaxes it.
 - **Default-deny under uncertainty:** missing / ambiguous / exceeded remit → least-authority, safe, reversible action only, else ask / escalate / defer.
-- **No internal/build vocabulary in the shipped product surface** (`SKILL.md` + `references/`); repo-side docs are exempt.
+- **No internal/build vocabulary in the loaded product surface** (`SKILL.md` + `references/`); repo-side docs are exempt.
 
 ## Consequences
 

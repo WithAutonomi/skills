@@ -1,6 +1,6 @@
 # Testing the `autonomi` skill
 
-*What the prototype has to prove before it is listed and promoted, what would send us back to separate skills, and the evidence so far. Repo-side; nothing here ships.*
+*What the prototype has to prove before it is listed and promoted, what would send us back to separate skills, and the evidence so far. Repo-side; never loaded as skill instructions.*
 
 The skill is **agent-run**, so the real test is a fresh agent installing it and following it — not a human typing commands. Everything below is written for that.
 

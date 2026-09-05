@@ -34,13 +34,13 @@ Autonomi also already has **more than one** first-party skill: the operator skil
 
 ## Decision
 
-First-party Autonomi skills live in a **dedicated skills repository** — **`WithAutonomi/skills`** — with its own ADRs, specs, and release lifecycle. Each skill is self-contained under **`skills/<name>/`** (`SKILL.md` + bundled `references/`). The **`autonomi`** skill (operate nodes + use the network: upload/manage data) is the primary skill and the everyday journey; **sibling skills** (the developer skill, today in `autonomi-developer-docs`) consolidate in over time. The repo **README lists the available skills** with descriptions, mirroring what install tools show when choosing. `docs.autonomi.com/node` is a pointer to the skill, not its source. The repo starts under a personal account on an interim basis and is org-owned before any public or official use.
+First-party Autonomi skills live in a **dedicated skills repository** — **`WithAutonomi/skills`** — with its own ADRs, specs, and release lifecycle. Each skill is self-contained under **`skills/<name>/`** (`SKILL.md` + `VERSION` + bundled `references/`). The **`autonomi`** skill (operate nodes + use the network: upload/manage data) is the primary skill and the everyday journey; **sibling skills** (the developer skill, today in `autonomi-developer-docs`) consolidate in over time. The repo **README lists the available skills** with descriptions, mirroring what install tools show when choosing. `docs.autonomi.com/node` is a pointer to the skill, not its source. The repo starts under a personal account on an interim basis and is org-owned before any public or official use.
 
 Invariants:
 
 - A dedicated first-party skills repo; **not** embedded in, nor installed from, any single upstream code or docs repo.
 - One skill per `skills/<name>/`; a **single primary skill** for everyday use, with room for distinct niche skills by choice.
-- Only the **skill bundle** ships (`SKILL.md` + `references/`); `docs/`, `docs/adr/`, `planning/`, `source-bindings/` are repo-side only and never ship.
+- Only the **skill component** enters agent context (`SKILL.md` + bundled `references/`; `VERSION` remains adjacent release metadata). A channel package may also contain manifests or repo-side files, but `docs/`, `docs/adr/`, `planning/` and `source-bindings/` are never loaded as skill instructions.
 - The README lists available skills + descriptions.
 - Own ADRs/specs, own release lifecycle and automation (ADR-0006/0009).
 - PR / merge / publish / **repo transfer** against any shared or upstream repo is a maintainer-approval gate.

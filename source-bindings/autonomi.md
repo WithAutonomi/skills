@@ -1,6 +1,6 @@
 # Sources — where each shipped claim comes from
 
-*Repo-side provenance for the `autonomi` skill. Not shipped. One line per fact family; the shipped surface (`skills/autonomi/SKILL.md` + `references/`) must not contain a claim that isn't traceable here. Checked 2–4 Sept 2026 unless stated.*
+*Repo-side provenance for the `autonomi` skill. Never loaded as skill instructions. One line per fact family; the loaded skill surface (`skills/autonomi/SKILL.md` + `references/`) must not contain a claim that isn't traceable here. Checked 2–4 Sept 2026 unless stated.*
 
 **How this relates to ADR-0006.** ADR-0006 asks for every command, flag, constant and figure to be bound to upstream source at repo / file / symbol / commit. The operator skill's manifest did that for the node surface (now archived at `docs/archive/operator-skill-v0/source-bindings-tier1-operate-and-earn.md`, and still the model for it). This file is looser: provenance by file, document, observation or decision, dated. That is a known gap, accepted for the prototype so that the shape could be tested first; the symbol-level binding is to be rebuilt on this file once the prototype settles. Entries marked *decision* record a product call by Jim rather than a source.
 
