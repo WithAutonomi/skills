@@ -40,7 +40,7 @@ The frontmatter contains a legacy `metadata.openclaw` block, but its `shell` and
 
 The **skill bundle** — `skills/autonomi/SKILL.md` plus its bundled `references/`. The skill is agent-facing instructions; on first use it guides the agent to install the upstream **`ant`** CLI (the Autonomi tool) itself, non-custodially. Nothing here holds keys or moves funds.
 
-> **Platform status:** no platform has completed the full live release test. Windows guidance is additionally known to be inconsistent: it still uses Unix-only `df` / `export` instructions and incorrectly says the Windows installer does not update `PATH`. Treat Windows as unverified until the skill implementation is corrected and tested; see `planning/HANDOFF.md`.
+> **Platform status:** no platform has completed the full live release test. Windows guidance is additionally known to be inconsistent: the core skill, provisioning, and operating procedures use Unix-only `df`; provisioning and troubleshooting use Unix-only `export`; and provisioning, troubleshooting, and uninstall incorrectly say the Windows installer does not update `PATH`. Treat Windows as unverified until the skill implementation is corrected and tested; see `planning/HANDOFF.md`.
 
 > **Heads-up — binary install in locked-down sandboxes.** The `ant` installer downloads its binary from GitHub's release CDN (`release-assets.githubusercontent.com`), which some AI-agent sandboxes block even when `github.com` is allowed. The skill detects this and tells you exactly what to allowlist rather than failing silently. Tracked as an upstream/release item in [`planning/release-endpoint-accessibility.md`](planning/release-endpoint-accessibility.md).
 
