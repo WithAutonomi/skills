@@ -46,8 +46,8 @@ The aim: a reviewer — human or agent — can understand this PR and sanity-che
 <!-- Only if this touches skills/autonomi/. -->
 
 - [ ] Frontmatter valid per agentskills.io — `name` matches the folder, `description` ≤ 1024 chars, `compatibility` ≤ 500, `license`, `metadata.version`.
-- [ ] `skills/autonomi/VERSION` and `metadata.version` bumped together.
-- [ ] Nothing ships that shouldn't: only `SKILL.md`, `VERSION` and `references/` under `skills/autonomi/`; no hard-coded tool version outside the dated *Verified against* table.
+- [ ] `skills/autonomi/VERSION`, frontmatter `metadata.version`, `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` bumped together.
+- [ ] The loaded skill component contains only `SKILL.md`, `VERSION` and `references/` under `skills/autonomi/`; repo-side files possibly cached with a channel package are not loaded as skill instructions; no hard-coded tool version appears outside the dated *Verified against* table.
 - [ ] Expected to pass the skill-directory scanners (no piped installs, no secrets, no service changes); `.claude-plugin/` manifests still valid if the skill's name or description changed.
 
 ## For reviewers

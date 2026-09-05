@@ -1,6 +1,6 @@
 # Autonomi Skill — Rebuild Brief
 
-> The single contract for rebuilding the skill, distilled from the read-through. Supersedes the scratch critique log. **Draft for Jim's review before committing to the repo `planning/`.**
+> **Historical June rebuild contract.** Superseded for current work by `docs/CURRENT.md` and `planning/HANDOFF.md`. Its staged-branch status, separate-developer-skill plan and OpenClaw exploration are retained as decision history; the current 0.1.4 prototype combines task routes and supports skills.sh, Claude Code and direct/manual installation.
 
 ## 0. Approach
 

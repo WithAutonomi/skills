@@ -18,7 +18,7 @@ This is local evidence, not CI. GitHub CI covers ADR governance only. No `.gsd/g
 - Changed-claim source-binding review — passed against ant-client 0.3.6 at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: CLI identity in `ant-cli/src/cli.rs`; update flags and behavior in `ant-cli/src/commands/update.rs` and `ant-core/src/update.rs`; ANT-only wallet output in `ant-cli/src/commands/data/wallet.rs`; reset safeguards and missing-path behavior in `ant-cli/src/commands/node/reset.rs` and `ant-core/src/node/mod.rs`; Unix config paths and bootstrap preservation in `ant-core/src/config.rs` lines 27–45 and 60–80 plus `install.sh` platform/config handling.
 - `git diff --check` — passed.
 - New release-check URL — HTTP 200.
-- Skill `VERSION` URL — HTTP 404 while the repository is private, matching the documented best-effort failure path; an unauthenticated HTTP 200 remains a post-publication promotion check.
+- Superseded skill `VERSION` URL proof — HTTP 404 while the repository was private. This was evidence for the removed self-version probe and is no longer a publication or promotion gate under channel-owned updates.
 - `skills-ref` — unavailable; the documented equivalent frontmatter check was used.
 - Snyk agent scan — not run because `SNYK_TOKEN` is unavailable.
 
