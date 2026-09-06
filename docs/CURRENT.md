@@ -1,4 +1,6 @@
-# GSD Checkpoint — Autonomi Operator Skill (current state)
+# GSD Checkpoint — Autonomi Operator Skill (2026-Jun-22 snapshot)
+
+> **Historical checkpoint.** This file preserves the state recorded on 22 June 2026 and is not the current entry point. Read `planning/HANDOFF.md` for current state and next actions.
 
 Date: 2026-06-22
 Project: Autonomi Operator Skill (`JimCollinson/autonomi-skill`)
@@ -6,7 +8,7 @@ Slice/question: Design phase (engine, personas, grounding) complete and merged t
 Prepared by: Cowork (Claude) orchestration, on Jim's behalf
 Agents/tools used: Cowork (Claude); deep source-research subagents against `WithAutonomi/*` and `saorsa-labs/*`; GitHub; Autonomi canonical docs (`autonomi.com/llms.txt`).
 
-> **Read this first if you are the incoming agent.** Fetch the real `main` (tip below) before doing anything — design and docs were updated via reviewed PRs, so a stale local clone may be missing files. Follow the coordination protocol in `CONTRIBUTING.md` (lanes; branch + PR, never commit to `main` directly; fetch/rebase before a session and after each merge). Reading order: `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (esp. §13) → `docs/adr/` → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `planning/ROADMAP.md`.
+> At this checkpoint, the reading order was: `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (esp. §13) → `docs/adr/` → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `planning/ROADMAP.md`.
 
 ## Status
 
@@ -59,7 +61,7 @@ Adversarial review:
 
 - ADRs are **Proposed, not Accepted** — acceptance is a human gate (Jim decision-owner, after review). Never mark Accepted autonomously; supersede, don't edit.
 - **Tier 2/3 are gated** on the custody (ADR-0004) and gas (ADR-0005) team decisions — do not start them; the build round stays in **ungated operate-and-earn**.
-- `docs/SOURCE-MAP.md` has minor stale bits: it still calls the close-group size "5 and 7" (resolved to **7**) and says "evmlib not needed for Tier-1" (the key-free balance read does use evmlib as provenance). Tidy in a later pass.
+- The stale SOURCE-MAP orientation noted at this checkpoint (close-group size and Tier-1 `evmlib` provenance) is corrected in PR #12's current-state reconciliation.
 - The full source-research synthesis is held in Cowork's working notes (not the repo); the repo carries the conclusions (doctrine, manifest, DESIGN).
 
 ## Open questions / decisions for Jim

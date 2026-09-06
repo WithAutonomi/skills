@@ -69,6 +69,8 @@ REPORT BACK
   Autonomi from this skill alone? What was missing, unclear, or wrong?
 ```
 
+> **Testing an unmerged branch:** the prompt above installs from `main`. To test a change that isn't merged yet, install from its branch instead — but give that branch a **slash-free name**, because `skills.sh` can't parse an install tree-URL whose branch name contains a slash (what tripped Run 1 above).
+
 ## What a full end-to-end pass needs
 
 - **Disk:** ≥ ~20 GB free on the chosen data volume. On a machine whose system drive is tight, the skill will look for another mounted volume (e.g. an external drive) and place node data there via `--data-dir-path` — so an external drive with space is a valid way to get a real run on an otherwise-full machine.

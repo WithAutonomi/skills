@@ -15,14 +15,14 @@ The skill currently carries the **~20 GB/node** minimum as *team-confirmed, pend
 
 These belong in the **upstream repos** as the authoritative SOP, with the skill **source-binding** to them (same pattern as commands and flags). Full set of questions for that document: **`planning/node-resource-spec-brief.md`**. Until then, the figures stay flagged as team-confirmed. Tied to the body of work following the **2026-06-24 team call**.
 
-## 3. Skill auto-update automation (from source-bindings)
+## 3. Skill release automation (from source-bindings)
 
-Not started — deliberately deferred until the skill is usable and in the right shape. The foundation is already here: `source-bindings/` binds every command and figure to upstream code at a pinned commit. The automation (per the rebuild brief's freshness model) watches upstream vs. the manifest → regenerates `SKILL.md`/`references/` → re-releases a version-pinned snapshot. Jim has prior art from the Docs repo to draw on. Owner: TBD, after the skill settles. **See also #5 (the consumer-side update mechanism), which this produces versions *for*.**
+Not started — deliberately deferred until the skill is usable and in the right shape. The foundation is already here: `source-bindings/` binds commands and sourced figures to upstream code at pinned commits; team-confirmed exceptions remain explicitly labelled pending upstream authority. The automation (per the rebuild brief's freshness model) watches upstream vs. the manifest → regenerates `SKILL.md`/`references/` → re-releases a versioned snapshot. Jim has prior art from the Docs repo to draw on. Owner: TBD, after the skill settles. **See also #5 (consumer-side delivery), which this produces versions *for*.**
 
 ## 4. Consolidate the developer skill into this repo
 
 Move **`autonomi-developer`** (build *on* Autonomi) into `skills/` here, so the repo is the org's single first-party skills home. **Wait until the base `autonomi` skill is up on its feet.** It's non-trivial: the developer skill is draft/beta, carries its own automation, and pulls from the developer docs — a scheduled mini-project, not a copy. (The README lists it as Planned; the rebuild brief §2 has the reasoning.)
 
-## 5. Skill self-update mechanism (consumer side) — decide the model
+## 5. Skill updates (consumer side) — channel-owned
 
-Distinct from #3 (which *produces* new skill versions). Question to settle: how does an installed copy of the skill **learn it's out of date and update**? Today the skill carries a frontmatter `version` and is installable via skills.sh, so `npx skills update` works — but there's no runtime "check on invocation" authored in the skill (x0x's `SKILL.md` doesn't author one either; its always-latest behaviour is binary-side + the skills.sh version field). Decide: rely on skills.sh's update flow, and/or add an explicit self-check instruction. Note the skill already has a *resilience* mechanism — it tells the agent to verify commands against the installed `ant --help` and trust the tool over the docs — so a stale skill self-corrects on facts even before a version update lands.
+**Decided in Proposed ADR-0013 after a 5 September 2026 review of current first-party skills.** Installed-skill updates belong to the channel that installed the copy, or to deliberate reinstall for a manual copy. The skill makes no first-use network request to check its own version and never modifies its own files. The bundle keeps its resilience mechanism — learn the tool from `ant --help` and trust the tool over the skill — while task-specific, source-bound facts remain separate from self-version checking. ADR-0013's bounded live advisory for typed volatile values (mechanism 4) is still a later protocol/spec.

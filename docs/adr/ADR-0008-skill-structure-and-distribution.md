@@ -17,12 +17,12 @@ ADR-0002 fixes the skill's *shape* (one modular skill, progressively disclosed) 
 - All an agent needs is the skill — a single, self-sufficient entry point.
 - Skill-led distribution (the x0x pattern): the skill installs/configures the existing tools, not a separate setup.
 - Progressive disclosure as the quality bar: lean entry → modules on demand → outward to deeper topics.
-- The housekeeping of a high-quality, installable skill: accurate metadata, an install manifest, a version self-check, a sound security posture.
+- The housekeeping of a high-quality, installable skill: accurate metadata, documented channel-compatible install/update routes, and a sound security posture.
 - Adopt a proven pattern (x0x as precedent) rather than invent one.
 
 ## Considered Options
 
-1. **A bare instructions document** (no manifest, metadata, or self-check). Rejected: not a self-sufficient, installable, high-quality skill; would fail the quality bar and the security scan.
+1. **A bare instructions document** (no metadata, install route, or update path). Rejected: not a self-sufficient, installable, high-quality skill; would fail the quality bar and the security scan.
 2. **A skill plus separate manual setup of the tools.** Rejected: an agent should need nothing but the skill; separate setup is friction and a source of drift.
 3. **An x0x-style skill**: self-sufficient entry, skill-led distribution of the existing CLI + daemon, progressive disclosure, and full metadata/housekeeping. Chosen.
 
@@ -31,10 +31,10 @@ ADR-0002 fixes the skill's *shape* (one modular skill, progressively disclosed) 
 The skill is structured and quality-gated following the same broad pattern as x0x — a self-contained, progressively disclosed skill — but justified by Autonomi's own requirements; **x0x is a precedent, not a dependency.** Invariants:
 
 - **Self-sufficiency / skill-led distribution:** installing the skill is all an agent needs. The skill bootstraps access to the **existing upstream tools** — it detects what is already present, installs the `ant` CLI (the node daemon is the same `ant` binary in daemon mode) only when missing, and upgrades or mutates an existing setup only for an explicit compatibility/security reason **and only within the agent's granted remit** (escalating otherwise), per ADR-0009. It adds no new tooling (per ADR-0003) and is the single jumping-off point from which the agent can go as deep as it needs.
-- **Progressive-disclosure layering:** a lean entry (opener + task routing) → **bundled** modules/references loaded on demand for depth (data storage, the upstream repos, security, developer-level detail). Live docs and other skills are **further reading, not the depth mechanism** — the skill is bundled so it works on a fresh/offline host and stays version-locked (ADR-0006), per ADR-0002 and ADR-0003.
-- **High-quality housekeeping:** accurate frontmatter/metadata (name, a triggering-tuned description, version, license, keywords); clear provenance/attribution (the team behind it, the upstream repos it draws on, links); an install manifest following x0x's `metadata.openclaw.install` pattern, referencing upstream release binaries with signature verification; and an in-skill version self-check (per ADR-0006).
+- **Progressive-disclosure layering:** a lean entry (opener + task routing) → **bundled** modules/references loaded on demand for depth (data storage, the upstream repos, security, developer-level detail). Live docs and other skills are **further reading, not the depth mechanism** — after installation, the bundled guidance remains available without contacting live docs or a freshness service and stays version-locked (ADR-0006), per ADR-0002 and ADR-0003.
+- **High-quality housekeeping:** accurate frontmatter/metadata (name, a triggering-tuned description, version, license, keywords); clear provenance/attribution (the team behind it, the upstream repos it draws on, links); an install manifest following x0x's `metadata.openclaw.install` pattern, referencing upstream release binaries with signature verification; and version metadata and release artifacts that each supported install channel can update (per ADR-0006 and ADR-0013).
 - **Channel-agnostic distribution (from the dedicated skills repository, ADR-0007).** The skill conforms to the shared Agent Skills spec (agentskills.io) and installs through multiple channels, none privileged — e.g. `skills.sh` (`npx skills add`, which fans out to many agents), OpenClaw/ClawHub (via the `metadata.openclaw.install` manifest), and native/direct install (a directory or git URL). Channel-specific install UX is illustrative, not the mechanism — e.g. `skills.sh` lists a repo's skills by name + description for selection, so the `description` is both trigger-tuned (agent) and chooser-facing (human), with `--skill <name>` the deterministic selector.
-- **Only the skill bundle ships:** what installs is `SKILL.md` + the bundled `references/`; repo-side material (`docs/`, `docs/adr/`, `planning/`, `source-bindings/`) never ships (ADR-0007).
+- **Only the skill bundle ships:** what installs is `SKILL.md` plus the bundled `references/`; repo-side material (`docs/`, `docs/adr/`, `planning/`, `source-bindings/`) never ships (ADR-0007).
 - **Verified, secure delivery and clean removal:** checksums and signatures for both the skill and the binaries it installs, confirmed before use and reported back to the agent; the security checks agents and distribution channels expect (declared behaviour matches actual, reviewed install script); and a documented, clean **uninstall** path (stop processes, remove binaries and state) — agents trust a skill more when they can cleanly reverse it.
 - **Quality bar:** structure, security posture (signed binaries, reviewed install script, passes the security scan), and clarity on par with x0x.
 
@@ -49,7 +49,7 @@ The detailed structure — exact sections, module files, manifest schema — is 
 
 ### Negative / Trade-offs
 
-- More housekeeping to build and keep current (metadata, manifest, self-check) — mitigated by the source-binding of ADR-0006.
+- More housekeeping to build and keep current (metadata and release/update compatibility) — mitigated by the source-binding of ADR-0006.
 
 ### Neutral / Operational
 

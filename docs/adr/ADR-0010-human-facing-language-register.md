@@ -6,18 +6,18 @@
 - **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0002 (progressive disclosure), ADR-0003 (operator scope), ADR-0004 (non-custodial / risk-based escalation), ADR-0009 (remit-gated operation), VISION (audience & principles), DESIGN §13 (operator personas + translation map).
+- **Related:** ADR-0002 (progressive disclosure), ADR-0003 (operator scope), ADR-0004 (non-custodial / risk-based escalation), ADR-0008 (mutations only within granted remit), ADR-0009 (independent lifecycle), ADR-0014 (autonomy input; no surfaced tiers; product-surface boundary), VISION (audience & principles), DESIGN §13 (operator personas + translation map).
 
 ## Context
 
-The skill is authored **for an AI agent**, where technical precision is correct and necessary — `--rewards-address`, an EVM address on Arbitrum One, ANT as an ERC-20, a transaction fee, ML-DSA signatures. But the operator running through the skill spans a spectrum (a person directly; an agent acting for a human; a fully autonomous agent), and crypto/developer jargon and a pile of low-level decisions are unhelpful — even alienating — to an ordinary person (the same "scary path" concern behind ADR-0004). David's intent, which we share: the agent should **do most of the work itself** — using its intelligence, judgement, and granted remit — and **not burden the operator** with inner workings, crypto detail, or routine choices, escalating to a human only when genuinely needed; and when it does communicate, use plain (but not patronising) language, ready to explain and expand on request. Nothing currently defines this interaction model, so the first authoring pass risks both over-exposing mechanics and over-asking. (This is distinct from the internal terminology standardization — "public wallet address" — which governs our own docs; this ADR governs how the agent *relates to and talks to* the operator.)
+The skill is authored **for an AI agent**, where technical precision is correct and necessary — `--rewards-address`, an EVM address on Arbitrum One, ANT as an ERC-20, a transaction fee, ML-DSA signatures. But the operator running through the skill spans a spectrum (a person directly; an agent acting for a human; a fully autonomous agent), and crypto/developer jargon and a pile of low-level decisions are unhelpful — even alienating — to an ordinary person (the same "scary path" concern behind ADR-0004). David's intent, which we share: the agent should **do most of the work itself** — using its intelligence, judgement, and granted remit — and **not burden the operator** with inner workings, crypto detail, or routine choices, escalating to a human only when genuinely needed; and when it does communicate, use plain (but not patronising) language, ready to explain and expand on request. Nothing currently defines this interaction model, so authoring risks both over-exposing mechanics and over-asking. (This is distinct from the internal terminology standardization — "public wallet address" — which governs our own docs; this ADR governs how the agent *relates to and talks to* the operator.)
 
 ## Decision Drivers
 
 - The product reaches ordinary people through agents; alienating language or decision-dumping defeats the purpose.
 - Do-the-work-by-default: leverage the agent's judgement; reserve the human's attention for what's genuinely theirs.
 - Progressive disclosure (ADR-0002) applies to vocabulary and to *how much* is surfaced, not just modules.
-- Safety is not "burden": money / risk / authority decisions must still reach the human (ADR-0004/0009).
+- Safety is not "burden": authority grants or widening must be explicitly granted by, or escalated to, the authorised principal/delegator; gates that existing decisions reserve for humans remain human (ADR-0004/0008/0013).
 - Accuracy must survive simplification — plain must not become wrong, and must not imply capabilities or safety that don't exist (ADR-0004/0005).
 
 ## Considered Options
@@ -30,19 +30,21 @@ The skill is authored **for an AI agent**, where technical precision is correct 
 
 The skill defines how the agent **relates to and talks to** the operator, in three parts.
 
-**1. Division of labour & disclosure.** The agent **shoulders the inner workings and the routine operational decisions itself** — using its judgement and the remit it has been granted (ADR-0004/0009). It surfaces to the operator **outcomes** and **the decisions that are genuinely theirs**, and otherwise stays out of the way. "How much to reveal" = as little as needed for the operator to stay informed and in control of what actually matters to them. Crucially, *minimise burden* applies to **operational mechanics and jargon, not to authority**: spend, risk, recovery, and consent decisions are always surfaced — quietly handling routine ops is good; quietly making a money/risk decision is not. Escalation is **by exception**, on the risk-based triggers already defined (authority/spend beyond remit, balance over threshold, backup/recovery, no safe substrate, explicit opt-in) — never for routine work, and never gated on "do you understand crypto?".
+**1. Division of labour & disclosure.** The agent **shoulders the inner workings and the routine operational decisions itself** — using its judgement and the remit it has been granted (ADR-0004/0008). It surfaces **outcomes** and **the decisions that are genuinely the authorised principal/delegator's**, and otherwise stays out of the way; reporting adapts to the available channel rather than requiring a present human. Crucially, *minimise burden* applies to **operational mechanics and jargon, not to authority** — where "authority" means **granting or widening an envelope**, not acting within one. **Granting or changing an authority envelope** (spend, risk, recovery, consent) must be explicit from an authorised principal/delegator or escalated to one, **never inferred**. **Acting within a granted envelope** needs **no per-action approval** (a granted spend-envelope authorises spend within it — ADR-0004/0008); a live-value delta that would expand consequential action beyond what the granted/bundled values authorised is **still gated**, never self-authorised (ADR-0013). This does not delegate human-only gates: ADR acceptance remains a human governance decision, and ADR-0013 requires human approval for a material live-value delta. Quietly handling routine ops within remit is good; quietly *widening* authority is not. Where the authorised decision-maker **cannot be reached**, the agent **halts/defers** rather than proceeding on assumed authority. Escalation is **by exception**, on the risk-based triggers already defined (authority/spend beyond remit, balance over threshold, backup/recovery, no safe substrate, explicit opt-in) — never for routine work, and never gated on "do you understand crypto?".
 
-**2. Persona-aware.** The operator is one of three personas (defined in DESIGN §13): a **human** operating directly, an **agent acting as a human's proxy**, or a **fully autonomous agent**. The agent adapts disclosure and register to which it is serving — full plain-language translation for a human; minimal-but-sufficient surfacing by a proxy agent to its principal; internal precision plus audit/escalation-only for a fully autonomous agent (which, absent a human, halts/defers at a gate rather than crossing it).
+**2. Persona-aware.** The operator is one of three personas (defined in DESIGN §13): a person in hands-on **steered** operation (agent-assisted, still chat/text-driven), an **agent acting as a human's proxy**, or a **fully autonomous agent**. The agent adapts disclosure and register to which it is serving — full plain-language translation for a human; minimal-but-sufficient surfacing by a proxy agent to its principal; internal precision plus audit/escalation-only for a fully autonomous agent (which, when an authorised decision-maker is unreachable, halts/defers at a gate rather than crossing it). These personas shape *disclosure*, not authority; **ADR-0014** governs that the agent does not **self-classify** into them as autonomy tiers and that the safety line stays universal and mode-free.
 
-**3. Plain-language register.** When addressing a human, the agent uses plain language — **assume intelligence, not knowledge** (plain, not patronising) — leads with meaning before naming a precise term, reports outcomes rather than commands/flags/hashes, keeps network/crypto internals out of view unless asked, and is **always ready to explain and expand on request** (progressive depth). A translation layer (technical → human; e.g. "a transaction fee for the payment", not "native Arbitrum gas") lives in DESIGN §13 and is applied across all human-facing copy. Accuracy is never sacrificed for simplicity.
+**3. Plain-language register.** When addressing a human, the agent uses plain language — **assume intelligence, not knowledge** (plain, not patronising) — leads with meaning before naming a precise term, reports outcomes rather than commands/flags/hashes, keeps network/crypto internals out of view unless asked, and is **always ready to explain and expand on request** (progressive depth). A translation layer (technical → human; e.g. "a transaction fee for the payment", not "native Arbitrum gas") lives in DESIGN §13 and is applied across all human-facing copy. Accuracy is never sacrificed for simplicity. The register runs in **two directions** — precise for the agent, translated for the human — and the translation is applied **by judgement, illustratively, never as a literal find-and-replace** of terms. *(The clean product-surface / no-internal-vocabulary boundary is ADR-0014.)*
 
 Invariants:
 
 - **Do the work; escalate by exception.** The agent handles routine operation and decisions within its remit; it does not narrate machinery or hand the operator routine choices.
-- **Never hide authority.** Money, risk, recovery, and consent decisions are always surfaced to the human, regardless of how light the rest of the disclosure is.
+- **Authority is granted, not assumed.** A decision that **grants or widens** an envelope (spend, risk, recovery, consent) must come explicitly from an authorised principal/delegator or be escalated to one, never inferred. Acting **within** a granted envelope needs no per-action approval; an **unreachable** authority gate means **halt/defer**, not proceed. Gates reserved for humans by governance or another decision remain human.
+- **Reporting adapts to the channel.** Full translation for a present human; minimal-but-sufficient for a proxy's principal; an audit trail for an autonomous agent. Absence of a reporting channel constrains *reporting*, not *authority* — an unreachable gate is deferred, not crossed.
 - **Plain, not patronising.** Human-facing language assumes intelligence, not specialist knowledge; precise terms are available, introduced in plain words first, and explained on request.
 - **Outcomes, not mechanics.** No CLI tables, flags, hashes, or raw addresses in human-facing output unless asked.
 - **Accuracy over simplicity.** Simplification never makes a claim wrong or implies a capability/safety property that doesn't exist.
+- **Translate by judgement, not by rote.** The human-facing register is applied illustratively for each operator — never a literal find-and-replace of terms.
 - The translation map and personas live in DESIGN §13; exact word choices are a product/UX decision owned by Jim.
 
 ## Consequences
@@ -56,16 +58,23 @@ Invariants:
 ### Negative / Trade-offs
 
 - Authors maintain a register and a translation map, and must judge the do-vs-surface line — more care per claim.
-- A risk of over-simplifying into inaccuracy, or of under-surfacing a decision that *was* the human's — mitigated by the "never hide authority" and "accuracy over simplicity" invariants and the review gauntlet.
+- A risk of over-simplifying into inaccuracy, or of under-surfacing a decision that *was* the human's — mitigated by the "authority is granted, not assumed" and "accuracy over simplicity" invariants and the review gauntlet.
 
 ### Neutral / Operational
 
-- Builds on ADR-0004's risk-based escalation and ADR-0009's remit; this ADR is their UX expression, not a new escalation policy.
+- Builds on ADR-0004's risk-based escalation and ADR-0008's within-remit mutation; this ADR is their UX expression, not a new escalation policy.
 - The internal "public wallet address" standardization is the agent-facing precision layer; the human-facing layer translates further.
 
 ## Validation
 
-A reading of the agent's human-facing output finds it plain and non-patronising, with no unexplained crypto/developer jargon and no raw mechanics; the agent is shown to handle routine work without surfacing it, yet to surface money/risk/authority decisions every time; it explains/expands correctly on request; and simplification introduces no inaccuracy. The clean-context and adversarial gauntlet includes this read (over-exposure, over-asking, jargon, and any hidden authority decision are findings).
+A reading of the agent's human-facing output shows:
+
+- it is plain and non-patronising, with no unexplained crypto/developer jargon and no raw mechanics;
+- routine work **within remit** is handled without surfacing it;
+- any **grant or change of authority** (spend/risk/recovery/consent) comes explicitly from an authorised principal/delegator or is escalated, never inferred, while acting **within a granted envelope** proceeds without per-action approval; reporting adapts to the channel; an **unreachable gate is deferred**, not crossed; and human-only gates remain human;
+- it explains/expands correctly on request, and simplification introduces no inaccuracy.
+
+The clean-context and adversarial gauntlet includes this read (over-exposure, over-asking, jargon, and any inferred/assumed authority are findings).
 
 ## Notes for AI-assisted work
 

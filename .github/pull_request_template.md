@@ -30,11 +30,11 @@ The aim: a reviewer — human or agent — can understand this PR and sanity-che
 
 - [ ] No secrets in the diff — no private key, seed phrase, `SECRET_KEY`, or `AUTONOMI_WALLET_KEY` in code, examples, or logs.
 - [ ] Non-custodial boundary intact — nodes take a public wallet (rewards) address only; nothing instructs putting a key on a node or in the repo (ADR-0004).
-- [ ] Install stays detect-first and non-mutating; any download/verify step is documented and source-bound (ADR-0009).
+- [ ] Install stays detect-first and does not mutate an existing working setup by default; any download/verify step is documented and source-bound (ADR-0009).
 
 ## Quality & verification
 
-- [ ] Every command, flag, constant, and figure is pinned to upstream source (repo / file / symbol / commit); nothing invented — anything unconfirmable is flagged, not guessed (ADR-0006).
+- [ ] Every Autonomi-specific command, flag, constant, figure, and install behaviour has explicit provenance; temporary team-confirmed exceptions are labelled pending upstream authority, and platform-specific shell/OS behaviour is checked rather than guessed (ADR-0006).
 - [ ] `python3 scripts/adr-governance.py` passes.
 - [ ] Gauntlet (for merge-candidate skill changes): clean-context test + adversarial review — <!-- done / not yet / N/A -->
 - [ ] Docs updated (DESIGN / README / references) if a surface or behaviour changed.
@@ -44,7 +44,7 @@ The aim: a reviewer — human or agent — can understand this PR and sanity-che
 <!-- Only if this touches SKILL.md, the frontmatter, or the install manifest. -->
 
 - [ ] Frontmatter valid and complete — name, description, version, license, keywords.
-- [ ] Install manifest (`metadata.openclaw.install`) correct; install and clean-uninstall paths documented; signature/checksum verification intact (ADR-0008).
+- [ ] Install manifest (`metadata.openclaw.install`) correct; install and clean-uninstall paths documented; the current signature/checksum verification status is stated accurately, and any implemented verification remains intact (ADR-0008).
 - [ ] Won't break packaging, and should pass distribution-channel security scans (e.g. ClawHub).
 
 ## For reviewers

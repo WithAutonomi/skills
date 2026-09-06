@@ -31,7 +31,7 @@ It's written for **agents operating the network** — often on behalf of a human
 
 ## B. About & references (an "About / further reading" section)
 
-> Provenance and pointers — references and further reading, not authority. The skill's facts are bound to upstream *code* via the source-binding manifest, not to these pages.
+> Provenance and pointers — references and further reading, not authority. Source-backed facts are bound to upstream *code* via the source-binding manifest; visibly provisional team-confirmed exceptions are recorded there pending upstream authority. These pages are not a binding source.
 
 **About this skill.** Built and maintained by the Autonomi team. It synthesises operator-relevant truth from the upstream Autonomi code into one agent-facing skill. Source: this repository.
 

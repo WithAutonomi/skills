@@ -6,10 +6,10 @@ This repository is an **operator skill**: documentation and skill files that ins
 
 ## Security posture
 
-- **Non-custodial by construction.** Nodes are configured with a **public** wallet (rewards) address only. The skill never generates, stores, requests, logs, or transmits a private key, seed phrase, `SECRET_KEY`, or `AUTONOMI_WALLET_KEY` (ADR-0004). Any future spend/custody capability lives in an out-of-context substrate — never in the agent context, the skill, or this repo.
+- **Non-custodial by construction.** Nodes are configured with a **public** wallet (rewards) address only. The current skill generates, stores, requests, logs, and transmits no private key, seed phrase, `SECRET_KEY`, or `AUTONOMI_WALLET_KEY` (ADR-0004). Any future spend/custody capability requires a separately approved substrate that keeps secrets outside the agent context; ADR-0004 deliberately leaves that substrate's implementation location open.
 - **No secrets in the repo.** Never commit a private key or secret in code, examples, fixtures, or logs. If one is ever exposed, treat it as compromised: abandon/rotate the affected address and remove the secret from history.
-- **Source-bound, no invented surface.** Commands, flags, and install steps are pinned to upstream source (ADR-0006); installs are detect-first and non-mutating (ADR-0009). This limits the chance of the skill instructing an unsafe or fabricated action.
-- **Verified distribution.** Install steps and releases verify checksums and signatures before use (ML-DSA-65 / FIPS-204; `SHA256SUMS`), and the package is built to pass distribution-channel security scans (ADR-0008).
+- **Source-bound, no invented Autonomi surface.** Autonomi-specific commands, flags, constants, figures, and install behaviour carry explicit provenance under ADR-0006; ordinary operating-system/shell observation commands are not presented as Autonomi facts and **must be** reviewed for every claimed platform. The current Windows guidance has known unverified gaps recorded in `planning/HANDOFF.md`. Installs are detect-first and do not mutate an existing working setup by default (ADR-0009). This limits the chance of the skill instructing an unsafe or fabricated action.
+- **Distribution verification is a required target, not a current guarantee.** Upstream releases provide ML-DSA-65 / FIPS-204 signatures and `SHA256SUMS`, but the current script-based install route does not verify them before execution. Until every supported route performs and proves checksum/signature verification, contributors and documentation must not claim verified delivery (ADR-0008).
 
 ## Reporting a vulnerability
 

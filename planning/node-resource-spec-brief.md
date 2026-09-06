@@ -26,7 +26,7 @@ So the gaps are visible — the skill encodes this today (source-bound or team-c
 - A node **does not self-throttle** CPU/RAM — capping is the operator's job (OS-level).
 - Storage share is **network-set** (grow by adding nodes); spread ≈ **2/IP, ≈5/subnet** (excess nodes unused); ~**7×** replication.
 - **~20 GB free disk per node** to avoid that node being shunned *(team-confirmed, pending source)*, assumed additive.
-- No OS service is installed (daemon/nodes are supervised processes); installer doesn't edit PATH.
+- No OS service is installed (daemon/nodes are supervised processes). The Unix installer does not edit `PATH`; the Windows installer updates the user's persistent `PATH` and the current process. The current skill guidance does not yet preserve that platform distinction and remains unverified on Windows.
 
 Notice what's missing: **how earning works, what "healthy" means to the network, what the agent can actually see, and the authority it's operating under.** Those are the real gaps.
 
@@ -118,5 +118,4 @@ These are the **hard values** the document must state — not describe. For each
 
 ## How the skill will consume this
 
-One authoritative, **versioned** document at a stable upstream path, in **two registers**: the **values block** delivered structured and machine-readable so the skill **source-binds** each figure (like commands and flags) and the agent reads it rather than inferring it; and the **principles/guidance** carried as operating doctrine (the skill already does this — the boundary model, don't-churn, yield-to-the-host). The freshness automation re-pins when values change, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see `planning/NEXT-PHASE.md` §5) → until the document exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — but every figure in the parameters list needs to arrive as a hard value, and every judgement call as an explicit principle.
-
+One authoritative, **versioned** document at a stable upstream path, in **two registers**: the **values block** delivered structured and machine-readable so the skill **source-binds** each figure (like commands and flags) and the agent reads it rather than inferring it; and the **principles/guidance** carried as operating doctrine (the skill already does this — the boundary model, don't-churn, yield-to-the-host). The freshness automation re-pins when values change, and the skill can do a best-effort runtime **advisory check** for the volatile parameters (see Proposed ADR-0013 mechanism 4) → until the document exists, the affected figures stay flagged *team-confirmed, pending source*. The items that would most change how well an agent operates are the **reward model (A)**, the **standing-observability gap (D)**, and the **shunning model (D)** — but every figure in the parameters list needs to arrive as a hard value, and every judgement call as an explicit principle.

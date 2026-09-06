@@ -1,6 +1,6 @@
 # Autonomi Operator Skill — Roadmap
 
-> Canonical roadmap (the vault holds only a pointer). It sequences the work; it does not restate VISION, amend the ADRs, or write DESIGN. Two axes run through it: **build phases** (*how* we build — design → author → automate) and the **delivery scope ladder** (*what the skill does*, per capability tier). Phase 02 authors the ladder tiers in order. ADRs are referenced, not redefined; ADR **acceptance** is a human gate held by the decision owner (Jim) after the named reviewer's review (David Irvine), and any PR / merge / publish is a maintainer-approval gate.
+> **Historical June sequencing baseline.** This preserves the original build phases and capability ladder; its checkbox statuses are not the current project state. Read `planning/HANDOFF.md` for current state and `planning/NEXT-PHASE.md` for active parked work. ADRs own decisions; ADR **acceptance** remains a human gate held by Jim after David Irvine's review, and any PR / merge / publish remains a maintainer-approval gate.
 
 ## Overview
 
@@ -22,7 +22,7 @@
 - [x] Operator scope, boundary, and interface stance set: existing `ant` CLI + node-management daemon, no new tooling, build frontier routes to the Developer skill — ADR-0003.
 - [x] Non-custodial node operation committed; wallet-address sourcing as a neutral menu (supplied / provisioned / agent-created); agent-created first-class for autonomous use via an out-of-context custody substrate (never LLM-created), secrets-out-of-context necessary-but-not-sufficient, declared recovery path at creation — ADR-0004.
 - [x] Spend-to-store understood and escalated: real path is ANT + native Arbitrum gas; **no upstream gasless path exists**; gas is a team strategy call, not an in-skill invention — ADR-0005.
-- [x] Source-binding decided: every claim source-bound to upstream, volatile facts single-sourced, mechanically-derived vs judgement-derived split, plus the cross-repo freshness contract — ADR-0006.
+- [x] Provenance decided: source-backed claims bind to upstream, temporary team-confirmed exceptions remain explicit and pending upstream authority, volatile facts stay single-sourced, and the mechanically-derived vs judgement-derived split plus cross-repo freshness contract are fixed in ADR-0006.
 - [x] Repo home and lifecycle decided: standalone repo, org-owned before public; independent lifecycle, no lockstep between skill / `ant` / `ant-node`; source bindings are provenance, not runtime pins — ADR-0007, ADR-0009.
 - [x] DESIGN substantially complete and realigned to ADR-0001…0009 (including the capability ladder, §12).
 - [x] Repo published and under review (`JimCollinson/autonomi-skill`, David a collaborator; Hermes/David review pass).
@@ -30,8 +30,8 @@
 - [ ] **Agent wallet custody substrate** decided — where keygen / storage / recovery / signing live (assumed-host / signposted / skill-provided wrapper / upstream `ant` / staged). Open team decision; gates Tier 2/3 — ADR-0004.
 - [ ] **Gas strategy** decided — the route that lets earned ANT actually be spent (agent ETH float / pre-funded envelope / faucet-grant / paymaster / defer). Open team decision; gates Tier 3 — ADR-0005.
 - [ ] Source-binding manifest format pinned (the `source_evidence` vs `tested_with` / `requires_min` / `known_incompatible` shape) before authoring — ADR-0006, ADR-0009.
-- [ ] Close-group size resolved (read as both 5 and 7 in source) — pin or fetch-live before authoring runbooks.
-- [ ] Pre-publish housekeeping confirmed: org transfer (→ WithAutonomi), licence (likely MIT OR Apache-2.0 — TBC), and the clean install / version-manifest URL — ADR-0007, ADR-0008.
+- [ ] Close-group size resolved (read as both 5 and 7 in source) — pin it or define an approved, bounded fetch-live contract before authoring runbooks.
+- [ ] Pre-publish housekeeping confirmed: org transfer (→ WithAutonomi), licence (likely MIT OR Apache-2.0 — TBC), and clean install/update routes — ADR-0007, ADR-0008.
 
 **Definition of Done:**
 - DESIGN substantially complete and the load-bearing ADRs drafted as Proposed — **essentially met**. The phase closes when the ADRs are accepted (Jim as decision owner, after David's review) and the two open team decisions (custody substrate, gas strategy) are recorded, the manifest format and close-group size are pinned, and the pre-publish items are resolved. ADR acceptance is a human gate; the custody and gas calls are team decisions, not @pm/agent calls.
@@ -49,7 +49,7 @@
 *Foundation (spans all tiers):*
 - [ ] Lean, routing-first SKILL.md authored (opener, task routing, core concepts, safety boundaries, routing table) per DESIGN §2; metadata/frontmatter, provenance/attribution, and install manifest on x0x's `metadata.openclaw.install` pattern — ADR-0008.
 - [ ] Skill-led, non-mutating install + verified delivery: detect/install the existing `ant` only when missing, confirm checksums + ML-DSA-65 signatures before use, clean uninstall path — ADR-0008, ADR-0009.
-- [ ] Source-binding manifest populated as content lands (provenance per claim; volatile facts single-sourced; bake-with-pin vs fetch-live per fact) — ADR-0006.
+- [ ] Source-binding manifest populated as content lands (provenance per claim; volatile facts single-sourced; bake-with-pin vs approved, bounded fetch-live per fact) — ADR-0006.
 
 *Tier 1 — Operate and earn (authored first; unblocked now):*
 - [ ] `node-operation.md`: install, run one/many, configure, monitor (`ant node status`, daemon `/api/v1/events` SSE), upgrade/stop, clean uninstall.
@@ -76,15 +76,16 @@
 
 ## Phase 03: Automate freshness
 
-**Goal:** Turn the regeneration-ready structure into a working pipeline so the skill is kept current mechanically rather than by hand — the deferred half of ADR-0006.
+**Goal:** Turn the regeneration-ready structure into a working pipeline so the skill is kept current mechanically rather than by hand — the deferred half of ADR-0006. ADR-0013 separates publisher-side regeneration, installation-channel delivery, and the deferred live-values mechanism.
 
 **Milestones:**
-- [ ] Version self-check live: the skill fetches a manifest from an Autonomi-controlled URL and warns if stale, continues if offline — ADR-0006.
+- [ ] Versioned releases flow through supported install channels: skills.sh's native global update comparison and project reinstall flows, versioned plugin updates for marketplaces, and a documented reinstall path for manual copies — ADR-0013.
 - [ ] Upstream-sweep pipeline: analyses the enumerated upstream watch-set, regenerates mechanically-derived content, flags judgement-derived content for review — ADR-0006.
-- [ ] Cross-repo freshness contract operational: upstream repos signal operator-facing changes (issue/PR or release-note marker the freshness check consumes) — ADR-0006, ADR-0007.
+- [ ] Cross-repo freshness contract operational: upstream repos signal operator-facing changes (issue/PR or release-note marker the regeneration pipeline consumes) — ADR-0006, ADR-0007.
+- [ ] **Deferred mechanism-4 dependency:** publish the authoritative values document and approve a detailed protocol/spec before implementing the bounded runtime values check — ADR-0013 (mech 4). Until then, the reviewed bundled values remain the only source.
 
 **Definition of Done:**
-- An installed copy self-reports staleness, and an upstream change to a source-bound fact is detected and routed to regeneration-or-review without a manual rewrite. (Structure is mandatory from Phase 02; the pipeline itself is explicitly deferred per ADR-0006 and may begin only after the watch-set and "material change" policy are settled.)
+- A released update is discoverable through each supported installation channel, and an upstream change to a source-bound fact is detected and routed to regeneration-or-review without a manual rewrite. (Structure is mandatory from Phase 02; the pipeline itself is explicitly deferred per ADR-0006 and may begin only after the watch-set and "material change" policy are settled.)
 
 ---
 
