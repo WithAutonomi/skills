@@ -28,14 +28,14 @@ The aim: a reviewer — human or agent — can understand this PR and sanity-che
 
 ## Security
 
-- [ ] No secrets in the diff — no private key, seed phrase or `SECRET_KEY` value in code, examples, or logs.
-- [ ] The key line is intact — the agent never asks for, accepts, reads, prints or generates a private key; nodes take a public address only; a paid write uses a `SECRET_KEY` the person provisions outside the conversation, or the person runs the command; a key appearing in context means stop, new wallet, move funds.
-- [ ] Spending stays quote-show-wait by default; public uploads only when the person chose public; venues, addresses and prices come from the verified table or a fetched official page, never memory.
-- [ ] Install stays detect-first and read-before-run (no `curl | sh`); any download/verify step is documented and traced (ADR-0009).
+- [ ] No secrets in the diff — no private key, seed phrase, `SECRET_KEY`, or `AUTONOMI_WALLET_KEY` value in code, examples, or logs.
+- [ ] The key line is intact — the agent never asks for, accepts, reads, prints, transmits, or generates a private key; nodes take a public address only; a paid write uses a `SECRET_KEY` the person provisions outside the conversation, or the person runs the command; a key appearing in context means stop, new wallet, move funds.
+- [ ] Spending stays quote-show-wait by default; public uploads happen only when the person chose public; venues, addresses, and prices come from the verified table or a fetched official page, never memory.
+- [ ] Install stays detect-first and read-before-run (no `curl | sh`) and does not mutate an existing working setup without affirmative remit; any download/verify step is documented and traced (ADR-0009, ADR-0014).
 
 ## Quality & verification
 
-- [ ] Every command, flag, constant, URL and figure traces to `source-bindings/autonomi.md`; nothing invented — anything unconfirmable is flagged, not guessed (ADR-0006).
+- [ ] Every Autonomi-specific command, flag, constant, URL, figure, and install behaviour has explicit provenance; temporary team-confirmed exceptions are labelled pending upstream authority, and platform-specific shell/OS behaviour is checked rather than guessed (ADR-0006).
 - [ ] `python3 scripts/adr-governance.py` passes.
 - [ ] Static checks from `planning/TESTING.md` §3 run (spec validation, vocabulary lint, fact check, length).
 - [ ] Gauntlet (for merge-candidate skill changes): clean-context run of the relevant scenario on a real host + adversarial review — <!-- done / not yet / N/A -->
@@ -46,9 +46,10 @@ The aim: a reviewer — human or agent — can understand this PR and sanity-che
 <!-- Only if this touches skills/autonomi/. -->
 
 - [ ] Frontmatter valid per agentskills.io — `name` matches the folder, `description` ≤ 1024 chars, `compatibility` ≤ 500, `license`, `metadata.version`.
-- [ ] `skills/autonomi/VERSION`, frontmatter `metadata.version`, `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` bumped together.
-- [ ] The loaded skill component contains only `SKILL.md`, `VERSION` and `references/` under `skills/autonomi/`; repo-side files possibly cached with a channel package are not loaded as skill instructions; no hard-coded tool version appears outside the dated *Verified against* table.
-- [ ] Expected to pass the skill-directory scanners (no piped installs, no secrets, no service changes); `.claude-plugin/` manifests still valid if the skill's name or description changed.
+- [ ] `skills/autonomi/VERSION`, frontmatter `metadata.version`, `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json` were bumped together when a shipped file changed.
+- [ ] The loaded skill component contains only `SKILL.md`, `VERSION`, and `references/` under `skills/autonomi/`; repo-side files possibly cached with a channel package are not loaded as skill instructions; no hard-coded tool version appears outside the dated *Verified against* table.
+- [ ] Supported install/update channels and the current signature/checksum verification status are stated accurately; OpenClaw/ClawHub is not claimed as supported while its installer contract is unmet (ADR-0008).
+- [ ] Expected to pass the skill-directory scanners (no piped installs, no secrets, no service changes); `.claude-plugin/` manifests remain valid if the skill's name or description changed.
 
 ## For reviewers
 

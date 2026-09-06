@@ -26,7 +26,7 @@ So the gaps are visible — the skill encodes this today (source-bound or team-c
 - A node **does not self-throttle** CPU/RAM — capping is the operator's job (OS-level).
 - Storage share is **network-set** (grow by adding nodes); spread ≈ **2/IP, ≈5/subnet** (excess nodes unused); ~**7×** replication.
 - **~20 GB free disk per node** to avoid that node being shunned *(team-confirmed, pending source)*, assumed additive.
-- No OS service is installed (daemon/nodes are supervised processes); installer doesn't edit PATH.
+- No OS service is installed (daemon/nodes are supervised processes). The Unix installer does not edit `PATH`; the Windows installer updates the user's persistent `PATH` and the current process. The current skill guidance does not yet preserve that platform distinction and remains unverified on Windows.
 
 Notice what's missing: **how earning works, what "healthy" means to the network, what the agent can actually see, and the authority it's operating under.** Those are the real gaps.
 

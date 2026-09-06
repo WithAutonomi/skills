@@ -1,6 +1,6 @@
 # Autonomous Operating Doctrine — the engine
 
-> What the **fully-autonomous agent** does by default — operating autonomously toward a delegated objective, with **no human engaged in the operational loop** (a human usually set the objective and owns it, but isn't present for the running of it). This is the shared base; the **human-proxy** and **steered** personas layer disclosure and control on top (the concentric model — §8). Grounded in the deep source research (rewards, storage, topology, daemon/observability) and ADR-0004/0005/0006/0009/0010/0011. Observability is query-based per ADR-0011. Feeds the skill's `references/operating-procedures.md` and `references/agent-autonomy-policy.md`.
+> What the **fully-autonomous agent** does by default — operating autonomously toward a delegated objective, with **no human engaged in the operational loop** (a human usually set the objective and owns it, but isn't present for the running of it). This is the shared base; the **human-proxy** and **steered** personas layer disclosure and control on top (the concentric model — §8). Grounded in the deep source research (rewards, storage, topology, daemon/observability) and ADR-0004/0005/0006/0009/0010/0011/0014. Observability is query-based per ADR-0011. Feeds the skill's `references/operating-procedures.md` and `references/agent-autonomy-policy.md`.
 
 ## 1. Objective — what it optimises for
 
@@ -49,7 +49,7 @@ A fully-autonomous agent **escalates asynchronously to whoever delegated the obj
 - the host reclaiming resources (back off / shed);
 - no safe substrate for a spend-shaped goal (defer that goal).
 
-It records just enough context **at the point of an escalation** for a human to pick up — not a standing log. When it can't observe enough to decide safely, it chooses the smaller, reversible action.
+It records just enough context **at the point of an escalation** for a human to pick up — not a standing log. When it can't observe enough to decide safely, it performs only the necessary non-mutating observation needed to establish state and authority, then asks, escalates, or defers. Reversibility does not grant authority to mutate.
 
 ## 8. What the personas layer on top
 

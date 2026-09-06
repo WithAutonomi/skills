@@ -6,7 +6,7 @@
 - **Reviewers:** David Irvine
 - **Supersedes:** none
 - **Superseded by:** none
-- **Related:** ADR-0006 (source-bound; no invented/brittle surface), ADR-0009 (detect-first / non-mutating), ADR-0004 (non-custodial), DESIGN §5 (interface model), §9 (operating boundary), §12 (capability ladder); the operate-and-earn SOP; the upstream "CLI health commands" thread.
+- **Related:** ADR-0006 (source-bound; no invented/brittle surface), ADR-0009 (detect-first / non-mutating), ADR-0004 (non-custodial), ADR-0014 (uncertain-remit default), DESIGN §5 (interface model), §9 (operating boundary), §12 (capability ladder); the operate-and-earn SOP; the upstream "CLI health commands" thread.
 
 ## Context
 
@@ -50,7 +50,7 @@ Invariants:
 - **No log-scraping for health.** Logging stays off by default; debugging-only; never a health data source.
 - **No coupling to node internals** (log strings or on-disk file layout) for health signals.
 - **Work within supported interfaces.** Health depth grows when supported queries exist — not by reaching into internals.
-- **Host metrics via the OS are always permitted** — host stewardship needs them, and they are not Autonomi internals.
+- **Host metrics via the OS are observational, not blanket authority.** They may be read when needed to establish state or steward the host within granted remit; under missing, ambiguous, or exceeded remit, ADR-0014 limits this to necessary non-mutating observation.
 - **Reduced mode is honest:** the skill states what it cannot currently observe rather than inferring it unreliably.
 
 ## Consequences

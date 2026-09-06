@@ -2,7 +2,7 @@
 
 > **Prototype note (3 September 2026; uninstall deferral approved by Jim 4 September 2026).** The skill component loaded from this repo — `skills/autonomi/`, version 0.1.x — is a **prototype that runs ahead of this design**. It is one skill, routed by task (read / store / set up / build / run nodes / uninstall), not the operator-only skill described below. Four things differ materially. **Scope:** the shipped skill covers free reads, paid writes and building on the network, which §1–3 and ADR-0002/0003 route to a separate Developer skill. **Custody:** the shipped skill has no substrate-created or agent-created wallet path at all (§7, ADR-0004) — wallets are created by the person in a wallet app, the agent works with public addresses only, and a paid write uses a `SECRET_KEY` the person provisions to the tool's environment or runs themselves. **Spend:** the shipped skill documents and performs the real ANT + Arbitrum-ETH payment path with quote-show-wait approval (§8, ADR-0005) rather than deferring it. **Uninstall:** the shipped skill removes only the verified executable by default and retains state, while §6 and Proposed ADR-0008 describe removing binaries and state; Jim approved this as a temporary prototype divergence after the 0.1.1 teardown guidance caused a real-host data-loss incident. The underlying operator-design text and Proposed ADR's uninstall rule remain unchanged pending formal reconciliation. The interaction model in §13 and ADR-0010/0014 stand and are applied. The prototype is being tested with the community against `planning/TESTING.md`; once it is proven — or splits — this document and ADR-0002/0003/0004/0005/0008 are revised or superseded with the evidence linked. Until then, where this design and the shipped skill differ, **the loaded skill instructions govern agent behaviour and this document records the operator design they grew from.** Claude Code may physically cache the repository-root plugin package, but only `skills/autonomi/` is loaded as skill instructions. The distribution details below that mention OpenClaw/ClawHub or `metadata.openclaw.install` (§6, §11) are superseded: the skill carries no install manifest and is currently delivered through skills.sh, a Claude Code plugin, or by hand (see `README.md`).
 
-> Canonical design, realigned to ADR-0001…0009. This supersedes the original pre-decision scaffold (which framed the work as a single "loop" and assumed a gas-abstraction path — both removed). Loose thinking lives in the vault (`Projects/Autonomi Skill`); this is the formal design. Volatile specifics (flags, constants, addresses, URLs) are **source-bound** to upstream per ADR-0006, not hardcoded here.
+> Canonical design target, not an exact inventory of the current prototype. This supersedes the original pre-decision scaffold (which framed the work as a single "loop" and assumed a gas-abstraction path — both removed). Loose thinking lives in the vault (`Projects/Autonomi Skill`); this is the formal design. Autonomi-specific facts normally bind to upstream under ADR-0006; temporary team-confirmed exceptions stay visibly provisional while they await upstream authority.
 
 ## 1. Purpose and shape
 
@@ -62,11 +62,11 @@ Three buckets the skill keeps distinct: **what the network enforces** (facts the
 
 ## 10. Staying current (ADR-0006)
 
-Every claim is **source-bound** to upstream (repo / file / symbol / commit) via a source-binding manifest; volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs fetch-live choice. New skill versions are delivered by the channel that installed them: source-hash updates for skills.sh, versioned plugin updates for Claude Code, and deliberate reinstall for manual copies (ADR-0013). The skill does not make a network request to check its own version. Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
+Every Autonomi-specific factual claim carries explicit provenance in the source-binding manifest: normally an upstream repo / file / symbol / commit, or a visibly provisional team-confirmed record pending upstream source (ADR-0006). Ordinary operating-system/shell behaviour must use appropriate platform evidence outside that manifest before support is claimed. Volatile facts are isolated and single-sourced; content is tagged mechanically-derived (auto-regenerable) vs judgement-derived (flag-for-review); per fact, a deliberate bake-with-pin vs approved, bounded fetch-live choice. New skill versions are delivered by the channel that installed them, or by deliberate reinstall for a manual copy (ADR-0013). The skill does not make a network request to check its own version. A separate, optional live check may fetch only signed, typed volatile values within granted network/egress remit, falling back to the bundle otherwise (ADR-0013). Upstream repos signal operator-facing changes back to the skill (the cross-repo freshness contract, ADR-0006). The automation pipeline (upstream-sweep) is deferred; the regeneration-ready structure is mandatory now.
 
 ## 11. Metadata, licensing, provenance (ADR-0008)
 
-Frontmatter: name, a triggering-tuned description, version, license, keywords. An install manifest on x0x's `metadata.openclaw.install` pattern. Licensing to match upstream (likely MIT OR Apache-2.0 — TBC). Clear **provenance / "about"**: the team behind it, the upstream repos it synthesises, and links — so agents and distribution channels can see what's behind it.
+Frontmatter: name, a triggering-tuned description, version, license, keywords. Version metadata and release artifacts for each currently supported channel; OpenClaw metadata remains future work until ant-client offers a suitable version-independent release route. Licensing is MIT OR Apache-2.0. Clear **provenance / "about"**: the team behind it, the upstream repos it synthesises, and links — so agents and distribution channels can see what's behind it.
 
 ## 12. Progressive delivery — capability ladder
 
@@ -115,7 +115,7 @@ The skill stays honest about the boundary at every tier: *it can operate nodes a
 
 ### Disclosure & division of labour
 
-Default to doing the work; surface outcomes and genuinely-human choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — spend / risk / recovery / consent are always surfaced (ADR-0004/0009 risk-based escalation). Escalate by exception, not for routine ops, and never on crypto-literacy.
+Default to doing the work; surface outcomes and genuinely authority-gated choices; keep mechanics and jargon out of the way. Minimise *operational* burden, never *authority* — but "authority" means **granting or widening an envelope**, not acting within one. A spend / risk / recovery / consent envelope is explicitly granted by, or its widening escalated to, the **authorised principal/delegator**; it is never inferred. **Acting within a granted envelope** needs no per-action approval (ADR-0004/0009), and reporting adapts to the available channel. Human-only gates remain human: in particular, ADR acceptance and ADR-0013's material live-value approval cannot be delegated to the running agent. Escalate by exception, not for routine ops, and never on crypto-literacy; where the authorised decision-maker can't be reached, **halt/defer** rather than cross the gate.
 
 ### Language register
 
@@ -133,11 +133,11 @@ Plain, not patronising — assume intelligence, not specialist knowledge. Lead w
 
 ## 14. Open questions (carried; mostly David/maintainer)
 
-- GitHub home/org and clean install/update routes; published skill name.
+- Release/promotion mechanics and clean install/update verification for each supported channel.
 - Agent wallet custody substrate (where keygen/storage/recovery/signing live: assumed-host / signposted / skill-provided wrapper / upstream `ant`) — open team decision (relates to ADR-0004).
 - Gas / acquisition easing (DEX guidance, a paymaster if one returns) — escalate to David (ADR-0005).
 - Upstream watch-set and "material change" policy (for the deferred automation).
-- Pin volatile constants or fetch-live (e.g. the close-group size — read as both 5 and 7; resolve before authoring).
+- Publish the authoritative Recommended Node Resource Document and define ADR-0013 mechanism 4's detailed protocol/spec before implementing any bounded live-values fetch.
 
 ## Design History
 

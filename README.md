@@ -12,7 +12,7 @@ First-party [Agent Skills](https://agentskills.io) for the **Autonomi** network 
 
 The skill follows the [Agent Skills](https://agentskills.io) format, so it isn't tied to one tool. Pick whichever route your agent uses.
 
-### skills.sh — any agent
+### skills.sh (from GitHub; repository access required while private)
 
 ```bash
 npx skills add WithAutonomi/skills
@@ -22,7 +22,7 @@ Useful flags: `-a claude`, `-a codex`, `-a opencode` or `-a '*'` to choose the a
 
 ### Claude Code plugin
 
-```
+```text
 /plugin marketplace add WithAutonomi/skills
 /plugin install autonomi@withautonomi
 ```
@@ -33,6 +33,10 @@ Custom Claude Code marketplaces do not auto-update by default. Enable auto-updat
 /plugin update autonomi@withautonomi
 ```
 
+### ClawHub / OpenClaw
+
+Future only. The earlier version-pinned installer metadata was removed because OpenClaw's current contract cannot express the release route without going stale. No working OpenClaw installer or public ClawHub listing is claimed.
+
 ### By hand
 
 Copy `skills/autonomi/` — `SKILL.md`, `VERSION` and `references/` — into wherever your agent loads skills from (for Claude Code, `~/.claude/skills/autonomi/`). Keep the folder together: the references are loaded on demand. Copies installed by hand do not update automatically; repeat the installation to replace them with a newer release.
@@ -41,13 +45,17 @@ After an update, start a new agent session before relying on the new instruction
 
 ### What the agent loads, and what happens on first use
 
-The agent loads only the skill component in `skills/autonomi/`. skills.sh and manual installations copy that directory; Claude Code caches the repository-root plugin package declared in `.claude-plugin/marketplace.json`, then discovers `skills/autonomi/` within it as the skill component. Repo-side files are not loaded as skill instructions. On first use the agent detects or installs the upstream **`ant`** command-line client from its official GitHub releases — fetching and reading the installer before running it, or taking a checksum-verified manual path — and learns the tool from `ant --help`. Nothing in the skill holds keys or moves funds. A paid write uses a `SECRET_KEY` the person provisions to the tool's environment themselves, or the person runs the paid command; the agent only ever works with public addresses, and spending is quote-show-wait by default.
+The agent loads only the skill component in `skills/autonomi/`. skills.sh and manual installations copy that directory; Claude Code caches the repository-root plugin package declared in `.claude-plugin/marketplace.json`, then discovers `skills/autonomi/` within it as the skill component. Repo-side files are not loaded as skill instructions. On first use the agent detects or installs the upstream **`ant`** command-line client from its official GitHub releases — fetching and reading the installer before running it, or taking a checksum-verified manual path — and learns the tool from `ant --help`. The script installers do not yet verify checksums or signatures themselves, so universally verified delivery remains a target rather than a current guarantee. Nothing in the skill holds keys or moves funds. A paid write uses a `SECRET_KEY` the person provisions to the tool's environment themselves, or the person runs the paid command; the agent only ever works with public addresses, and spending is quote-show-wait by default.
 
 > **Sandboxes.** Installing `ant` needs `github.com` and its release hosts reachable. The installer's version lookup uses `api.github.com`, which some agent sandboxes block while allowing the download itself; the skill then falls back to a manual path that reads the version from the release checksum file. The network is peer-to-peer over UDP, so a proxy-only sandbox can install the tool but will see `found 0 peers` — the skill says so rather than retrying. Distributing the CLI through npm, which every sandbox allows, is tracked in [ant-client #190](https://github.com/WithAutonomi/ant-client/issues/190).
 
 ## Status
 
 A prototype, deliberately: one skill for readers, writers, builders and node operators, to find out whether they can share a skill without any of them feeling the others' weight. What it has to prove, how it's tested and the evidence so far are in [`planning/TESTING.md`](planning/TESTING.md); where every shipped claim comes from is in [`source-bindings/autonomi.md`](source-bindings/autonomi.md); current state and open threads are in [`planning/HANDOFF.md`](planning/HANDOFF.md). The design record and ADRs under `docs/` were written for the earlier node-operator-only skill; [`docs/DESIGN.md`](docs/DESIGN.md) opens with a note on how they relate to what ships now.
+
+> **Platform status:** no platform has completed the full live prototype test. The Windows install path is source-read but has not been run on Windows. Treat its instructions as unverified until that test is complete; see `planning/HANDOFF.md`.
+
+> **Heads-up — binary install in locked-down sandboxes.** The `ant` installer downloads its binary from GitHub's release CDN (`release-assets.githubusercontent.com`), which some AI-agent sandboxes block even when `github.com` is allowed. The skill detects this and tells you exactly what to allowlist rather than failing silently. Tracked as an upstream/release item in [`planning/release-endpoint-accessibility.md`](planning/release-endpoint-accessibility.md).
 
 ## Repo layout
 

@@ -1,8 +1,6 @@
 # SPEC — Tier 1: Operate and earn
 
-> **Prototype status (5 September 2026):** retained as the June operator-skill build contract. The current task-routed 0.1.4 prototype supersedes its OpenClaw manifest requirement: no OpenClaw channel is supported now; current channels are skills.sh, Claude Code and direct/manual installation (Proposed ADR-0008; `README.md`).
-
-> Bounded build slice for the Autonomi Operator Skill. Defines what Tier 1 must do, the acceptance bar, the source-bound command surface, and the verification plan. Scope is fixed by the team go-ahead (2026-Jun-18): **author and agent-test Tier 1 only**; ADR-0004 (custody) and ADR-0005 (gas) stay **Proposed** and are not touched. Aligns to DESIGN §2–§6 and §12 and the ROADMAP capability ladder. This is a spec (what the chunk must do), not a plan (order) or an ADR (invariant).
+> **Historical build spec, not current implementation state.** This defines the June operator-only Tier-1 contract. The current task-routed 0.1.4 prototype supersedes its OpenClaw manifest requirement: current channels are skills.sh, Claude Code, and direct/manual installation. The prototype has not met every target here, notably universally verified delivery, tested Windows guidance, and the full live end-to-end run; read `planning/HANDOFF.md` and `README.md` for current state. ADR-0004 (custody) and ADR-0005 (gas) remain **Proposed**. This is a spec (what the historical chunk had to do), not a plan or an ADR.
 
 ## Scope
 
@@ -20,7 +18,7 @@
 - The node is configured with a **public `--rewards-address` only**.
 - No claim that agent-owned custody or spending is available; the sourcing menu names "agent-created" as first-class for autonomous use but routes its custody substrate onward to Tier 2 (gated; ADR-0004 Proposed).
 - Detect-first, install-only-when-missing; mutate an existing `ant` / `ant-node` setup only within granted remit (ADR-0008, ADR-0009).
-- Every command/flag/constant is source-bound (ADR-0006); no invented commands or fallbacks.
+- Completion requires every Autonomi-specific command/flag/constant to have explicit provenance (normally an upstream source binding; any temporary team-confirmed exception is recorded and pending upstream authority) under ADR-0006. Ordinary shell/OS observation must be checked for each claimed platform; no invented commands or fallbacks.
 
 ## Command surface (source-bound; ant-client @ `84332e2d`, dev-docs verified 2026-06-10)
 
