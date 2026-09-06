@@ -10,7 +10,7 @@ Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craf
 
 ## Status
 
-[PR #12](https://github.com/WithAutonomi/skills/pull/12) merged into `main` at `f0661e914a96f09417fa99ecc7ef46d3871d34be`. Reconciliation merge `8fde1cbeb727fb94625419c1de4a1c5c687241f5` combines its channel-owned-update, authority/remit, provenance, platform-truth, security, and current-state corrections with the task-routed 0.1.4 prototype without changing the shipped skill. All ADRs remain **Proposed**. Jim directed that broader contradictions between the prototype and the Proposed operator-era ADRs be revised from prototype evidence rather than blocking this merge; binary-only uninstall remains an explicit temporary divergence. The current slice intentionally omits Fable, extensive adversarial review, and Craft Review. Proportional local checks pass; remote branch-install confirmation, exact-head ADR CI, manual Hermes review, and human merge approval remain. Consult [PR #13](https://github.com/WithAutonomi/skills/pull/13) for the pushed revision and check results; the public flip and website changes remain separate later actions.
+[PR #12](https://github.com/WithAutonomi/skills/pull/12) merged into `main` at `f0661e914a96f09417fa99ecc7ef46d3871d34be`. Reconciliation merge `8fde1cbeb727fb94625419c1de4a1c5c687241f5` combines its channel-owned-update, authority/remit, provenance, platform-truth, security, and current-state corrections with the task-routed 0.1.4 prototype without changing the shipped skill. All ADRs remain **Proposed**. Jim directed that broader contradictions between the prototype and the Proposed operator-era ADRs be revised from prototype evidence rather than blocking this merge; binary-only uninstall remains an explicit temporary divergence. The current slice intentionally omits Fable, extensive adversarial review, and Craft Review. Proportional local checks and the private GitHub branch-install smoke test pass. Exact-head ADR CI status is tracked on [PR #13](https://github.com/WithAutonomi/skills/pull/13); manual Hermes review and human merge approval remain. The public flip and website changes remain separate later actions.
 
 ## What happened
 
@@ -42,7 +42,7 @@ For 0.1.3, the changed wallet claim traces directly to ant-client `ant-cli/src/m
 
 For 0.1.4, active skill/plugin versions remain synchronized at 0.1.4. The install-path proof remains unchanged. The freshness follow-up removes the only first-use version request, documents `npx skills update autonomi`, Claude Code marketplace updates and manual reinstall against their current published documentation, and reconciles the active Proposed ADR/design/planning sources that required the removed probe. Updated local and exact-review results are recorded in `planning/evidence/2026-Sep-04-pr13-repair.md`.
 
-Reconciliation results at `8fde1cbeb727fb94625419c1de4a1c5c687241f5`: ADR governance passed for all 14 Proposed ADRs; branch-wide whitespace passed; `npx skills add ./ --list` found exactly `autonomi`; equivalent frontmatter validation passed (description 1,021 characters, compatibility 332); all four version surfaces agreed at 0.1.4; length limits passed; vocabulary lint found only the accepted product phrase “permanence tier”; and an isolated project/home copy contained `SKILL.md`, `VERSION`, and bundled references byte-identical to the source. `skills-ref` was unavailable, so its documented equivalent was used. The first isolated free-read attempt stopped safely because reusing only an existing binary supplied no bootstrap file. The documented checksum-verified manual install then passed for `ant` 0.3.6 in the disposable home, connected to 5 peers, and downloaded the example as a valid 135.7 KB JPEG in 17.5 seconds (`SHA-256 98f657d987d339c302295e79907e7a4abc1564bd6b42300ea8d59ccd2148fd17`). No real-home, key, wallet, spend, or node action occurred. Snyk and the broader gauntlet were excluded by the approved packet. Remote branch-install and exact-head CI results belong on [PR #13](https://github.com/WithAutonomi/skills/pull/13).
+Reconciliation results at `8fde1cbeb727fb94625419c1de4a1c5c687241f5`: ADR governance passed for all 14 Proposed ADRs; branch-wide whitespace passed; `npx skills add ./ --list` found exactly `autonomi`; equivalent frontmatter validation passed (description 1,021 characters, compatibility 332); all four version surfaces agreed at 0.1.4; length limits passed; vocabulary lint found only the accepted product phrase “permanence tier”; and an isolated project/home copy contained `SKILL.md`, `VERSION`, and bundled references byte-identical to the source. `skills-ref` was unavailable, so its documented equivalent was used. The first isolated free-read attempt stopped safely because reusing only an existing binary supplied no bootstrap file. The documented checksum-verified manual install then passed for `ant` 0.3.6 in the disposable home, connected to 5 peers, and downloaded the example as a valid 135.7 KB JPEG in 17.5 seconds (`SHA-256 98f657d987d339c302295e79907e7a4abc1564bd6b42300ea8d59ccd2148fd17`). No real-home, key, wallet, spend, or node action occurred. At `54662fd36ea3f13e8a2f10f1f07046ce0ebbf9dc`, an isolated install from the private GitHub branch also passed using existing runner authentication, and the copied skill/version were byte-identical to the checkout. Snyk and the broader gauntlet were excluded by the approved packet. Exact-head CI and review status belong on [PR #13](https://github.com/WithAutonomi/skills/pull/13).
 
 ## Review findings
 
@@ -80,8 +80,7 @@ Craft Review:
 
 ## Open questions / decisions for Jim
 
-- Complete exact-head local checks and ADR CI, then obtain the manual Hermes review and human approval required before PR #13 merges.
-- Run scenario A's free read in disposable state when the host has direct peer-to-peer network access; record an environmental stop honestly if it does not.
+- Obtain the manual Hermes review and human approval required before [PR #13](https://github.com/WithAutonomi/skills/pull/13) merges; use the PR's check result as the authoritative exact-head ADR CI status.
 - After prototype evidence, revise the Proposed ADR set around the demonstrated task-routed shape. Preserve the intended later direction: bundled operational core with optional external depth, and a declared recovery path for every agent-created wallet.
 - The public flip: visibility; private vulnerability reporting switched on (SECURITY.md relies on it); About description, website and topics; delete the merged `docs/install-examples` branch.
 
@@ -92,8 +91,8 @@ PR / upstream action gate:
 
 ## Recommended next step
 
-1. Finish the PR #12 merge reconciliation and proportional local checks declared in `planning/packets/PACKET-pr13-post-pr12-reconciliation.md`; push one exact head and confirm ADR Governance CI.
-2. Give that exact head to Hermes for manual independent review, then ask Jim for the PR #13 merge decision. Fable, broader adversarial review, and Craft Review are not gates for this slice by Jim's direction.
+1. Give the final evidence-only head and its [PR #13](https://github.com/WithAutonomi/skills/pull/13) CI result to Hermes for manual independent review.
+2. Ask Jim for the [PR #13](https://github.com/WithAutonomi/skills/pull/13) merge decision. Fable, broader adversarial review, and Craft Review are not gates for this slice by Jim's direction.
 3. Keep the public flip, website install changes, broader scenario/evaluation work, and Proposed-ADR revision as later explicit gates.
 
 ## Handoff note
