@@ -79,7 +79,7 @@
 **Goal:** Turn the regeneration-ready structure into a working pipeline so the skill is kept current mechanically rather than by hand — the deferred half of ADR-0006. ADR-0013 separates publisher-side regeneration, installation-channel delivery, and the deferred live-values mechanism.
 
 **Milestones:**
-- [ ] Versioned releases flow through supported install channels: source-hash updates for skills.sh, versioned plugin updates for marketplaces, and a documented reinstall path for manual copies — ADR-0013.
+- [ ] Versioned releases flow through supported install channels: skills.sh's native global update comparison and project reinstall flows, versioned plugin updates for marketplaces, and a documented reinstall path for manual copies — ADR-0013.
 - [ ] Upstream-sweep pipeline: analyses the enumerated upstream watch-set, regenerates mechanically-derived content, flags judgement-derived content for review — ADR-0006.
 - [ ] Cross-repo freshness contract operational: upstream repos signal operator-facing changes (issue/PR or release-note marker the regeneration pipeline consumes) — ADR-0006, ADR-0007.
 - [ ] **Deferred mechanism-4 dependency:** publish the authoritative values document and approve a detailed protocol/spec before implementing the bounded runtime values check — ADR-0013 (mech 4). Until then, the reviewed bundled values remain the only source.

@@ -69,8 +69,8 @@ Rigor profile: Full review because this changes Proposed architectural and autho
 
 ## Verification required
 
-- `python3 scripts/adr-governance.py`
-- `git diff --check`
+- `GITHUB_BASE_REF=main python3 scripts/adr-governance.py`
+- `git diff --check origin/main...HEAD`
 - Focused search for superseded self-check and authority wording in active changed documents
 - Confirm all changed ADRs remain Proposed and no Accepted ADR changed
 - GitHub ADR Governance CI on the pushed exact head
