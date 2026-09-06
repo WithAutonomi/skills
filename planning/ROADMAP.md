@@ -42,12 +42,12 @@
 
 ## Phase 02: Author the skill
 
-**Goal:** Produce the installable operator skill — SKILL.md, modules, templates, install manifest, and verification — built on the existing `ant` CLI + daemon (ADR-0003, ADR-0008), source-bound throughout (ADR-0006), climbing the delivery scope ladder tier by tier. Each tier ships a complete, honest story for what it covers; later tiers add modules and routing, never a second install (ADR-0002).
+**Goal:** Produce the installable operator skill — SKILL.md, modules, templates, channel metadata, and verification — built on the existing `ant` CLI + daemon (ADR-0003, ADR-0008), source-bound throughout (ADR-0006), climbing the delivery scope ladder tier by tier. Each tier ships a complete, honest story for what it covers; later tiers add modules and routing, never a second install (ADR-0002).
 
 **Milestones:**
 
 *Foundation (spans all tiers):*
-- [ ] Lean, routing-first SKILL.md authored (opener, task routing, core concepts, safety boundaries, routing table) per DESIGN §2; metadata/frontmatter, provenance/attribution, and install manifest on x0x's `metadata.openclaw.install` pattern — ADR-0008.
+- [ ] Lean, routing-first SKILL.md authored (opener, task routing, core concepts, safety boundaries, routing table) per DESIGN §2; metadata/frontmatter, provenance/attribution, and supported-channel metadata — ADR-0008.
 - [ ] Skill-led, non-mutating install + verified delivery: detect/install the existing `ant` only when missing, confirm checksums + ML-DSA-65 signatures before use, clean uninstall path — ADR-0008, ADR-0009.
 - [ ] Source-binding manifest populated as content lands (provenance per claim; volatile facts single-sourced; bake-with-pin vs approved, bounded fetch-live per fact) — ADR-0006.
 

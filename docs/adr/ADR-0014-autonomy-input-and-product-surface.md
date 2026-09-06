@@ -43,7 +43,7 @@ The skill serves operators across an autonomy spectrum (a person in hands-on ste
 
 This makes explicit and mode-independent the remit-gating of ADR-0004 / 0008 / 0009: mutate only within granted remit; escalate rather than mutate outside it.
 
-**3. A clean product surface — no internal vocabulary.** The **product surface** — everything shipped/installed: `SKILL.md` and `references/` — carries **none of the internal/build/process vocabulary** used to design the skill. The forbidden set (illustrative, not exhaustive): "tier", "persona", "operator" as a label, "engine", "capture evidence", "gauntlet", "packet", "source-binding" as user-facing jargon, ADR/spec/PR references, TODO / process markers, and internal mode names. Repo-side material (`docs/`, `docs/adr/`, `planning/`, `source-bindings/`) is **exempt** — it is not shipped.
+**3. A clean product surface — no internal vocabulary.** The **product surface** — the skill instructions loaded into agent context from `SKILL.md` and `references/` — carries **none of the internal/build/process vocabulary** used to design the skill. The forbidden set (illustrative, not exhaustive): "tier", "persona", "operator" as a label, "engine", "capture evidence", "gauntlet", "packet", "source-binding" as user-facing jargon, ADR/spec/PR references, TODO / process markers, and internal mode names. Repo-side material (`docs/`, `docs/adr/`, `planning/`, `source-bindings/`) is **exempt**: a channel package may contain it, but it is not loaded as skill instructions.
 
 Invariants:
 - **Autonomy is an input; the skill never makes the agent self-classify into a tier.**

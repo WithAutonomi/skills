@@ -1,0 +1,13 @@
+{
+  "name": "autonomi",
+  "description": "Read from, store on, build on and run the Autonomi network — permanent, accountless, encrypted data storage with free reads. The agent never sees a wallet key.",
+  "version": "0.1.4",
+  "author": {
+    "name": "Autonomi",
+    "url": "https://autonomi.com"
+  },
+  "homepage": "https://developers.autonomi.com",
+  "repository": "https://github.com/WithAutonomi/skills",
+  "license": "MIT OR Apache-2.0",
+  "keywords": ["autonomi", "storage", "permanent-storage", "decentralised-storage", "content-addressed", "ant"]
+}

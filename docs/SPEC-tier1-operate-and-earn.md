@@ -1,6 +1,6 @@
 # SPEC — Tier 1: Operate and earn
 
-> **Historical build spec, not current implementation state.** This defines what Tier 1 must do, its acceptance bar, source-bound command surface, and verification plan. The current skill has not yet met every requirement here, notably verified delivery, correct and tested Windows guidance, and the full live end-to-end run; read `planning/HANDOFF.md` and `README.md` for current state. Scope was fixed by the team go-ahead (2026-Jun-18): **author and agent-test Tier 1 only**; ADR-0004 (custody) and ADR-0005 (gas) stay **Proposed** and are not touched. Aligns to DESIGN §2–§6 and §12 and the ROADMAP capability ladder. This is a spec (what the chunk must do), not a plan (order) or an ADR (invariant).
+> **Historical build spec, not current implementation state.** This defines the June operator-only Tier-1 contract. The current task-routed 0.1.4 prototype supersedes its OpenClaw manifest requirement: current channels are skills.sh, Claude Code, and direct/manual installation. The prototype has not met every target here, notably universally verified delivery, tested Windows guidance, and the full live end-to-end run; read `planning/HANDOFF.md` and `README.md` for current state. ADR-0004 (custody) and ADR-0005 (gas) remain **Proposed**. This is a spec (what the historical chunk had to do), not a plan or an ADR.
 
 ## Scope
 

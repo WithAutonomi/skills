@@ -1,90 +1,100 @@
-# GSD Checkpoint — Autonomi Operator Skill (2026-Jun-22 snapshot)
+# GSD Checkpoint — Autonomi skill (current state)
 
-> **Historical checkpoint.** This file preserves the state recorded on 22 June 2026 and is not the current entry point. Read `planning/HANDOFF.md` for current state and next actions.
+Date: 2026-09-06
+Project: Autonomi Skills (`WithAutonomi/skills`)
+Slice/question: Reconcile the task-routed `autonomi` prototype (0.1.4) with the policy and current-state corrections merged through [PR #12](https://github.com/WithAutonomi/skills/pull/12), then prepare [PR #13](https://github.com/WithAutonomi/skills/pull/13) for manual Hermes review.
+Prepared by: Cowork (Claude Fable 5.1), on Jim's behalf; updated by OpenCode for the PR #13 repair and reconciliation
+Agents/tools used: Cowork (Claude); OpenCode; independent Code Reviewer and Craft Reviewer; Hermes full-branch review; research subagents (distribution mechanics, sandbox egress, agent-wallet precedents, ANT acquisition, plugin manifests, uninstall practice); GitHub; `ant` 0.3.5/0.3.6 in a Claude cloud container; docs.autonomi.com.
 
-Date: 2026-06-22
-Project: Autonomi Operator Skill (`JimCollinson/autonomi-skill`)
-Slice/question: Design phase (engine, personas, grounding) complete and merged to `main`; Tier-1 operate-and-earn skill authored and merged. Next: the build round (apply the design to the skill content) + the Tier-1 verification gauntlet.
-Prepared by: Cowork (Claude) orchestration, on Jim's behalf
-Agents/tools used: Cowork (Claude); deep source-research subagents against `WithAutonomi/*` and `saorsa-labs/*`; GitHub; Autonomi canonical docs (`autonomi.com/llms.txt`).
-
-> At this checkpoint, the reading order was: `README.md` → `docs/VISION.md` → `docs/DESIGN.md` (esp. §13) → `docs/adr/` → `docs/operating-doctrine.md` → `docs/skill-grounding.md` → `SKILL.md` + `references/` + `source-bindings/tier1-operate-and-earn.md` → `planning/ROADMAP.md`.
+> **Read this first if you are the incoming agent.** Reading order: `README.md` → `skills/autonomi/SKILL.md` → its `references/` → `planning/TESTING.md` → `planning/HANDOFF.md` → `source-bindings/autonomi.md` → the prototype note at the top of `docs/DESIGN.md` → `docs/adr/`. Follow the coordination protocol in `CONTRIBUTING.md` (lanes; branch + PR, never commit to `main` directly; fetch/rebase before a session and after each merge).
 
 ## Status
 
-**Continue.** The design phase is complete and fully in `main`; the Tier-1 skill is authored and merged. The next work is (a) verifying the merged Tier-1 via the gauntlet and (b) the build round that applies the design (doctrine, personas, grounding) to the skill content. ADRs remain **Proposed** (acceptance is a human gate). Tier 2/3 stay gated on two open team decisions.
+[PR #12](https://github.com/WithAutonomi/skills/pull/12) merged into `main` at `f0661e914a96f09417fa99ecc7ef46d3871d34be`. Reconciliation merge `8fde1cbeb727fb94625419c1de4a1c5c687241f5` combines its channel-owned-update, authority/remit, provenance, platform-truth, security, and current-state corrections with the task-routed 0.1.4 prototype without changing the shipped skill. All ADRs remain **Proposed**. Jim directed that broader contradictions between the prototype and the Proposed operator-era ADRs be revised from prototype evidence rather than blocking this merge; binary-only uninstall remains an explicit temporary divergence. The current slice intentionally omits Fable, extensive adversarial review, and Craft Review. Proportional local checks and the private GitHub branch-install smoke test pass. Exact-head ADR CI status is tracked on [PR #13](https://github.com/WithAutonomi/skills/pull/13); manual Hermes review and human merge approval remain. The public flip and website changes remain separate later actions.
 
 ## What happened
 
-(since the 2026-06-18 checkpoint)
+(since the 2026-06-22 checkpoint and the July docs refresh, PR #12)
 
-- **Tier-1 operate-and-earn skill authored and merged** (PR #1): `SKILL.md` (frontmatter + `metadata.openclaw.install`), `references/` (node-operation, wallet-and-ant, operating-procedures, troubleshooting), `templates/`, and a thorough `source-bindings/tier1-operate-and-earn.md` resolving the spec's four open questions with file/line evidence and a live author self-test (ant 0.1.5 / ant-node 0.13.0; key-free balance read on Arbitrum One).
-- **Deep source research (5 strands)** against upstream code, grounding the operating model. Key findings: earnings come from storing *paid* PUTs (median-of-7 paid 3×; pricing quadratic in records stored); per-node storage auto-scales to disk (no fixed ceiling) but per-node *value* is gated by keyspace share + 3-day pruning, so **many right-sized nodes** beat one big one; **IP/subnet diversity is enforced in production** (~2/IP, ~5 per /24-/48); **close group = 7** (Kademlia K = 20); node health is known in-process but the CLI/daemon expose only process state, so **health is query-based, not logs** (ADR-0011); per-node disk cap only via a direct `--config` TOML.
-- **ADR-0011 added** (PR #3, Proposed): health observability is query-based, not log-based; logs off by default; v1 works within current CLI + OS host metrics + on-chain earnings; richer health deferred to upstream CLI commands.
-- **DESIGN §13 expanded** (PR #4): the three operator personas as a **concentric** model — fully-autonomous = the engine; **human-proxy** and **steered** inherit it — on a Surfaces/Asks/Controls/Register frame, with worked examples; persona 3 renamed **Steered operation**; fully-autonomous reframed to "no human in the *operational* loop" (distal delegator, async escalation).
-- **Operating doctrine + grounding landed** (PR #5): `docs/operating-doctrine.md` (the engine: network-health-first objective, good-citizen SOP, budgets→count→monitor→adjust resource strategy with graduated down-levers, shared-host default with dedicated-is-declared, honest spend boundary, query-based observability, stop/escalate); `docs/skill-grounding.md` (the SKILL.md opener — "what Autonomi is / why run a node," aligned to `autonomi.com/llms.txt` — plus an About/references section).
-- **Contributing process merged** (PR #2): `CONTRIBUTING.md`, `.github/pull_request_template.md`, `.github/SECURITY.md`, and a **coordination protocol** (lanes: design/ADRs vs skill files; branch+PR not direct-to-main; fetch/rebase before+after; review required for ADR/security/agent-authored changes).
-- **Operating-model note:** Cowork holds the design/ADR lane; the implementer (OpenCode + a coding model) authors the skill files; the GSD @pm/orchestrator owns sequencing + packet generation. Cowork + Jim review and steer.
+- **Decision (Jim, 2 Sept):** build one skill named `autonomi`, routed by task — read, store, set up, build, run nodes, uninstall — as a **prototype to test with the community**; revise the ADRs once it is proven; no new ADR now. Distribution: the public GitHub repo is canonical; `npx skills add WithAutonomi/skills` is the primary install; a Claude Code plugin manifest lives in the same repo; the CLI comes from GitHub releases via the existing installer; npm distribution of the CLI is post-launch (Chris agreed; ant-client #190 filed).
+- **Distribution unknowns verified from source** rather than assumed: skills CLI install mechanics (whole-directory copy; well-known index ships only `SKILL.md` unless an archive), plugin marketplaces, sandbox egress across harnesses (api.github.com 403 in Claude cloud while release downloads succeed; proxy-only sandboxes see `found 0 peers`), the skill-directory auditors (Snyk agent-scan, Socket).
+- **The prototype built and revised** through six rounds of Jim's feedback: audience line up top; permanence and private/public before any write; quote-show-wait with an explicit waiver allowed; fetch-and-relay rather than sending the person to links; the demonstration read only on request; a basic node route with the wallet conversation; plain-language principle rather than a prescriptive table; latest-by-default install with no pinned version outside dated history; the OpenClaw manifest removed.
+- **Key handling settled (Jim, 3 Sept):** the agent never sees a key; wallets are created by the person in a wallet app; `SECRET_KEY` is provisioned once by the person in the tool's environment, or the person runs the paid command; a composed wallet-generation procedure and a raw RPC balance read were withdrawn; the ANT contract address is baked into the *Verified against* table and the token is identified by it alone.
+- **This PR:** the skill replaced; the operator skill archived under `docs/archive/operator-skill-v0/`; `planning/TESTING.md` and `source-bindings/autonomi.md` replaced; README rewritten; `LICENSE-MIT` / `LICENSE-APACHE` added; `.claude-plugin/` manifests added; SECURITY, CONTRIBUTING and the PR template updated to the new key line; DESIGN given a prototype note; HANDOFF, NEXT-PHASE and the release-endpoint note refreshed.
+- **Initial review correction (4 Sept):** version 0.1.1 expanded uninstall into a category-by-category teardown. Although its scoped reviews passed, a later real-host review cleanup deleted pre-existing application data. No key, payment, upload or node action occurred, but the incident disproved the safety of exhaustive teardown guidance.
+- **Repair decision (Jim, 4 Sept):** uninstall is binary-only by default, with all settings, application data, logs, nodes, payment receipts and user files retained. Stripe's first-party skills omit uninstall; among 14 first-party skills, none attempts exhaustive teardown; and X0X keeps a short separate page whose omissions and recursive deletion commands show why it is not a safe template. Version 0.1.2 implements the bounded rule and also corrects the tool-update and wallet-balance claims found by Hermes.
+- **0.1.3 correction and deferral (Jim, 4 Sept):** ant-client source showed that every wallet subcommand constructs a wallet from `SECRET_KEY`; 0.1.3 now says `wallet address`, `wallet balance` and paying operations require it, while free reads and `file cost` do not. Jim chose to leave the separately documented same-file replacement race unchanged and approved binary-only uninstall as a temporary prototype divergence from Proposed ADR-0008 / DESIGN §6 rather than rewriting those formal sources in this slice.
+- **0.1.4 install/freshness repair (Jim, 4 Sept):** the checksum-verified Unix manual path now writes `bootstrap_peers.toml` to the platform directory used by ant-client — `${XDG_CONFIG_HOME:-$HOME/.config}/ant` on Linux or `~/Library/Application Support/ant` on macOS — and preserves an existing file. Proposed ADR-0013 now describes the shipped best-effort semantic `VERSION` advisory rather than requiring channel-specific install identity and folder hashes. No checker, lock format, update automation or uninstall behaviour was added.
+- **0.1.4 freshness reversal (Jim, 5 Sept):** review of live first-party collections from Stripe, Anthropic, Vercel, Cloudflare, Sentry, Supabase, Hugging Face and Shopify found no ordinary skill that fetched its own version when loaded. Jim chose the Stripe pattern: installers and marketplaces own installed-skill updates; live fetching is reserved for task-specific facts. The first-use `VERSION` request is removed, while `VERSION` remains synchronized release metadata.
+- **[PR #12](https://github.com/WithAutonomi/skills/pull/12) reconciliation (6 Sept):** PR #12 merged first. [PR #13](https://github.com/WithAutonomi/skills/pull/13) now carries its stricter source-provenance, channel-owned-update, uncertain-remit, security, platform-truth, and current-state wording without changing the 0.1.4 shipped skill. Jim explicitly deferred wider Proposed-ADR reconciliation until the prototype produces evidence and selected manual Hermes review as the independent gate for this slice.
 
 ## Evidence
 
-Files changed/artifacts produced (all on `main`):
+Files (branch `autonomi-skill-prototype`): `skills/autonomi/{SKILL.md,VERSION,references/install-and-verify.md,wallet-and-tokens.md,run-nodes.md,build-on-autonomi.md}`; `docs/archive/operator-skill-v0/*`; `planning/TESTING.md`; `source-bindings/autonomi.md`; `README.md`; `LICENSE-MIT`; `LICENSE-APACHE`; `.claude-plugin/marketplace.json`; `.claude-plugin/plugin.json`; `.github/SECURITY.md`; `CONTRIBUTING.md`; `.github/pull_request_template.md`; `docs/{VISION,FEATURES,DESIGN,CURRENT}.md`; Proposed ADR-0006, ADR-0008 and ADR-0013; `planning/{HANDOFF,NEXT-PHASE,ROADMAP,TESTING}.md`; the active 0.1.4 packet and evidence; `planning/node-resource-spec-brief.md`; `planning/release-endpoint-accessibility.md`.
 
-- Design: `docs/DESIGN.md` (incl. expanded §13), `docs/adr/ADR-0001…0011`, `docs/operating-doctrine.md`, `docs/skill-grounding.md`, `docs/VISION.md`, `docs/FEATURES.md`, `docs/SOURCE-MAP.md`, `docs/SPEC-tier1-operate-and-earn.md`.
-- Skill: `SKILL.md`, `references/*`, `templates/*`, `source-bindings/tier1-operate-and-earn.md`.
-- Process: `CONTRIBUTING.md`, `.github/pull_request_template.md`, `.github/SECURITY.md`, `scripts/adr-governance.py`, `.github/workflows/`.
-- Planning: `planning/ROADMAP.md`, `planning/packets/PACKET-tier1-operate-and-earn.md`.
-- Merged PRs: #1 (Tier-1 skill), #2 (contributing), #3 (ADR-0011), #4 (DESIGN §13), #5 (doctrine + grounding). **Current `main` tip: `5178dee`** (plus this checkpoint).
+Checks run: see `planning/TESTING.md` “Evidence so far” — spec validation, skills.sh discovery, vocabulary lint, link check; installer and manual install paths on `ant` 0.3.6 in a container (version parsed from the latest `SHA256SUMS.txt`, checksum `OK`); offline address derivation; contract address matched to the docs page. The pushed skill files were verified byte-identical to the authored files, and the archived copies byte-identical to `main`, by git blob hash.
 
-Checks run:
+For the 0.1.1 uninstall correction: ADR governance passed; `npx skills add ./ --list` discovered the skill; the documented equivalent frontmatter check passed because `skills-ref` is unavailable here (name match; description 1,019 characters; compatibility 332); version fields agree; length and vocabulary limits pass; `git diff --check` passes. GitHub's ADR Governance check passed for correction commit `bd6cf78`.
 
-- `scripts/adr-governance.py` ran green at **9 ADRs** (2026-06-18); ADR-0010 and ADR-0011 have since been added via PRs — **re-run to confirm at 11** (governance runs in CI on PRs; not independently re-run this session).
-- Tier-1 source surface verified against ant-client / ant-node / evmlib at pinned commits (recorded in the source-binding manifest), incl. an author live self-test.
+For the 0.1.2 repair: ADR governance, skill discovery, equivalent frontmatter (description 1,021 characters; compatibility 332), synchronized version fields, plugin JSON, relative links/anchors, vocabulary, lengths, forbidden-claim scan and `git diff --check` pass. Fail-fast disposable proofs removed only an identity-checked Autonomi-shaped fake binary, preserved eight retained-state sentinels by SHA-256, and rejected an Apache Ant-shaped collision without deletion. Exact commands and output are in `planning/evidence/2026-Sep-04-pr13-repair.md`. Snyk was not run because its token is unavailable. No skill-specific CI arbiter exists; local evidence is weaker than CI and independent clean-context evidence.
 
-Results: design complete and merged; Tier-1 authored and source-bound. The independent verification gauntlet has **not** yet run (see below).
+For 0.1.3, the changed wallet claim traces directly to ant-client `ant-cli/src/main.rs` at `dbc01ce8fdbdfe9ac4d064d35f36b4684bf6a616`: wallet dispatch unconditionally calls `require_secret_key()`, while free reads and `file cost` construct a client without requiring a wallet. Exact local and review evidence remains in `planning/evidence/2026-Sep-04-pr13-repair.md`.
+
+For 0.1.4, active skill/plugin versions remain synchronized at 0.1.4. The install-path proof remains unchanged. The freshness follow-up removes the only first-use version request, documents `npx skills update autonomi`, Claude Code marketplace updates and manual reinstall against their current published documentation, and reconciles the active Proposed ADR/design/planning sources that required the removed probe. Updated local and exact-review results are recorded in `planning/evidence/2026-Sep-04-pr13-repair.md`.
+
+Reconciliation results at `8fde1cbeb727fb94625419c1de4a1c5c687241f5`: ADR governance passed for all 14 Proposed ADRs; branch-wide whitespace passed; `npx skills add ./ --list` found exactly `autonomi`; equivalent frontmatter validation passed (description 1,021 characters, compatibility 332); all four version surfaces agreed at 0.1.4; length limits passed; vocabulary lint found only the accepted product phrase “permanence tier”; and an isolated project/home copy contained `SKILL.md`, `VERSION`, and bundled references byte-identical to the source. `skills-ref` was unavailable, so its documented equivalent was used. The first isolated free-read attempt stopped safely because reusing only an existing binary supplied no bootstrap file. The documented checksum-verified manual install then passed for `ant` 0.3.6 in the disposable home, connected to 5 peers, and downloaded the example as a valid 135.7 KB JPEG in 17.5 seconds (`SHA-256 98f657d987d339c302295e79907e7a4abc1564bd6b42300ea8d59ccd2148fd17`). No real-home, key, wallet, spend, or node action occurred. At `54662fd36ea3f13e8a2f10f1f07046ce0ebbf9dc`, an isolated install from the private GitHub branch also passed using existing runner authentication, and the copied skill/version were byte-identical to the checkout. Snyk and the broader gauntlet were excluded by the approved packet. Exact-head CI and review status belong on [PR #13](https://github.com/WithAutonomi/skills/pull/13).
 
 ## Review findings
 
 Clean-context test:
 
-- Reviewer/tool: `gsd-clean-context-tester`
-- Result: **Not run** — outstanding for the merged Tier-1 skill (a fresh agent, installed skill only, live network).
-- Findings: —
+- Reviewer/tool: official GSD Fable clean-context launcher
+- Result: **Not run.** The earlier validated retry did not invoke Fable: OpenCode rejected `cleancontext` as a primary agent and fell back to a default build agent. Its static trace is not clean-context evidence. Jim explicitly excluded a new Fable run from the 6 September reconciliation slice.
+- Findings: The fallback ran no destructive command, `ant`, real-home access, or Claude/Fable call. Its tracked-file write was replaced by an incident record in `planning/evidence/2026-Sep-04-pr13-repair.md`. Scenario A (free read) remains useful prototype evidence; B needs a funded wallet and D needs a suitable node host.
 
 Adversarial review:
 
-- Reviewer/tool: David's Hermes ran two **documentation/ADR** passes earlier (resolved); the **code/skill** adversarial gauntlet by a fresh agent is **Not run**.
-- Result: Docs review — Concerns, resolved. Skill adversarial — Not run.
-- Findings: the earlier blocker (ADR-0004 antd overstatement) was fixed; the built skill has not been adversarially reviewed.
+- Reviewer/tool: independent Code Reviewer for 0.1.1; Hermes full-branch panel at `e616b9f`; fresh adversarial reviewers for the 0.1.2 repair and 0.1.4 revisions through `bb89bf1c2fd34dbac171113d7291e93b74218ced`
+- Result: **Exact reviews found no CRITICAL/HIGH content defect. Candidate review raised two openly deferred evidence gaps and one stale-count correction; later reviews found package-versus-context wording and a stale OpenClaw channel contract, now reconciled to recorded behaviour.**
+- Findings: the earlier prose-only treatment could not stop a successful arbitrary `VERSION` response from reaching agent context, so the skill now makes no request solely to check its own version. The channel operations trace to current source and documentation but are not misrepresented as project-specific execution. The same-file replacement race remains a non-blocking concern by Jim's decision. PR #12 is merged; Jim deferred formal Proposed-ADR reconciliation until prototype evidence and selected manual Hermes review plus human approval as the remaining independent gates for this slice.
+
+Craft Review:
+
+- Reviewer/tool: two 0.1.1 reviews; direct and prompt-bounded 0.1.2 Craft reviews; exact-commit reviews through `62fb454d9fbbea6da0a616caee4e94506c5320c9`; the `bb89bf1` Craft dispatch stopped at its non-editing boundary without a verdict
+- Result: **The exact candidate Craft Review found one CONFORMANCE mismatch: the reusable version checklist named only two of the four synchronized version surfaces. After correction, integrated Craft Review at `62fb454d9fbbea6da0a616caee4e94506c5320c9` passed with no CONFORMANCE, SIMPLICITY or NIT findings.**
+- CONFORMANCE disposition: fixed by naming all four version surfaces in `planning/TESTING.md`; Proposed ADR-0008's adjacent bundle inventory now also names `VERSION`. Jim explicitly approved the separate conflict with Proposed ADR-0008 and DESIGN §6 as a temporary prototype deferral. No new Craft Review is required for the 6 September reconciliation slice.
 
 ## Drift / scope concerns
 
+- The prototype runs ahead of ADR-0002/0003/0004/0005 and DESIGN §1–3, §7, §8. Deliberate, recorded in the DESIGN note; revise after proof, not before.
+- Binary-only uninstall also runs ahead of Proposed ADR-0008 and DESIGN §6, which still describe removing binaries and state. Jim explicitly approved this as a temporary prototype deferral on 4 September 2026 and, on 6 September, deferred formal reconciliation until prototype evidence exists.
+- `source-bindings/autonomi.md` is provenance by document and observation, not symbol-level bindings — an ADR-0006 gap accepted for the prototype.
+- Jim's 5 September channel-owned freshness decision now reconciles Proposed ADR-0006, Proposed ADR-0008, Proposed ADR-0013 and the active design/planning sources; no active source should require an in-skill version probe.
+- Two Further-reading links (`developers.autonomi.com/llms.txt`, `facts.json`) are held out until those surfaces are live.
+- Manually copied skills have no automatic update notification. Claude Code custom-marketplace auto-update is disabled by default and must be enabled or invoked explicitly; this is documented rather than hidden by a second updater inside the skill.
+- The `.claude-plugin/` manifests are unverified on a real Claude Code.
+- The node route has never been exercised live on `ant` 0.3.x — the same gap the operator skill had.
 - ADRs are **Proposed, not Accepted** — acceptance is a human gate (Jim decision-owner, after review). Never mark Accepted autonomously; supersede, don't edit.
-- **Tier 2/3 are gated** on the custody (ADR-0004) and gas (ADR-0005) team decisions — do not start them; the build round stays in **ungated operate-and-earn**.
-- The stale SOURCE-MAP orientation noted at this checkpoint (close-group size and Tier-1 `evmlib` provenance) is corrected in PR #12's current-state reconciliation.
-- The full source-research synthesis is held in Cowork's working notes (not the repo); the repo carries the conclusions (doctrine, manifest, DESIGN).
+- PR #12's default-deny rule permits only necessary non-mutating observation when remit is missing, ambiguous, or exceeded. The Proposed target is stricter than the prototype's broader reversible-action language and remains an explicit post-evidence reconciliation item rather than an implemented guarantee.
+- No platform has completed the full live prototype test. The Windows path is source-read but not run.
 
 ## Open questions / decisions for Jim
 
-- **Two team decisions** still parked: the agent-wallet **custody substrate** (ADR-0004) and the **gas strategy** (ADR-0005). See the vault `Open Decisions Brief.md`.
-- **ADR acceptance** awaits review (Jim decision-owner; David + Hermes review).
-- Light carry-forward: a team glance at the SKILL.md opener framing (now canonical-aligned to `autonomi.com/llms.txt`).
+- Obtain the manual Hermes review and human approval required before [PR #13](https://github.com/WithAutonomi/skills/pull/13) merges; use the PR's check result as the authoritative exact-head ADR CI status.
+- After prototype evidence, revise the Proposed ADR set around the demonstrated task-routed shape. Preserve the intended later direction: bundled operational core with optional external depth, and a declared recovery path for every agent-created wallet.
+- The public flip: visibility; private vulnerability reporting switched on (SECURITY.md relies on it); About description, website and topics; delete the merged `docs/install-examples` branch.
 
 PR / upstream action gate:
 
-- PR ready to raise? **N/A right now** — PRs #1–#5 are already merged on Jim's own repo. The next build round will produce **agent-authored PRs**, which (per CONTRIBUTING) need an approving review before merge.
-- Jim confirmed PR may be opened? **N/A** — the live gates are **transfer to WithAutonomi** and **external publish**, neither pending.
-- Draft PR title/description prepared: N/A.
+- PR ready to raise? **Raised** — `autonomi-skill-prototype` → `main`, agent-authored, needs an approving review per CONTRIBUTING.
+- Jim confirmed PR may be opened? **Yes** (3 Sept 2026).
 
 ## Recommended next step
 
-Hand to the GSD @pm/orchestrator for two sequenced slices, **ungated operate-and-earn only**:
-
-1. **Verify first — the Tier-1 gauntlet** on the merged skill: a fresh `gsd-clean-context-tester` (installed skill only, live network, no key handled) plus a fresh `gsd-adversarial-reviewer`. Capture evidence; fix or flag findings.
-2. **Then the build round** — apply the design to the skill content: add the SKILL.md opener + About from `docs/skill-grounding.md`; weave the §13 personas/register through the routing; deepen `references/operating-procedures.md` and author `references/agent-autonomy-policy.md` from `docs/operating-doctrine.md`; source-bind any new claims in the manifest.
-
-Do not start Tier 2/3 (custody/gas gated).
+1. Give the final evidence-only head and its [PR #13](https://github.com/WithAutonomi/skills/pull/13) CI result to Hermes for manual independent review.
+2. Ask Jim for the [PR #13](https://github.com/WithAutonomi/skills/pull/13) merge decision. Fable, broader adversarial review, and Craft Review are not gates for this slice by Jim's direction.
+3. Keep the public flip, website install changes, broader scenario/evaluation work, and Proposed-ADR revision as later explicit gates.
 
 ## Handoff note
 
-Non-negotiables: **never generate, store, log, or pass a private key** (`SECRET_KEY`/`AUTONOMI_WALLET_KEY`) — nodes take a **public address only**; **no invented commands/figures** — everything source-bound (ADR-0006); **health from queries, not logs** (ADR-0011), logs off by default; **shared-host default**, dedicated only when declared; **removal/reset is health-only**, never an optimisation lever; **hands-off auto-upgrade**; don't edit Accepted ADRs (supersede); follow the `CONTRIBUTING.md` coordination protocol (lanes; branch+PR; fetch before/after); **PR-to-shared/upstream, transfer to WithAutonomi, and publish are Jim-approval gates.** The operating engine is `docs/operating-doctrine.md`; the personas are DESIGN §13; the opener/about source is `docs/skill-grounding.md`.
+Non-negotiables: the agent **never sees, requests, generates, or handles a private key**; nodes take a public address only; every future agent-created wallet requires a declared recovery path at creation; spending is quote-show-wait unless the person explicitly waives it; uninstall removes only the discovered executable by default and never treats testing as cleanup permission; the token is identified by contract address only; **no invented Autonomi commands or figures** — trace them, label temporary authority honestly, and trust `--help` over the skill; the installed skill never modifies its own files; never edit an Accepted ADR (supersede); branch + PR, never direct to `main`; **PR creation on shared repos, marking ADRs Accepted, the public flip, and merge remain Jim-approval gates.**

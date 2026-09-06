@@ -10,7 +10,7 @@
 
 ## Context
 
-The shipped skill is a **bundled, versioned snapshot** — `SKILL.md` plus bundled `references/` — deliberately self-contained so its guidance can be loaded and used without contacting an update or freshness service (ADR-0008). Source-backed facts are bound to upstream code; any temporary team-confirmed value that leads upstream is explicitly labelled pending source (ADR-0006). Autonomi operations still require whatever network access their task normally needs.
+The shipped skill is a **bundled, versioned snapshot** — `SKILL.md`, `VERSION`, and bundled `references/` — deliberately self-contained so its guidance can be loaded and used without contacting an update or freshness service (ADR-0008). Source-backed facts are bound to upstream code; any temporary team-confirmed value that leads upstream is explicitly labelled pending source (ADR-0006). Autonomi operations still require whatever network access their task normally needs.
 
 A snapshot drifts from reality along **independent axes**: the underlying `ant` tool updates on its own lifecycle; the skill's own instructions get revised; and a *narrow subset* of the operational figures it carries (resource sizing, shunning/standing thresholds) change faster than the whole skill is re-released. Distribution is channel-agnostic (ADR-0008), but every installed copy still arrived through a channel with its own update semantics. Runtime fetching solely to check the skill's own version duplicates that layer while adding latency, failure, and an instruction/injection surface.
 
@@ -46,7 +46,7 @@ The `ant` tool and its binaries update on their own lifecycle (auto-upgrade chan
 Automation watches upstream against the source-bindings manifest and regenerates the artifact, respecting **ADR-0006's split**: **mechanical, source-bound content** (commands, flags, figures) may be regenerated automatically, while **judgement-derived content** (doctrine, prose, guidance) is **flagged for human review**, never silently rewritten. A regenerated candidate passes a **reviewed release/promotion gate** before it is published as a new versioned snapshot. Regeneration is from the manifest — not hand-patching to chase upstream.
 
 **3. Consuming skill updates — the installation channel owns delivery.**
-Every released skill carries synchronized version metadata across the surfaces used by its supported channels. The installed skill makes no network request solely to check its own version and does not inspect install-manager state or modify its own files.
+Every released skill carries synchronized version metadata across its frontmatter, bundled `VERSION` file, plugin manifest, and marketplace entry. The installed skill makes no network request solely to check its own version and does not inspect install-manager state or modify its own files.
 
 The channel that installed a copy owns update discovery and delivery through its documented mechanism. A manually copied bundle is explicitly non-updating and is replaced by repeating the installation. A copy installed from a content-addressed commit SHA or a release identifier whose channel enforces immutability remains pinned unless the person deliberately chooses a newer source. Merely recording a `ref` does not make it immutable: a branch moves, and a tag is a pin only where source/channel governance prevents it from being moved. Channel-specific commands, metadata, and reload behaviour belong in source-bound implementation documentation, not this decision record.
 
