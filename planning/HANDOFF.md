@@ -48,7 +48,7 @@ The **one task-routed prototype (0.1.4)** merged through [PR #13](https://github
 
 ## Open threads (what's next)
 
-1. **Hermes review of npm-first installation.** Review the 0.1.5 PR, evidence and carried observations, then return to Jim for the merge decision. Claude review is waived for this change; recovering its shared lock is not part of this work.
+1. **Hermes review of npm-first installation.** [PR #14](https://github.com/WithAutonomi/skills/pull/14) is open. Review its 0.1.5 changes, evidence and carried observations, then return to Jim for the merge decision. Claude review is waived for this change; recovering its shared lock is not part of this work.
 2. **Public flip and the site.** Visibility, private vulnerability reporting, About/topics; the website's install tabs point at `main`; the quickstart prompt loses “confirm 0.3.3”.
 3. **Developer-site surfaces.** Once `developers.autonomi.com/llms.txt` and `facts.json` are live, add them to Further reading in a later version bump.
 4. **Community testing.** Trigger eval; Snyk scan (needs a token); open the testing call; collect transcripts and score them against F1–F10 in `planning/TESTING.md`.

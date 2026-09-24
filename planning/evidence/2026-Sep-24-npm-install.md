@@ -4,7 +4,7 @@ Date: 2026-09-24
 Role: implementation and scoped verification, OpenCode (openai/gpt-6-astra)
 Branch: `autonomi-npm-install`; base `69ca49452e7555f607646bc9f023718bf43cd046`
 Packet: [`PACKET-autonomi-npm-install.md`](../packets/PACKET-autonomi-npm-install.md)
-Status: PR authorised for Hermes review; implementation committed at `81f023e7d74c232dd04bd47a88bf82f09887cc8a`. Hermes review and Jim's merge decision remain; not declared merge-ready.
+Status: [PR #14](https://github.com/WithAutonomi/skills/pull/14) is open for Hermes review; implementation committed at `81f023e7d74c232dd04bd47a88bf82f09887cc8a`. Hermes review and Jim's merge decision remain; not declared merge-ready. At creation, GitHub reported no checks and a blocked merge state; this is not CI green.
 Meaningful work-unit: Yes. Craft Review complete; adversarial report delivered; Claude clean-context not run and explicitly waived by Jim for this change. Historical dispatch/lock records below remain evidence, not current blockers to opening the PR.
 
 ## Owner review decision
@@ -165,4 +165,4 @@ Final rerun: all three command blocks above passed after the PR draft and review
 
 Test changes are explicitly approved in this packet: npm lifecycle proof and npm variants added without removing prior standalone/collision/state checks. No CI/gate/harness-adapter changes, no failures hidden, no real-state destruction. The proof script and static commands are committed in the candidate; checks remain dependent on their documented local prerequisites.
 
-Next: publish the authorised PR using [the prepared description](../PR-autonomi-npm-install.md), then hand it to Jim for Hermes review. Do not recover the shared lock, rerun Claude, or merge. This checkpoint makes no release/merge-readiness claim.
+Next: Jim can send [PR #14](https://github.com/WithAutonomi/skills/pull/14) to Hermes for review; [the prepared description](../PR-autonomi-npm-install.md) is its review brief. Do not recover the shared lock, rerun Claude, or merge. This checkpoint makes no release/merge-readiness claim.
