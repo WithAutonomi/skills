@@ -1,5 +1,7 @@
 # GSD Checkpoint — Autonomi skill (current state)
 
+> **Current checkpoint, 24 September 2026:** [PR #13](https://github.com/WithAutonomi/skills/pull/13) merged at `69ca494`; its pre-merge checkpoint below is historical. The active local work is **0.1.5 npm-first client installation** on `autonomi-npm-install`, approved by Jim. Read [`planning/HANDOFF.md`](../planning/HANDOFF.md), the [work packet](../planning/packets/PACKET-autonomi-npm-install.md), and the [npm-install evidence/checkpoint](../planning/evidence/2026-Sep-24-npm-install.md) for current scope, checks, review gaps and PR-preparation status. Prior review waivers do not carry forward. No new PR has been opened.
+
 Date: 2026-09-06
 Project: Autonomi Skills (`WithAutonomi/skills`)
 Slice/question: Reconcile the task-routed `autonomi` prototype (0.1.4) with the policy and current-state corrections merged through [PR #12](https://github.com/WithAutonomi/skills/pull/12), then prepare [PR #13](https://github.com/WithAutonomi/skills/pull/13) for manual Hermes review.

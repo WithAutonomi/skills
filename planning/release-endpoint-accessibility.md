@@ -1,6 +1,10 @@
 # Release endpoint accessibility — agents can't always reach the binary
 
-> **Status:** Updated 2026-09-03 — the skill now handles the blocked cases; the durable fix is npm distribution, tracked upstream as [ant-client #190](https://github.com/WithAutonomi/ant-client/issues/190) (post-launch, agreed with Chris) · **Owner:** Jim · **Logged:** 2026-06-24
+> **Status:** Updated 2026-09-24 — official npm client distribution is available; this branch makes it the preferred skill route when Node.js/npm are present. Background: [ant-client #190](https://github.com/WithAutonomi/ant-client/issues/190). **Owner:** Jim · **Logged:** 2026-06-24
+
+## Update — 2026-09-24
+
+`npm install -g @withautonomi/ant` obtains the client and platform binary through npm, without an install-time GitHub release download. This addresses the client-distribution gap, not every network restriction: configured registries must be reachable, node addition still fetches its separate binary, and network operations still require direct UDP. Both direct installers remain fallbacks. Source evidence is in `source-bindings/autonomi.md`; scoped proof and remaining gaps are recorded in `planning/evidence/2026-Sep-24-npm-install.md`. Earlier observations below remain historical evidence, not claims that npm is universally allowlisted.
 
 ## Update — 2026-09-03
 

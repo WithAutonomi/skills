@@ -41,6 +41,8 @@ The pieces are **interrelated task journeys** — run a node; receive & secure A
 
 ## 6. Install and secure delivery (skill-led distribution; ADR-0008)
 
+**Prototype update (24 September 2026):** the client now has an official npm distribution. The current skill prefers it with existing Node.js/npm, retains both direct installers and the checksum-verified manual alternative in `references/install-and-verify.md`, and uses the owning package manager for npm update/removal. Removal still preserves all application/user state. Packaging-time signature checks are not claimed as local signature verification. The operator-era target below and its already recorded verification/uninstall gaps are not reconciled by this installation-method change.
+
 The skill is self-sufficient: installing it is all an agent needs. It detects what is already present and installs the **existing** tools only when missing — the `ant` CLI (the node daemon is the same `ant` binary in daemon mode; `ant-node` is fetched per node) — mutating an existing setup only for a compatibility/security reason and within the agent's granted remit (per ADR-0009).
 
 - **Install paths, with fallbacks (x0x pattern):** install script (`install.sh` / `install.ps1`, which `ant-client` already ships) → direct release artifacts → build-from-source; plus a fallback source (e.g. raw GitHub) if the primary URL is unreachable.

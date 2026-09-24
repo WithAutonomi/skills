@@ -1,12 +1,67 @@
 # Installing and verifying the `ant` tool
 
-Read this when the installer script isn't appropriate, when a download is blocked, or when the person wants the download checked before anything runs. The short version is in the main skill; this is the full procedure.
+Read this for installation details, direct-install alternatives, blocked downloads, or identifying the installation before an update or removal. The short version is in the main skill; detect and identify any existing `ant` there first, and leave a working installation alone.
 
-## What gets installed
+## Install with npm (preferred when available)
+
+Check `node --version` and `npm --version`: the package needs Node.js 18+ and a compatible npm. Use an existing supported Node release; don't install Node solely for this tool when a direct installer will do.
+
+```bash
+npm install -g @withautonomi/ant
+ant --version
+ant --help
+ant file --help
+```
+
+Confirm Autonomi identity using the main skill's check, not just the command's name. The package supplies Linux/macOS x64 and ARM64 binaries and Windows x64 (also used on ARM64 under emulation). Node.js launches the native binary every time, so it must remain installed. Keep optional dependencies enabled: `--omit=optional` or `--no-optional` skips the platform binary and leaves an unusable launcher.
+
+When install scripts are permitted, the package copies `bootstrap_peers.toml` to the platform config directory only if absent. If scripts are disabled, leave that policy intact: the client has built-in peers, so a missing config file alone is not an installation failure. npm installation does not start nodes or a service.
+
+If the command isn't found, check `npm prefix -g`: npm puts launchers in `<prefix>/bin` on Unix and directly in `<prefix>` on Windows. Confirm that location is on `PATH`, or use the launcher's full path; don't silently edit a shell profile. If the prefix is unwritable or a conflicting launcher exists, stop and explain rather than using `sudo`, `--force`, or changing npm configuration. A permitted direct user-directory install is an alternative, not permission to bypass policy.
+
+### npm installation ownership
+
+Before updating or removing, find the command actually in use (`command -v ant` on Unix; `(Get-Command ant).Source` on Windows) and confirm its Autonomi identity. Then inspect the same npm environment:
+
+```bash
+npm prefix -g
+npm root -g
+npm list -g --depth=0 @withautonomi/ant
+```
+
+Confirm the discovered launcher belongs to this listed package: the Unix symlink or Windows npm shim must target `@withautonomi/ant/bin/ant.js` under the reported package root. A package listing alone does not prove it owns the active command. Stop on a different prefix, local/project installation, other package manager, alias or unexplained wrapper rather than applying a global command to it. An absent npm listing does not prove a standalone binary.
+
+With ownership confirmed, retain the same npm environment and prefix for the authorised action: `npm update -g @withautonomi/ant` or `npm uninstall -g @withautonomi/ant`. For an explicitly selected prefix, pass `--prefix "<confirmed-prefix>"`. Never update all global packages or remove an unrelated command revealed afterwards. Keep settings and user state; package removal is not node teardown. If running processes depend on this installation, explain that before proceeding, not by silently stopping them.
+
+## Direct installer fallbacks
+
+Use when suitable Node.js/npm are absent or a direct install is preferred and permitted. Fetch, read, then run the official script; do not pipe a download into a shell. These scripts do not themselves verify checksums/signatures; use the manual path below when a checksum check is needed.
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/WithAutonomi/ant-client/main/install.sh -o ant-install.sh
+# Read ant-install.sh before running it.
+INSTALL_DIR="$HOME/.local/bin" bash ant-install.sh
+```
+
+Set `INSTALL_DIR` as shown: the macOS script otherwise defaults to `/usr/local/bin`, which may not be writable. The script installs the latest stable release. If its version lookup at `api.github.com` is blocked, use the manual path below or set `ANT_VERSION=<version>` alongside `INSTALL_DIR`, taking the version from the latest release's checksum file.
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/WithAutonomi/ant-client/main/install.ps1 -OutFile ant-install.ps1
+# Read ant-install.ps1 before running it.
+powershell -ExecutionPolicy Bypass -File .\ant-install.ps1
+```
+
+The script persistently adds `%LOCALAPPDATA%\ant\bin` to the user PATH; explain that before running it, and that a new terminal may be needed. Honour the environment's script-execution policy; use the manual alternative rather than overriding an organisational restriction. After either install, run `ant --version`, `ant --help` and `ant file --help` and confirm identity as in the main skill.
+
+## Direct-install locations
 
 The installer places one binary, `ant`, plus one config file, `bootstrap_peers.toml` (the list of peers the client uses to find the network). On Windows, the installer script also adds the binary's folder to the user's `PATH`; the manual procedure does not. No service is started, no system directory is touched, and `sudo` is never needed when you install into the user's home directory. Running the tool can later create application data and logs in the locations below.
 
-Default locations:
+Default direct-install locations (npm's binary and launcher live under its package root/prefix instead; config and application-data locations are shared):
 
 | | Binary | Config | Application data | Logs |
 |---|---|---|---|---|
@@ -88,11 +143,13 @@ The manual path does **not** change the PATH. Either run the tool by its full pa
 
 ## About the signatures
 
-Each archive also carries an ML-DSA-65 signature (`.sig`), made with a key whose public half lives in the ant-client repository. Checking it by hand needs a separate tool, so this skill doesn't ask you to. What it does rely on: the checksum check above for the first install, and the fact that `ant update` verifies that signature itself, against a copy of the public key built into the binary, before it installs any later version. Once one verified `ant` is on the machine, every later one can be checked without extra tooling.
+Each release archive also carries an ML-DSA-65 signature (`.sig`), made with a key whose public half lives in the ant-client repository. Checking it by hand needs a separate tool, so this skill doesn't ask you to. The manual path above checks the archive checksum; direct installations can later use `ant update`, which verifies the release signature against a public key built into the binary before replacing it.
+
+The npm release workflow checks the archive checksum and signature before packaging the native binary and publishes with npm provenance (a record tying the package to its source and publishing workflow). That is not a local Autonomi-signature check during `npm install`. Report only checks actually performed; do not describe every installation as locally signature-verified.
 
 ## When a download is blocked
 
-Symptoms: `curl: (22) The requested URL returned error: 403`, a connection refused, or a proxy error page. Stop, and tell the person which host to allow. The hosts involved:
+Symptoms: a 403, connection refused, or a proxy error page. Report the failing host. npm obtains the launcher and native binary from its registry (normally `registry.npmjs.org`), without downloading a GitHub release at install time. Honour a configured organisation registry; don't change it to evade policy. Direct installs use these hosts:
 
 | Host | Needed for |
 |---|---|
@@ -101,7 +158,7 @@ Symptoms: `curl: (22) The requested URL returned error: 403`, a connection refus
 | `raw.githubusercontent.com` | the installer script (not needed for the manual path) |
 | `api.github.com` | only the installer's "find the latest version" step — the manual path above avoids it by reading the version from the newest release's checksum file, and `ANT_VERSION=<version>` makes the installer skip it too |
 
-Several agent sandboxes allow the first three by default but not the last, which is why the fallbacks above exist. Never substitute a mirror or alternative host from memory; if the official hosts can't be reached, the person needs to change the environment or install on a different machine.
+Some sandboxes allow release downloads but block the API; others block the release hosts too. The official npm route can work where GitHub downloads are unavailable, if permitted. Never substitute a mirror or alternative host from memory. If no documented route is permitted and reachable, stop and ask for an approved environment. Installing the client does not prove node downloads or direct network connections will work.
 
 ## When the tool installs but finds no peers
 
@@ -109,4 +166,4 @@ Several agent sandboxes allow the first three by default but not the last, which
 
 ## Removing the tool
 
-Follow [Removing the tool](../SKILL.md#removing-the-tool) in the main skill. The path table above is a clue, not permission: `INSTALL_DIR` can move the executable, so locate the candidate actually in use and prove from its `--version` and `--help` output that it is the Autonomi client before removing that exact file. Preserve everything else by default.
+Follow [Removing the tool](../SKILL.md#removing-the-tool) in the main skill. For npm, confirm ownership above and let npm remove its package and launchers. For a standalone installation, the path table is a clue, not permission: locate and identify the actual executable before removing that file only. Preserve settings, application data, logs, nodes, receipts, downloads, source files and datamaps in either case.

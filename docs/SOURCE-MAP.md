@@ -15,7 +15,7 @@
 ### `ant-client` (Rust) — the `ant` CLI + core + node-management daemon (the core operator surface)
 - **Command tree:** `ant-cli/src/cli.rs` (+ the node command module under `ant-cli/src/commands/`). **Confirm the Tier-1 command tree directly against this code** — the SPEC's tree currently leans on the dev-docs reference; the binding target is the CLI source.
 - **Node lifecycle:** `ant node add | start | stop | status | reset`; `ant node daemon start | stop | status | info` (the node-management daemon — this is the operator "daemon").
-- **Install:** `install.sh` / `install.ps1` (repo root; `curl … | bash` / `irm … | iex`) or `cargo build --release --bin ant`.
+- **Install:** official `@withautonomi/ant` npm package; `npm/ant/` launcher/config behaviour and `npm/build-packages.sh` packaging. Direct alternatives: `install.sh` / `install.ps1` (fetch and read before running) or `cargo build --release --bin ant`. Current pinned evidence is in `source-bindings/autonomi.md`.
 - **No-key boundary:** `ant-cli/src/main.rs` `require_secret_key()` — `SECRET_KEY` is a private key; `ant wallet address | balance` derive from it, so they are **not** used on the no-key operate-and-earn path. The resolved key-free balance path is the manifest-bound read-only ERC-20 `balanceOf(address)` call through the public Arbitrum RPC.
 
 ## Secondary / later-tier source — pointer, not a Tier-1 binding
