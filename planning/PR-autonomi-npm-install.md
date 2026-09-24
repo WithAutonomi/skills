@@ -25,7 +25,7 @@ Preserves source-grounded instructions, detect-first lifecycle, identity checks,
 - Isolated macOS npm install/identity/help, repeated detection, same-version package update, explicit removal and nine retained-state hashes passed on `ant` 0.3.8.
 - Craft Review passed. One fresh adversarial report found no CRITICAL/HIGH content defect; it identified incomplete fresh-agent and committed-revision evidence.
 - No installation-test CI arbiter exists; evidence is weaker. The existing ADR workflow is filtered to governance changes.
-- **Not merge-ready:** official Claude clean-context test is pending; Jim has authorised a local commit to freeze its review target. Snyk was not run (token absent); Windows/Linux runtime and live-network checks were not performed in this slice.
+- **Not merge-ready:** the candidate is locally committed at `81f023e`; official Claude clean-context testing could not start because the machine-wide review lock belongs to a recorded Try Autonomi review. The lock was preserved, not bypassed. Snyk was not run (token absent); Windows/Linux runtime and live-network checks were not performed in this slice.
 
 Evidence and exact commands: [`planning/evidence/2026-Sep-24-npm-install.md`](evidence/2026-Sep-24-npm-install.md). Scope: [`planning/packets/PACKET-autonomi-npm-install.md`](packets/PACKET-autonomi-npm-install.md).
 

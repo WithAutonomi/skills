@@ -4,8 +4,25 @@ Date: 2026-09-24
 Role: implementation and scoped verification, OpenCode (openai/gpt-6-astra)
 Branch: `autonomi-npm-install`; base `69ca49452e7555f607646bc9f023718bf43cd046`
 Packet: [`PACKET-autonomi-npm-install.md`](../packets/PACKET-autonomi-npm-install.md)
-Status: Preparing the owner-authorised local commit and official Claude review; not merge-ready. No push or PR.
-Meaningful work-unit: Yes. Craft Review complete; clean-context pending the frozen commit; adversarial report delivered at this gate. No review waiver inferred. The pre-commit evidence and dispatch history below remain dated records, not current approval blockers.
+Status: Local candidate committed at `81f023e7d74c232dd04bd47a88bf82f09887cc8a`; official Claude review blocked by an existing machine-wide review lock. Not merge-ready. No push or PR.
+Meaningful work-unit: Yes. Craft Review complete; clean-context not run; adversarial report delivered at this gate. No review waiver inferred. The pre-commit evidence and dispatch history below remain dated records, not current approval blockers.
+
+## Committed-review attempt
+
+Jim authorised a local commit and the official Claude review. Commit `81f023e7d74c232dd04bd47a88bf82f09887cc8a` contains the 17 intended files; ADR governance and whitespace checks passed before commit, and the project worktree was clean afterwards. No hooks were bypassed.
+
+The canonical namespace is owned by the caller and mode 700. The atomic acquisition command failed safely:
+
+```text
+mkdir -m 700 '/var/folders/f_/j942sskj6nx67b6gk3rqgsqm0000gn/T/opencode/gsd-cleancontext/lock'
+mkdir: .../gsd-cleancontext/lock: File exists
+```
+
+Read-only inspection found a mode-700 lock directory, modified 22 September, with a brief for the separate **standalone Try Autonomi** review at candidate `5dc3288154e805cedfb2d8328eb377629f82cc5d`. Its presence does not establish whether that review is still running or stale. It was not overwritten, removed, or reused. No brief was written for this candidate, no valid dispatch was sent, no Claude process launched, and no result or model identity is claimed. The initially generated run ID `14832cee-c65b-4239-9af5-d2d0602453f0` was unused.
+
+An earlier compound namespace precheck had returned success for an absent-lock test, but later inspection and the atomic `mkdir` both found the lock. The failed atomic acquisition is authoritative; no assumption about a race or stale read was used to override it. GSD launcher revision inspected: `3708e21221415895406e1f46539bea7a64feeb5c`; its three load-bearing launcher files matched HEAD.
+
+Clean-context remains blocked before dispatch. Resolve ownership/liveness of the existing review lock with Jim or its owning session before a new attempt. Do not clear it merely to make this review run.
 
 ## Changes
 
@@ -144,4 +161,4 @@ Final rerun: all three command blocks above passed after the PR draft and review
 
 Test changes are explicitly approved in this packet: npm lifecycle proof and npm variants added without removing prior standalone/collision/state checks. No CI/gate/harness-adapter changes, no failures hidden, no real-state destruction. The proof script and static commands are in the candidate. Until these files are committed, checking out the branch alone does not reproduce the candidate.
 
-Next: Jim has authorised the local commit and official Claude review. Freeze the candidate, run that review once through its governed launcher, and persist the result. The [PR draft](../PR-autonomi-npm-install.md) is prepared, not published. Push/PR creation and merge remain separate gates. This checkpoint makes no release/merge-readiness claim.
+Next: resolve the existing review lock through its owner or an explicitly authorised recovery, then dispatch against a clean committed revision. The [PR draft](../PR-autonomi-npm-install.md) is prepared, not published. Push/PR creation and merge remain separate gates. This checkpoint makes no release/merge-readiness claim.
