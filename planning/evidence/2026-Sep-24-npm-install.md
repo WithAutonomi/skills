@@ -4,8 +4,12 @@ Date: 2026-09-24
 Role: implementation and scoped verification, OpenCode (openai/gpt-6-astra)
 Branch: `autonomi-npm-install`; base `69ca49452e7555f607646bc9f023718bf43cd046`
 Packet: [`PACKET-autonomi-npm-install.md`](../packets/PACKET-autonomi-npm-install.md)
-Status: Local candidate committed at `81f023e7d74c232dd04bd47a88bf82f09887cc8a`; official Claude review blocked by an existing machine-wide review lock. Not merge-ready. No push or PR.
-Meaningful work-unit: Yes. Craft Review complete; clean-context not run; adversarial report delivered at this gate. No review waiver inferred. The pre-commit evidence and dispatch history below remain dated records, not current approval blockers.
+Status: PR authorised for Hermes review; implementation committed at `81f023e7d74c232dd04bd47a88bf82f09887cc8a`. Hermes review and Jim's merge decision remain; not declared merge-ready.
+Meaningful work-unit: Yes. Craft Review complete; adversarial report delivered; Claude clean-context not run and explicitly waived by Jim for this change. Historical dispatch/lock records below remain evidence, not current blockers to opening the PR.
+
+## Owner review decision
+
+On 24 September Jim directed: "Don't worry about the Claude review. Please can we just assemble a PR for this, and I can get it reviewed by Hermes?" The branch push and PR are authorised; Hermes review replaces the Claude gate. This is not a passed clean-context test, a waiver of truthful evidence, or merge approval. No attempt to clear or reuse the existing review lock will be made.
 
 ## Committed-review attempt
 
@@ -22,7 +26,7 @@ Read-only inspection found a mode-700 lock directory, modified 22 September, wit
 
 An earlier compound namespace precheck had returned success for an absent-lock test, but later inspection and the atomic `mkdir` both found the lock. The failed atomic acquisition is authoritative; no assumption about a race or stale read was used to override it. GSD launcher revision inspected: `3708e21221415895406e1f46539bea7a64feeb5c`; its three load-bearing launcher files matched HEAD.
 
-Clean-context remains blocked before dispatch. Resolve ownership/liveness of the existing review lock with Jim or its owning session before a new attempt. Do not clear it merely to make this review run.
+At that point clean-context was blocked before dispatch. Jim's subsequent decision above removes that gate for this PR; the existing lock remains untouched.
 
 ## Changes
 
@@ -62,14 +66,14 @@ Static verifier observations: missing evidence link and outdated handoff were wo
 - Script-disabled and optional-dependency-failure behaviour: source-read, not yet executed in this checkpoint.
 - Cryptographic npm attestation chain: not independently verified. Packaging-time verification is not claimed as local release-signature verification.
 - Craft Review: **Pass**, fresh `craft` session `ses_f2d18d75bffekAMTUJKALjDs1n`. It read all candidate files plus the full captured tracked diff against `69ca494`, and all three then-untracked files as new content. No CONFORMANCE/SIMPLICITY/NIT findings. It initially lacked diff access; an in-workspace capture under `.git/` resolved that. Same model/provider as implementer, so independence is weaker. Subsequent edits are evidence/review records and the PR draft, not shipped instructions.
-- Clean-context review: **Blocked / not run**. Session `ses_f2d18d702ffeVT0LLw90GWj7r1` rejected an incomplete dispatch before invoking Claude. Follow-up inspection of the official launcher contract established that `evidence_revision` must be a committed HEAD and the project must be clean before and after review. An uncommitted snapshot is not supported. No retry, temporary commit, direct-Claude bypass or substitute result was used. No lock was acquired. Jim has not yet authorised a commit; this is the next required step before the official Fable test.
+- Clean-context review: **Not run; Jim-waived in favour of Hermes review.** The first incomplete dispatch was rejected before Claude invocation. After Jim authorised the local commit, atomic lock acquisition failed as recorded above. No Claude process or substitute result was used. Neither failure is presented as review evidence.
 - Adversarial review: **Report attached below**, session `ses_f2d18d6c5ffeTUM1l64JU4SXfA`, fresh OpenAI gpt-6-astra; same-model independence limit. One review at this gate; no automatic fix-loop.
 
 ## Adversarial report and disposition
 
 - No CRITICAL/HIGH content defect or new data-loss path found. Source review supports npm identity, platform delivery, bootstrap behaviour, update refusal and verification wording.
 - **MEDIUM, evidence:** mechanical proof does not prove an agent follows detection, approval or wrong-prefix refusal. Required fresh-agent installation/free-read and npm-removal scenarios remain open; do not call the work merge-ready.
-- **MEDIUM, evidence:** uncommitted files are not reproducible by checkout. Static commands are recorded below; committing and then reviewing that exact revision remains gated on Jim.
+- **MEDIUM, evidence, resolved:** the reviewer saw uncommitted files. The candidate and recorded commands now exist in commit `81f023e` and subsequent evidence-only commits, available for checkout once pushed. Hermes can review the exact PR head.
 - **LOW, inherited:** the Windows direct fallback retains `-ExecutionPolicy Bypass`, while nearby new prose requires honouring organisational execution policy. Identical invocation was verified in `git show 69ca494:skills/autonomi/SKILL.md`; carried as a non-blocking observation, not silently broadened or corrected in this gate. Jim may choose a separate clarification.
 - Scope observations: same-version npm update is not an upgrade proof; fixtures are representative retained state, not live nodes; no Windows/Linux runtime, script-disabled, missing-optional-dependency or cryptographic-attestation proof. Do not expand into a test framework or platform automation to close unapproved scope.
 
@@ -159,6 +163,6 @@ Final rerun: all three command blocks above passed after the PR draft and review
 
 ## Honesty and handoff
 
-Test changes are explicitly approved in this packet: npm lifecycle proof and npm variants added without removing prior standalone/collision/state checks. No CI/gate/harness-adapter changes, no failures hidden, no real-state destruction. The proof script and static commands are in the candidate. Until these files are committed, checking out the branch alone does not reproduce the candidate.
+Test changes are explicitly approved in this packet: npm lifecycle proof and npm variants added without removing prior standalone/collision/state checks. No CI/gate/harness-adapter changes, no failures hidden, no real-state destruction. The proof script and static commands are committed in the candidate; checks remain dependent on their documented local prerequisites.
 
-Next: resolve the existing review lock through its owner or an explicitly authorised recovery, then dispatch against a clean committed revision. The [PR draft](../PR-autonomi-npm-install.md) is prepared, not published. Push/PR creation and merge remain separate gates. This checkpoint makes no release/merge-readiness claim.
+Next: publish the authorised PR using [the prepared description](../PR-autonomi-npm-install.md), then hand it to Jim for Hermes review. Do not recover the shared lock, rerun Claude, or merge. This checkpoint makes no release/merge-readiness claim.

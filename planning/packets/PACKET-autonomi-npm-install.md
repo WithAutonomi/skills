@@ -6,7 +6,7 @@ Stage: Implementation, then PR preparation
 Repo: [WithAutonomi/skills](https://github.com/WithAutonomi/skills)
 Base: `69ca49452e7555f607646bc9f023718bf43cd046`
 Branch: `autonomi-npm-install`
-Authority: Jim approved the proposed bounded change and said "proceed" after local synchronisation and PR preparation were described. He subsequently approved committing locally and running the official Claude review. Push and PR creation remain separate confirmations.
+Authority: Jim approved implementation and local commits. On 24 September, after the Claude review was blocked, he directed: "Don't worry about the Claude review. Please can we just assemble a PR for this, and I can get it reviewed by Hermes?" This authorises pushing this branch and opening its PR into `main`, with Hermes review replacing the Claude gate for this change. Merge is not authorised.
 
 ## Goal and scope
 
@@ -32,11 +32,12 @@ Meaningful shared-repo work: full scoped review. Unattended mode: No.
 - Run existing static requirements: equivalent frontmatter validation if `skills-ref` is unavailable, vocabulary/length, synchronized versions/plugin JSON, links, provenance and skill discovery.
 - Exercise npm in a disposable prefix/home only: latest install, identity/help, existing-install preservation, approved package update, retained-state preservation on explicit uninstall. No real-home mutation, wallet, paid write, node or daemon operation. Disposable state and commands must be recorded for reproduction.
 - Attempt scoped clean-context installation/free-read verification on a real host, Craft Review at this unit's checkpoint, and one adversarial review at the PR-preparation gate. Record unavailable checks as gaps, never passes.
+- Owner override, 24 September: Claude clean-context review not required for this PR; Hermes review and Jim's merge decision remain. Existing local evidence, Craft and adversarial reports are retained. This waiver does not turn unperformed tests into passes or authorise changes to the shared review lock.
 - No `.gsd/gate.sh` exists. The CI arbiter is `.github/workflows/adr-governance.yml`, path-filtered to ADR/governance changes; no installation-test CI arbiter exists, so installation evidence is weaker. No CI changes in this work.
 - No failure dismissed as pre-existing/environmental without base reproduction. No secrets, borrowed credentials, or new paid tooling. Snyk runs only if its existing credential is available; otherwise report not run.
 
 ## Stop conditions and output
 
-Stop for architectural/security-policy conflicts beyond the already recorded prototype divergences; gate/CI changes; real-host mutation; destructive user-state operations; spend; publishing or PR creation. Preserve unrelated work.
+Stop for architectural/security-policy conflicts beyond the already recorded prototype divergences; gate/CI changes; real-host mutation; destructive user-state operations; spend; release publication or merge. Only this branch push and PR creation are authorised. Preserve unrelated work.
 
-Return changed files, exact checks/results, review findings, evidence gaps and a PR draft. Leave a current handoff. Do not call the candidate merge-ready without the required evidence and human review.
+Return the PR URL, exact checks/results, review findings and evidence gaps for Hermes. Leave a current handoff. Do not call the candidate merge-ready before Hermes review and Jim's decision.
