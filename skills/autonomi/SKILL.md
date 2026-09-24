@@ -2,9 +2,9 @@
 name: autonomi
 description: "Build on, integrate with, and use the Autonomi network — permanent, accountless, encrypted data storage with free reads — for the user. Add durable storage to an app or stack; read and download data by content address; upload data, publicly or privately, and get a permanent address back; handle the keys and wallet a paid write needs, safely; run nodes that contribute spare disk and bandwidth and earn the network's token. Data is encrypted before it leaves the machine, content-addressed and immutable; paid once, never again; no sign-up, API key or server. Use it whenever the user is building something that must keep data permanently, wants decentralised or Autonomi storage in an app, wants to store or archive something for good, publish tamper-proof data, fetch data from a content address, keep data with no server behind it, or put a machine's spare capacity to work — or mentions Autonomi, ANT, the ant client, antd or datamaps. It installs and verifies the tools it needs. Not for request paths or databases."
 license: MIT OR Apache-2.0
-compatibility: "Needs a shell with curl and tar (PowerShell on Windows), outbound HTTPS to github.com to fetch the ant CLI, and direct internet access for the network itself (the client talks to peers over UDP, so a proxy-only sandbox can install the tool but cannot reach the network). A paid write also needs a wallet the user funds and controls."
+compatibility: "Needs a shell. Prefer Node.js 18+ and npm to install ant; direct installers use curl/tar or PowerShell instead. Installation needs HTTPS to npm or GitHub release hosts. The network itself needs direct UDP access; a proxy-only sandbox can install but cannot reach peers. A paid write needs a wallet the user funds and controls."
 metadata:
-  version: "0.1.4"
+  version: "0.1.5"
   author: Autonomi
   homepage: https://autonomi.com
   repository: https://github.com/WithAutonomi/skills
@@ -52,29 +52,13 @@ ant --version
 ant --help
 ```
 
-Continue only if the version output starts with `ant ` and the help identifies it as the `Autonomi network client` with the `wallet`, `file`, `node`, `chunk` and `update` commands. If another program answers or the identity is unclear, stop and tell the person about the name collision; do not replace or remove it. If no `ant` command exists, install. Three ways, none needing administrator rights:
-
-**Installer script** (macOS / Linux). This is the official installer from the tool's own repository; it installs the newest stable release. The only difference from the one-liner in the README is that you save the script and read it before running it, rather than piping it straight into a shell — the security scanners that skill directories run flag piped installs, and reading first costs nothing.
+Continue only if the version output starts with `ant ` and the help identifies it as the `Autonomi network client` with the `wallet`, `file`, `node`, `chunk` and `update` commands. If another program answers or the identity is unclear, stop and tell the person about the name collision; do not replace or remove it. If no `ant` command exists and installation is authorised, prefer the official npm package when Node.js 18+ and npm are available:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/WithAutonomi/ant-client/main/install.sh -o ant-install.sh
-# read ant-install.sh — it downloads one archive, extracts one binary and a config file, never uses sudo
-INSTALL_DIR="$HOME/.local/bin" bash ant-install.sh
+npm install -g @withautonomi/ant
 ```
 
-Set `INSTALL_DIR` as shown: without it the script defaults to `/usr/local/bin` on macOS, which may not be writable. If the script fails at "could not read the release list" or a `403` from `api.github.com`, the environment blocks the version lookup but not the download itself — a known quirk of some sandboxes. Then either use the verified manual install below, which learns the version from the checksum file, or re-run with a version pinned: `ANT_VERSION=<version> bash ant-install.sh`, taking the version from the newest line of https://github.com/WithAutonomi/ant-client/releases/latest/download/SHA256SUMS.txt.
-
-**Installer script** (Windows, PowerShell). Same shape — fetch, read, run:
-
-```powershell
-irm https://raw.githubusercontent.com/WithAutonomi/ant-client/main/install.ps1 -OutFile ant-install.ps1
-# read ant-install.ps1 — it downloads one archive, extracts ant.exe and a config file, and adds its folder to the user PATH
-powershell -ExecutionPolicy Bypass -File .\ant-install.ps1
-```
-
-It installs to `%LOCALAPPDATA%\ant\bin` (override with `$env:INSTALL_DIR`) and **adds that folder to the user's PATH permanently** — tell the person that before running it, and that a new terminal is needed afterwards. Only an x86_64 build exists; on an ARM64 Windows machine it runs under emulation, which the script says itself.
-
-**Verified manual install** — for when the person or their environment prefers not to run a downloaded script, or when you want the checksum checked (the installer scripts don't check it yet). Download the archive for the platform plus the release's `SHA256SUMS.txt`, confirm the sum, then extract. Full per-platform steps, the hosts to allow if a download is blocked, and how to remove the tool safely are in [references/install-and-verify.md](references/install-and-verify.md).
+This installs the latest stable client through npm, including its platform binary; keep optional dependencies enabled. Node.js remains needed to run this installation. If suitable Node.js/npm are absent, prefer the **direct installer for Linux/macOS or Windows** rather than installing Node.js solely for `ant`. Both scripts (fetch, read, then run), a **checksum-verified manual alternative**, npm prerequisites and permission/PATH troubleshooting are in [references/install-and-verify.md](references/install-and-verify.md). Do not add `sudo`, force an overwrite, change npm configuration, or bypass an environment's restrictions to make installation work.
 
 Then confirm it runs and learn its surface — this needs no network:
 
@@ -86,7 +70,7 @@ ant file --help
 
 **Network reachability** is confirmed by the first real command you run: every network operation starts by printing `Connected to autonomi network (found N peers)`. You don't need a separate test to see that line. If the person wants to see the network work before trusting it with their own data, offer the demonstration read in [Read](#read-data-from-the-network) — explain what it is first, and only run it if they say yes.
 
-**If the download is blocked** (403, connection refused, or a proxy error): stop and tell the person. The hosts to allow are `github.com`, `objects.githubusercontent.com` and `release-assets.githubusercontent.com` for the archive, and `raw.githubusercontent.com` for the installer script. Do not try alternative sources or mirrors from memory.
+**If the download is blocked** (403, connection refused, or a proxy error): report the failing host. npm delivers the client through its registry rather than GitHub's release hosts; the direct alternatives and their required hosts are documented in [references/install-and-verify.md](references/install-and-verify.md). Use only a documented route permitted by the environment, never a mirror from memory or a way around access policy. Installing the client through npm does not remove the direct UDP requirement or the separate release download when adding nodes.
 
 **If the tool installs but reports `found 0 peers`**, the machine cannot make direct outbound connections — the network runs peer-to-peer over UDP, not HTTP. This is common in sandboxes that only allow web traffic through a proxy. Say so; it is an environment limit, not a fault in the tool or the network. If you see `Failed to create dual-stack network nodes`, the host has no working IPv6: add `--ipv4-only` after `ant` and retry.
 
@@ -198,11 +182,15 @@ The same wallet serves both directions: its public address receives node earning
 
 ## Keeping the tool current
 
-`ant --version` reports the installed version without changing anything. When its currency matters, compare that with the newest version named in the official [release checksum file](https://github.com/WithAutonomi/ant-client/releases/latest/download/SHA256SUMS.txt). `ant update` is not a check-only command: when an update is available it downloads and installs it after verifying its post-quantum signature against a key built into the binary. Tell the person what would change and run it only when they approve.
+`ant --version` reports the installed version without updating the tool. For a confirmed global npm installation, compare with `npm view @withautonomi/ant@latest version` and use `npm update -g @withautonomi/ant` only after approval, in the npm installation that owns this command. Confirm ownership as described in [references/install-and-verify.md](references/install-and-verify.md#npm-installation-ownership); don't update a different copy or switch a deliberately chosen release channel.
+
+For a direct installation, compare with the newest version named in the official [release checksum file](https://github.com/WithAutonomi/ant-client/releases/latest/download/SHA256SUMS.txt). `ant update` is not a check-only command: when an update is available it downloads and installs it after verifying its post-quantum signature against a key built into the binary. Tell the person what would change and run it only when they approve. It is not the update route for npm-managed copies.
 
 ## Removing the tool
 
-Only do this when the person asks to uninstall Autonomi's `ant`. Do not treat testing, troubleshooting, or a one-off installation as permission to clean up afterwards. An uninstall request means the executable only: find the one actually in use with `command -v ant` on macOS/Linux or `(Get-Command ant).Source` in PowerShell, then run that exact candidate with `--version` and `--help`. Continue only if it passes the Autonomi identity check in [Set up the tool](#set-up-the-tool). Tell the person its exact path, then remove that file and nothing else. If the result belongs to another product or is unknown, missing, ambiguous, a wrapper or not a regular file, stop rather than guessing. Never remove its parent directory, even if it looks dedicated; on Windows, leave `PATH` unchanged unless the person separately asks to edit it.
+Only do this when the person asks to uninstall Autonomi's `ant`. Do not treat testing, troubleshooting, or a one-off installation as permission to clean up afterwards. An uninstall request means the tool only: find the one actually in use with `command -v ant` on macOS/Linux or `(Get-Command ant).Source` in PowerShell, then run that exact candidate with `--version` and `--help`. Continue only if it passes the Autonomi identity check in [Set up the tool](#set-up-the-tool). Tell the person its exact path.
+
+For a confirmed global npm installation, use `npm uninstall -g @withautonomi/ant` in the owning npm installation, following [the ownership check](references/install-and-verify.md#npm-installation-ownership). Let npm remove the package and its launchers; don't delete those files by hand. For a confirmed standalone binary, remove that file and nothing else. If ownership is unknown, another product answers, or the result is missing, ambiguous or an unexplained wrapper, stop rather than guessing. Never remove its parent directory, even if it looks dedicated; leave `PATH` unchanged unless the person separately asks to edit it.
 
 Keep settings, application data, logs, nodes, payment receipts, downloads, source files and datamaps. Do not offer to destroy them unprompted. If the person separately asks for retained state to be deleted, explain the consequence of each named category, inspect current upstream instructions and the actual target before acting, and confirm that exact destructive step. Node removal is a separate node-management task: follow [Run nodes](#run-nodes), never recursively delete application data, and do not assume reset removed an unavailable path. Datamaps are user files and may be the only way to retrieve private uploads. Removing local files does not affect anything already stored on the network.
 
@@ -215,6 +203,7 @@ The one place this skill's version-specific facts live. Everything else on this 
 | Fact | Value | How it was checked |
 |---|---|---|
 | `ant` versions this skill has been checked against | 0.3.3 and 0.3.4 (commands run live on the production network, 31 Aug 2026); 0.3.5 and 0.3.6 (installed, checksums verified, 2–3 Sept 2026) | The installer fetches the newest stable release, so the installed version will usually be newer than the last one checked; the commands here are stable across these versions, and `ant file --help` settles any flag |
+| npm installation | `@withautonomi/ant` 0.3.8, source revision `9112d683d8dbecffd8ad437546453f9f52310964` | Source read 24 Sept 2026; isolated macOS install, identity/help, same-version npm update and removal passed with retained files unchanged. This is not Windows or live-network proof |
 | Command surface (`file cost` / `upload [--public] [--overwrite]` / `download` / `--datamap` / `wallet address` / `wallet balance` / `update` / `SECRET_KEY`) | as documented above | Read from ant-client source at 0.3.6; run live on 0.3.3 and 0.3.4 |
 | Demonstration address | `711c7e20006ff3e0ac6c1f3063286a0c1a3e4c409642e8c526173fa60bb7078a` → `lucky.jpg` | Live fetch from the production network, 27 Aug 2026 |
 | Release downloads | `https://github.com/WithAutonomi/ant-client/releases/download/ant-cli-v<version>/` — archives, `.sig` per archive, `SHA256SUMS.txt` | Fetched 2 Sept 2026 |

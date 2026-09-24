@@ -6,7 +6,7 @@ First-party [Agent Skills](https://agentskills.io) for the **Autonomi** network 
 
 | Skill | What it does | Status |
 | --- | --- | --- |
-| **`autonomi`** | Read data by content address; store files publicly or privately and get a permanent address back; run nodes that contribute spare disk and earn ANT; wire the network into an application. One skill, routed by task. The agent never sees a wallet key. | **Prototype 0.1.4** — being tested with the community |
+| **`autonomi`** | Read data by content address; store files publicly or privately and get a permanent address back; run nodes that contribute spare disk and earn ANT; wire the network into an application. One skill, routed by task. The agent never sees a wallet key. | **Prototype 0.1.5** — being tested with the community |
 
 ## Install
 
@@ -45,9 +45,13 @@ After an update, start a new agent session before relying on the new instruction
 
 ### What the agent loads, and what happens on first use
 
-The agent loads only the skill component in `skills/autonomi/`. skills.sh and manual installations copy that directory; Claude Code caches the repository-root plugin package declared in `.claude-plugin/marketplace.json`, then discovers `skills/autonomi/` within it as the skill component. Repo-side files are not loaded as skill instructions. On first use the agent detects or installs the upstream **`ant`** command-line client from its official GitHub releases — fetching and reading the installer before running it, or taking a checksum-verified manual path — and learns the tool from `ant --help`. The script installers do not yet verify checksums or signatures themselves, so universally verified delivery remains a target rather than a current guarantee. Nothing in the skill holds keys or moves funds. A paid write uses a `SECRET_KEY` the person provisions to the tool's environment themselves, or the person runs the paid command; the agent only ever works with public addresses, and spending is quote-show-wait by default.
+The agent loads only the skill component in `skills/autonomi/`. skills.sh and manual installations copy that directory; Claude Code caches the repository-root plugin package declared in `.claude-plugin/marketplace.json`, then discovers `skills/autonomi/` within it as the skill component. Repo-side files are not loaded as skill instructions.
 
-> **Sandboxes.** Installing `ant` needs `github.com` and its release hosts reachable. The installer's version lookup uses `api.github.com`, which some agent sandboxes block while allowing the download itself; the skill then falls back to a manual path that reads the version from the release checksum file. The network is peer-to-peer over UDP, so a proxy-only sandbox can install the tool but will see `found 0 peers` — the skill says so rather than retrying. Distributing the CLI through npm, which every sandbox allows, is tracked in [ant-client #190](https://github.com/WithAutonomi/ant-client/issues/190).
+On first use the agent detects the upstream **`ant`** command-line client and leaves a working installation alone. If it is missing, the preferred route is `npm install -g @withautonomi/ant` with existing Node.js 18+ and npm. Without those, direct Linux/macOS and Windows installers remain available, fetched and read before execution, plus a checksum-verified manual alternative. The agent learns the tool from `ant --help`. This installs the **CLI**, not the skill; the skill-install commands above remain unchanged. Full procedures are in [`install-and-verify.md`](skills/autonomi/references/install-and-verify.md).
+
+The npm release workflow verifies archive checksums and signatures before packaging; this is not a local release-signature check during installation. The direct scripts do not yet verify checksums or signatures themselves, so universally verified delivery remains a target rather than a current guarantee. Nothing in the skill holds keys or moves funds. A paid write uses a `SECRET_KEY` the person provisions to the tool's environment themselves, or the person runs the paid command; the agent only ever works with public addresses, and spending is quote-show-wait by default.
+
+> **Sandboxes.** npm delivers the client through its registry rather than GitHub's release-download hosts, addressing the client-distribution gap tracked in [ant-client #190](https://github.com/WithAutonomi/ant-client/issues/190). Registry access still depends on the environment. Direct-install fallbacks and subsequent node downloads need their release hosts reachable. The network itself uses direct UDP connections, so npm does not make a proxy-only sandbox able to reach peers.
 
 ## Status
 
@@ -55,7 +59,7 @@ A prototype, deliberately: one skill for readers, writers, builders and node ope
 
 > **Platform status:** no platform has completed the full live prototype test. The Windows install path is source-read but has not been run on Windows. Treat its instructions as unverified until that test is complete; see `planning/HANDOFF.md`.
 
-> **Heads-up — binary install in locked-down sandboxes.** The `ant` installer downloads its binary from GitHub's release CDN (`release-assets.githubusercontent.com`), which some AI-agent sandboxes block even when `github.com` is allowed. The skill detects this and tells you exactly what to allowlist rather than failing silently. Tracked as an upstream/release item in [`planning/release-endpoint-accessibility.md`](planning/release-endpoint-accessibility.md).
+> **Direct-download fallback limits.** GitHub's release CDN (`release-assets.githubusercontent.com`) can be blocked even when `github.com` is allowed. The skill reports the failing host rather than inventing a mirror or bypassing policy. Historical failures and the npm follow-up are recorded in [`planning/release-endpoint-accessibility.md`](planning/release-endpoint-accessibility.md).
 
 ## Repo layout
 
